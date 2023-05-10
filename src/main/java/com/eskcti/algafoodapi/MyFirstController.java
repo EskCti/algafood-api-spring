@@ -9,6 +9,6 @@ public class MyFirstController {
     @GetMapping("/hello")
     @ResponseBody
     public String hello() {
-        return "Alo!";
+        return "Funciona remote mesmo blz blz blz!";
     }
 }

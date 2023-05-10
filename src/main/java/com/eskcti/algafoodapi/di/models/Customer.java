@@ -1,12 +1,12 @@
 package com.eskcti.algafoodapi.di.models;
 
-public class Client {
+public class Customer {
     private String name;
     private String email;
     private String phone;
     private Boolean active = false;
 
-    public Client(String name, String email, String phone) {
+    public Customer(String name, String email, String phone) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -42,5 +42,9 @@ public class Client {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public void activate() {
+        this.setActive(true);
     }
 }

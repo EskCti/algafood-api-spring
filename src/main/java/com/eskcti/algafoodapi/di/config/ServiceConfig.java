@@ -5,10 +5,10 @@ import com.eskcti.algafoodapi.di.service.ActivationCustomerService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class ServiceConfig {
-    @Bean
-    public ActivationCustomerService activationCustomerService(Notifier notifier) {
-        return new ActivationCustomerService(notifier);
-    }
+//    @Bean
+//    public ActivationCustomerService activationCustomerService(Notifier notifier) {
+//        return new ActivationCustomerService(notifier);
+//    }
 }

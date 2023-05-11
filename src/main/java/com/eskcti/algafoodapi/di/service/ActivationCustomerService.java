@@ -5,10 +5,12 @@ import com.eskcti.algafoodapi.di.notification.Notifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ActivationCustomerService {
     @Autowired(required = false)
-    private Notifier notifier;
+    private List<Notifier> notifiers;
 
 //    @Autowired
 //    public ActivationCustomerService(Notifier notifier) {
@@ -24,10 +26,13 @@ public class ActivationCustomerService {
     public void activate(Customer customer) {
         customer.activate();
 
-        if (notifier != null) {
+        for (Notifier notifier : notifiers) {
             notifier.notify(customer, "Your registration in the system is active.");
-        } else {
-            System.out.println("Not notifier exists, but customer has been activated");
         }
+//        if (notifier != null) {
+//            notifier.notify(customer, "Your registration in the system is active.");
+//        } else {
+//            System.out.println("Not notifier exists, but customer has been activated");
+//        }
     }
 }

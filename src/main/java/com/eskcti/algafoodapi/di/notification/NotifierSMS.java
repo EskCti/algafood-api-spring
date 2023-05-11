@@ -5,15 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NotifierEmail implements Notifier {
+public class NotifierSMS implements Notifier {
 
     private boolean capsLock;
-    private String hostServerSmtp;
 
     @Autowired
-    public NotifierEmail(String hostServerSmtp) {
-        this.hostServerSmtp = hostServerSmtp;
-        System.out.println("NotifierEmail");
+    public NotifierSMS() {
+        System.out.println("NotifierSMS");
     }
 
     @Override
@@ -22,8 +20,8 @@ public class NotifierEmail implements Notifier {
             message = message.toUpperCase();
         }
 
-        System.out.printf("Notifying %s via email %s using SMTP %s: %s\n",
-                customer.getName(), customer.getEmail(), this.hostServerSmtp, message);
+        System.out.printf("Notifying %s via SMS através do telefone %s: %s\n",
+                customer.getName(), customer.getPhone(), message);
     }
 
     public void setCapsLock(boolean capsLock) {

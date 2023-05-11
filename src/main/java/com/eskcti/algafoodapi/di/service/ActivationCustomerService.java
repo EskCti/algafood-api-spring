@@ -4,7 +4,6 @@ import com.eskcti.algafoodapi.di.models.Customer;
 import com.eskcti.algafoodapi.di.notification.Notifier;
 import org.springframework.stereotype.Component;
 
-@Component
 public class ActivationCustomerService {
     private Notifier notifier;
 

@@ -4,7 +4,7 @@ import com.eskcti.algafoodapi.di.models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class NotifierEmail implements Notifier {
 
     private boolean capsLock;

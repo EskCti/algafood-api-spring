@@ -1,7 +1,9 @@
 package com.eskcti.algafoodapi.di.service;
 
 import com.eskcti.algafoodapi.di.models.Customer;
+import com.eskcti.algafoodapi.di.notification.LevelNotifier;
 import com.eskcti.algafoodapi.di.notification.Notifier;
+import com.eskcti.algafoodapi.di.notification.TypeOfNotifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -11,7 +13,8 @@ import java.util.List;
 @Component
 public class ActivationCustomerService {
 
-    @Qualifier("urgent")
+//    @Qualifier("urgent")
+    @TypeOfNotifier(LevelNotifier.URGENT)
     @Autowired(required = false)
 //    private List<Notifier> notifiers;
     private Notifier notifier;

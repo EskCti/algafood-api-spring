@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Qualifier("urgent")
+//@Qualifier("urgent")
+@TypeOfNotifier(LevelNotifier.URGENT)
 @Component
 public class NotifierSMS implements Notifier {
 

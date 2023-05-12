@@ -2,10 +2,12 @@ package com.eskcti.algafoodapi.di.notification;
 
 import com.eskcti.algafoodapi.di.models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+//import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Primary
+//@Primary
+@Qualifier("normal")
 @Component
 public class NotifierEmail implements Notifier {
 

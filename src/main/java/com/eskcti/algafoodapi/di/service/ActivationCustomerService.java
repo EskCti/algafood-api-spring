@@ -16,21 +16,21 @@ import java.util.List;
 public class ActivationCustomerService {
 
 //    @Qualifier("urgent")
-    @TypeOfNotifier(LevelNotifier.URGENT)
+//    @TypeOfNotifier(LevelNotifier.URGENT)
 //    @Autowired(required = false)
 //    private List<Notifier> notifiers;
     private Notifier notifier;
 
-//    @Autowired
-//    public ActivationCustomerService(Notifier notifier) {
-//        this.notifier = notifier;
-//
-//        System.out.println("ActivationCustomerService");
-//    }
-
     @Autowired
-    public ActivationCustomerService() {
+    public ActivationCustomerService(Notifier notifier) {
+        this.notifier = notifier;
+
+        System.out.println("ActivationCustomerService");
     }
+//
+//    @Autowired
+//    public ActivationCustomerService() {
+//    }
 
     public ActivationCustomerService(String qualquer) {
 

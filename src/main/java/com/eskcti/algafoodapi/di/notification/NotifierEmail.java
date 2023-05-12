@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 //@Primary
-@Qualifier("normal")
+//@Qualifier("normal")
+@TypeOfNotifier(LevelNotifier.NORMAL)
 @Component
 public class NotifierEmail implements Notifier {
 

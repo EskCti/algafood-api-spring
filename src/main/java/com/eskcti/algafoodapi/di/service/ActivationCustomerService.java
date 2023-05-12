@@ -10,7 +10,8 @@ import java.util.List;
 @Component
 public class ActivationCustomerService {
     @Autowired(required = false)
-    private List<Notifier> notifiers;
+//    private List<Notifier> notifiers;
+    private Notifier notifier;
 
 //    @Autowired
 //    public ActivationCustomerService(Notifier notifier) {
@@ -26,9 +27,9 @@ public class ActivationCustomerService {
     public void activate(Customer customer) {
         customer.activate();
 
-        for (Notifier notifier : notifiers) {
+//        for (Notifier notifier : notifiers) {
             notifier.notify(customer, "Your registration in the system is active.");
-        }
+//        }
 //        if (notifier != null) {
 //            notifier.notify(customer, "Your registration in the system is active.");
 //        } else {

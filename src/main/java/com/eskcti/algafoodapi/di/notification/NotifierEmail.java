@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.di.models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.Primary;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,12 @@ import org.springframework.stereotype.Component;
 public class NotifierEmail implements Notifier {
 
     private boolean capsLock;
+
+    @Value("${notifier.email.host-server}")
     private String hostServerSmtp;
+
+    @Value("${notifier.email.port-server}")
+    private Integer port;
 
     public NotifierEmail() {
         System.out.println("Notificador Email REAL");
@@ -29,6 +35,8 @@ public class NotifierEmail implements Notifier {
 
     @Override
     public void notify(Customer customer, String message) {
+        System.out.println("Host: " + hostServerSmtp);
+        System.out.println(("Port: " + port));
         if (this.capsLock) {
             message = message.toUpperCase();
         }

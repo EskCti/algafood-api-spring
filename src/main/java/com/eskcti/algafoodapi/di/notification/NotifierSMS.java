@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 //@Qualifier("urgent")
-//@TypeOfNotifier(LevelNotifier.NORMAL)
-//@Component
+@TypeOfNotifier(LevelNotifier.NORMAL)
+@Component
 public class NotifierSMS implements Notifier {
 
     private boolean capsLock;

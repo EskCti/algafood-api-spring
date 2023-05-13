@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 //@Primary
 //@Qualifier("normal")
-@Profile("prod")
+//@Profile("prod")
 @TypeOfNotifier(LevelNotifier.URGENT)
 @Component
 public class NotifierEmail implements Notifier {

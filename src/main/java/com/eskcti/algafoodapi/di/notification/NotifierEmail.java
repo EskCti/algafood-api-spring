@@ -17,11 +17,14 @@ public class NotifierEmail implements Notifier {
 
     private boolean capsLock;
 
-    @Value("${notifier.email.host-server}")
-    private String hostServerSmtp;
+//    @Value("${notifier.email.host-server}")
+//    private String hostServerSmtp;
+//
+//    @Value("${notifier.email.port-server}")
+//    private Integer port;
 
-    @Value("${notifier.email.port-server}")
-    private Integer port;
+    @Autowired
+    private NotifierProperties properties;
 
     public NotifierEmail() {
         System.out.println("Notificador Email REAL");
@@ -35,8 +38,8 @@ public class NotifierEmail implements Notifier {
 
     @Override
     public void notify(Customer customer, String message) {
-        System.out.println("Host: " + hostServerSmtp);
-        System.out.println(("Port: " + port));
+        System.out.println("Host: " + properties.getHostServer());
+        System.out.println(("Port: " + properties.getPortServer()));
         if (this.capsLock) {
             message = message.toUpperCase();
         }

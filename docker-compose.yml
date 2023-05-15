@@ -15,7 +15,7 @@ services:
 
   # MySQL database service
   db:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: mysql-db-algafoodapi
     ports:
       - '3350:3306'

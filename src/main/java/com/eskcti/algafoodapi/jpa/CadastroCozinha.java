@@ -23,4 +23,8 @@ public class CadastroCozinha {
     public Kitchen adicionar(Kitchen kitchen) {
         return manager.merge(kitchen);
     }
+
+    public Kitchen find(Long id) {
+        return manager.find(Kitchen.class, id);
+    }
 }

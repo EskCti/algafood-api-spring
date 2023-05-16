@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.domain.models.Kitchen;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,5 +17,10 @@ public class CadastroCozinha {
     public List<Kitchen> listar() {
         return manager.createQuery("from Kitchen", Kitchen.class)
                 .getResultList();
+    }
+
+    @Transactional
+    public Kitchen adicionar(Kitchen kitchen) {
+        return manager.merge(kitchen);
     }
 }

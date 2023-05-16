@@ -3,7 +3,6 @@ package com.eskcti.algafoodapi.jpa;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,7 @@ public class CadastroCozinha {
     }
 
     @Transactional
-    public Kitchen adicionar(Kitchen kitchen) {
+    public Kitchen save(Kitchen kitchen) {
         return manager.merge(kitchen);
     }
 

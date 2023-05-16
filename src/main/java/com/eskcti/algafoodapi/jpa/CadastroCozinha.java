@@ -18,12 +18,18 @@ public class CadastroCozinha {
                 .getResultList();
     }
 
+    public Kitchen find(Long id) {
+        return manager.find(Kitchen.class, id);
+    }
+
     @Transactional
     public Kitchen save(Kitchen kitchen) {
         return manager.merge(kitchen);
     }
 
-    public Kitchen find(Long id) {
-        return manager.find(Kitchen.class, id);
+    @Transactional
+    public void remove(Kitchen kitchen) {
+        kitchen = find(kitchen.getId());
+        manager.remove(kitchen);
     }
 }

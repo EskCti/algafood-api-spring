@@ -15,4 +15,6 @@ public class Restaurant {
     private String name;
     @Column(name = "shipping_fee")
     private BigDecimal shippingFee;
+    @ManyToOne
+    private Kitchen kitchen;
 }

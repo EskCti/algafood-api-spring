@@ -21,7 +21,17 @@ public class FindRestaurantMain {
 
         Restaurant restaurant2 = restaurantRepository.find(2L);
 
-        System.out.printf("%d - %s - %.2f\n", restaurant1.getId(), restaurant1.getName(), restaurant1.getShippingFee());
-        System.out.printf("%d - %s - %.2f\n", restaurant2.getId(), restaurant2.getName(), restaurant2.getShippingFee());
+        System.out.printf("%d - %s - %.2f - %s\n",
+                restaurant1.getId(),
+                restaurant1.getName(),
+                restaurant1.getShippingFee(),
+                restaurant1.getKitchen().getName()
+        );
+        System.out.printf("%d - %s - %.2f - %s\n",
+                restaurant2.getId(),
+                restaurant2.getName(),
+                restaurant2.getShippingFee(),
+                restaurant2.getKitchen().getName()
+        );
     }
 }

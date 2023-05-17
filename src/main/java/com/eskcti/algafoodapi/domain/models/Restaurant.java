@@ -2,13 +2,16 @@ package com.eskcti.algafoodapi.domain.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "tab_restaurants")
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Restaurant {
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

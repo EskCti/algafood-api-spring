@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,19 @@ public class KitchenController {
         kitchenRepository.save(kitchenUpdate);
 
         return ResponseEntity.ok(kitchenUpdate);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        try{
+            Kitchen kitchen = kitchenRepository.find(id);
+            if (kitchen == null) return ResponseEntity.notFound().build();
+
+            kitchenRepository.remove(kitchen);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataIntegrityViolationException exception) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
     }
 }

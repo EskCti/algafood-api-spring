@@ -5,6 +5,8 @@ import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,8 +34,9 @@ public class KitchenRepositoryImpl implements KitchenRepository {
 
     @Override
     @Transactional
-    public void remove(Kitchen kitchen) {
-        kitchen = find(kitchen.getId());
+    public void remove(Long id) {
+        Kitchen kitchen = find(id);
+        if (kitchen == null) throw new EmptyResultDataAccessException(1);
         manager.remove(kitchen);
     }
 }

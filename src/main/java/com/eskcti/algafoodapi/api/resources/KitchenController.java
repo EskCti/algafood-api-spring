@@ -2,6 +2,7 @@ package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,5 +34,17 @@ public class KitchenController {
     @ResponseStatus(HttpStatus.CREATED)
     public Kitchen save(@RequestBody Kitchen kitchen) {
         return kitchenRepository.save(kitchen);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Kitchen> update(@PathVariable Long id, @RequestBody Kitchen kitchen) {
+        Kitchen kitchenUpdate = kitchenRepository.find(id);
+        if (kitchenUpdate == null) return ResponseEntity.notFound().build();
+
+        BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
+
+        kitchenRepository.save(kitchenUpdate);
+
+        return ResponseEntity.ok(kitchenUpdate);
     }
 }

@@ -2,6 +2,7 @@ package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
+import com.eskcti.algafoodapi.domain.services.KitchenService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +20,9 @@ public class KitchenController {
     @Autowired
     private KitchenRepository kitchenRepository;
 
+    @Autowired
+    private KitchenService kitchenService;
+
     @GetMapping
     public List<Kitchen> list() {
         return kitchenRepository.list();
@@ -34,7 +38,7 @@ public class KitchenController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Kitchen save(@RequestBody Kitchen kitchen) {
-        return kitchenRepository.save(kitchen);
+        return kitchenService.save(kitchen);
     }
 
     @PutMapping("/{id}")

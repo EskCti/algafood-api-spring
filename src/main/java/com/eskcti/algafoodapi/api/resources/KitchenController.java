@@ -28,4 +28,10 @@ public class KitchenController {
         if (kitchen != null) return ResponseEntity.status(HttpStatus.OK).body(kitchen);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Kitchen save(@RequestBody Kitchen kitchen) {
+        return kitchenRepository.save(kitchen);
+    }
 }

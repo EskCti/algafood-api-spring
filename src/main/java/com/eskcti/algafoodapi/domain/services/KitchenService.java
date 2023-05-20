@@ -9,6 +9,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class KitchenService {
     @Autowired
@@ -26,5 +28,17 @@ public class KitchenService {
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format("Kitchen with id %d not removed in use ", id));
         }
+    }
+
+    public Kitchen find(Long id) {
+        try {
+            return kitchenRepository.find(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntityNotFoundException(String.format("Kitchen with id %d not found", id));
+        }
+    }
+
+    public List<Kitchen> list() {
+        return kitchenRepository.list();
     }
 }

@@ -7,6 +7,7 @@ import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.services.KitchenService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +19,21 @@ import java.util.List;
 @RequestMapping(value = "/kitchens", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 public class KitchenController {
     @Autowired
-    private KitchenRepository kitchenRepository;
-
-    @Autowired
     private KitchenService kitchenService;
 
     @GetMapping
     public List<Kitchen> list() {
-        return kitchenRepository.list();
+        return kitchenService.list();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Kitchen> find(@PathVariable Long id) {
-        Kitchen kitchen = kitchenRepository.find(id);
-        if (kitchen != null) return ResponseEntity.status(HttpStatus.OK).body(kitchen);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            Kitchen kitchen = kitchenService.find(id);
+            return ResponseEntity.status(HttpStatus.OK).body(kitchen);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping
@@ -43,14 +44,14 @@ public class KitchenController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Kitchen> update(@PathVariable Long id, @RequestBody Kitchen kitchen) {
-        Kitchen kitchenUpdate = kitchenRepository.find(id);
-        if (kitchenUpdate == null) return ResponseEntity.notFound().build();
-
-        BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
-
-        kitchenRepository.save(kitchenUpdate);
-
-        return ResponseEntity.ok(kitchenUpdate);
+        try {
+            Kitchen kitchenUpdate = kitchenService.find(id);
+            BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
+            kitchenService.save(kitchenUpdate);
+            return ResponseEntity.ok(kitchenUpdate);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @DeleteMapping("/{id}")

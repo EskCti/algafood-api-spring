@@ -38,7 +38,6 @@ public class KitchenRepositoryImpl implements KitchenRepository {
     @Transactional
     public void remove(Long id) {
         Kitchen kitchen = find(id);
-        if (kitchen == null) throw new EmptyResultDataAccessException(1);
         manager.remove(kitchen);
     }
 }

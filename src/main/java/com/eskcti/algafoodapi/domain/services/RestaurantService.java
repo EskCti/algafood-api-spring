@@ -2,7 +2,9 @@ package com.eskcti.algafoodapi.domain.services;
 
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
+import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,6 +15,9 @@ import java.util.List;
 
 @Component
 public class RestaurantService {
+
+    @Autowired
+    private KitchenRepository kitchenRepository;
     @Autowired
     private RestaurantRepository restaurantRepository;
 
@@ -21,7 +26,22 @@ public class RestaurantService {
     }
 
     public Restaurant save(Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
+        if (restaurant.getKitchen() == null) {
+            throw new EntityNotFoundException("Not found kitchen in request");
+        }
+        Long kitchenId = restaurant.getKitchen().getId();
+        if (kitchenId == null) {
+            throw new EntityNotFoundException("Not found kitchen with id");
+        }
+        try {
+            Kitchen kitchen = kitchenRepository.find(kitchenId);
+            restaurant.setKitchen(kitchen);
+            return restaurantRepository.save(restaurant);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntityNotFoundException(
+                    String.format("Not found kitchen with id %d", kitchenId)
+            );
+        }
     }
 
     public void remove(Long id) {

@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.domain.repositories.CityRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +23,9 @@ public class CityRepositoryImpl implements CityRepository {
 
     @Override
     public City find(Long id) {
-        return manager.find(City.class, id);
+        City city = manager.find(City.class, id);
+        if (city == null) throw new EmptyResultDataAccessException(1);
+        return city;
     }
 
     @Override
@@ -33,8 +36,8 @@ public class CityRepositoryImpl implements CityRepository {
 
     @Override
     @Transactional
-    public void remove(City city) {
-        city = find(city.getId());
+    public void remove(Long id) {
+        City city = find(id);
         manager.remove(city);
     }
 }

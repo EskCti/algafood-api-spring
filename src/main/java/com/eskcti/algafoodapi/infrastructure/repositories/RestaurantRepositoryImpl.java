@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,7 +22,9 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     @Override
     public Restaurant find(Long id) {
-        return manager.find(Restaurant.class, id);
+        Restaurant restaurant = manager.find(Restaurant.class, id);
+        if (restaurant == null) throw new EmptyResultDataAccessException(1);
+        return restaurant;
     }
 
     @Override
@@ -32,8 +35,8 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
 
     @Override
     @Transactional
-    public void remove(Restaurant restaurant) {
-        restaurant = find(restaurant.getId());
+    public void remove(Long id) {
+        Restaurant restaurant = find(id);
         manager.remove(restaurant);
     }
 }

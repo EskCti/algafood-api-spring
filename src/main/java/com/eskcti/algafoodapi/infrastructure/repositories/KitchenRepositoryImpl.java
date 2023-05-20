@@ -23,7 +23,9 @@ public class KitchenRepositoryImpl implements KitchenRepository {
 
     @Override
     public Kitchen find(Long id) {
-        return manager.find(Kitchen.class, id);
+        Kitchen kitchen = manager.find(Kitchen.class, id);
+        if (kitchen == null) throw new EmptyResultDataAccessException(1);
+        return kitchen;
     }
 
     @Override

@@ -36,20 +36,24 @@ public class RestaurantController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant insert(@RequestBody Restaurant restaurant) {
-        return restaurantService.save(restaurant);
+    public ResponseEntity<?> insert(@RequestBody Restaurant restaurant) {
+        try {
+            restaurant = restaurantService.save(restaurant);
+            return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
         try {
             Restaurant restaurantUpdated = restaurantService.find(id);
             BeanUtils.copyProperties(restaurant, restaurantUpdated, "id");
             restaurantService.save(restaurantUpdated);
             return ResponseEntity.ok(restaurantUpdated);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

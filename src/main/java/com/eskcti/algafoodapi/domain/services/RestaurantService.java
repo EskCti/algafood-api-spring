@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class RestaurantService {
 
     @Autowired
@@ -31,7 +32,7 @@ public class RestaurantService {
         }
         Long kitchenId = restaurant.getKitchen().getId();
         if (kitchenId == null) {
-            throw new EntityNotFoundException("Not found kitchen with id");
+            throw new EntityNotFoundException("Not found kitchen without id");
         }
         try {
             Kitchen kitchen = kitchenRepository.find(kitchenId);

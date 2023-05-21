@@ -8,16 +8,24 @@ import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Component
+@Repository
 public class KitchenRepositoryImpl implements KitchenRepository {
     @PersistenceContext
     private EntityManager manager;
     @Override
     public List<Kitchen> list() {
         return manager.createQuery("from Kitchen", Kitchen.class)
+                .getResultList();
+    }
+
+    @Override
+    public List<Kitchen> listByName(String name) {
+        return manager.createQuery("from Kitchen where name like :name", Kitchen.class)
+                .setParameter("name", "%"+name+"%")
                 .getResultList();
     }
 

@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CityService {
@@ -21,7 +22,7 @@ public class CityService {
     CityRepository cityRepository;
 
     public List<City> list() {
-        return cityRepository.list();
+        return cityRepository.findAll();
     }
 
     public City save(City city) {
@@ -47,7 +48,7 @@ public class CityService {
 
     public void remove(Long id) {
         try {
-            cityRepository.remove(id);
+            cityRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException(String.format("Not found city with id %d", id));
         } catch (DataIntegrityViolationException e) {
@@ -56,10 +57,8 @@ public class CityService {
     }
 
     public City find(Long id) {
-        try {
-            return cityRepository.find(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Not found city with id %d", id));
-        }
+        Optional<City> city = cityRepository.findById(id);
+        if (city.isPresent()) { return city.get(); }
+        throw new EntityNotFoundException(String.format("Not found city with id %d", id));
     }
 }

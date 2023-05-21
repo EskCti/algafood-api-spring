@@ -24,7 +24,7 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
 
     public List<Restaurant> list() {
-        return restaurantRepository.list();
+        return restaurantRepository.findAll();
     }
 
     public Restaurant save(Restaurant restaurant) {
@@ -45,7 +45,7 @@ public class RestaurantService {
 
     public void remove(Long id) {
         try {
-            restaurantRepository.remove(id);
+            restaurantRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
         } catch (DataIntegrityViolationException e) {
@@ -54,10 +54,8 @@ public class RestaurantService {
     }
 
     public Restaurant find(Long id) {
-        try {
-            return restaurantRepository.find(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
-        }
+        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
+        if (restaurant.isPresent()) return restaurant.get();
+        throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
     }
 }

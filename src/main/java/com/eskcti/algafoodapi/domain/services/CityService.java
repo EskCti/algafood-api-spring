@@ -33,7 +33,11 @@ public class CityService {
             throw new EntityNotFoundException("Not found state without id");
         }
         try {
-            State state = stateRepository.find(stateId);
+            State state = stateRepository.findById(stateId)
+                    .orElseThrow(() ->
+                            new EntityNotFoundException(String.format("Not found State with id %d", stateId)
+                            )
+                    );
             city.setState(state);
             return cityRepository.save(city);
         } catch (EmptyResultDataAccessException e) {

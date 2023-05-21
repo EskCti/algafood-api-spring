@@ -48,9 +48,9 @@ public class CityService {
 
     public void remove(Long id) {
         try {
+            cityRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Not found city with id %d", id)));
             cityRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Not found city with id %d", id));
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format("City with id %d not removed in use", id));
         }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RestaurantService {
@@ -34,15 +35,12 @@ public class RestaurantService {
         if (kitchenId == null) {
             throw new EntityNotFoundException("Not found kitchen without id");
         }
-        try {
-            Kitchen kitchen = kitchenRepository.find(kitchenId);
-            restaurant.setKitchen(kitchen);
-            return restaurantRepository.save(restaurant);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(
-                    String.format("Not found kitchen with id %d", kitchenId)
-            );
-        }
+        Kitchen kitchen = kitchenRepository.findById(kitchenId)
+                .orElseThrow(
+                        () -> new EntityNotFoundException(String.format("Not found kitchen with id %d", kitchenId))
+                );
+        restaurant.setKitchen(kitchen);
+        return restaurantRepository.save(restaurant);
     }
 
     public void remove(Long id) {

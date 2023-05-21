@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CityService {
@@ -21,7 +22,7 @@ public class CityService {
     CityRepository cityRepository;
 
     public List<City> list() {
-        return cityRepository.list();
+        return cityRepository.findAll();
     }
 
     public City save(City city) {
@@ -33,7 +34,11 @@ public class CityService {
             throw new EntityNotFoundException("Not found state without id");
         }
         try {
-            State state = stateRepository.find(stateId);
+            State state = stateRepository.findById(stateId)
+                    .orElseThrow(() ->
+                            new EntityNotFoundException(String.format("Not found State with id %d", stateId)
+                            )
+                    );
             city.setState(state);
             return cityRepository.save(city);
         } catch (EmptyResultDataAccessException e) {
@@ -43,19 +48,17 @@ public class CityService {
 
     public void remove(Long id) {
         try {
-            cityRepository.remove(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Not found city with id %d", id));
+            cityRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Not found city with id %d", id)));
+            cityRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format("City with id %d not removed in use", id));
         }
     }
 
     public City find(Long id) {
-        try {
-            return cityRepository.find(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Not found city with id %d", id));
-        }
+        Optional<City> city = cityRepository.findById(id);
+        if (city.isPresent()) { return city.get(); }
+        throw new EntityNotFoundException(String.format("Not found city with id %d", id));
     }
 }

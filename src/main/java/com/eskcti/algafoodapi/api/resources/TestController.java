@@ -13,11 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/tests")
 public class TestController {
-    @Autowired
-    private KitchenRepository kitchenRepository;
-
-    @GetMapping("/kitchens")
-    public List<Kitchen> listByName(@RequestParam String name) {
-        return kitchenRepository.listByName(name);
-    }
+//    @Autowired
+//    private KitchenRepository kitchenRepository;
+//
+//    @GetMapping("/kitchens")
+//    public List<Kitchen> listByName(@RequestParam String name) {
+//        return kitchenRepository.listByName(name);
+//    }
 }

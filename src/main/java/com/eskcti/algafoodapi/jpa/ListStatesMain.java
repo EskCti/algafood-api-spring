@@ -19,7 +19,7 @@ public class ListStatesMain {
 
         StateRepository stateRepository = applicationContext.getBean(StateRepository.class);
 
-        List<State> states = stateRepository.list();
+        List<State> states = stateRepository.findAll();
 
         for (State state : states) {
             System.out.println(state.getName());

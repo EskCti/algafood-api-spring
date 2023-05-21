@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StateService {
@@ -21,20 +22,18 @@ public class StateService {
     }
 
     public List<State> list() {
-        return stateRepository.list();
+        return stateRepository.findAll();
     }
 
     public State find(Long id) {
-        try {
-            return stateRepository.find(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("State not found with id %d", id));
-        }
+        Optional<State> state = stateRepository.findById(id);
+        if (state.isPresent()) return state.get();
+        throw new EntityNotFoundException(String.format("State not found with id %d", id));
     }
 
     public void remove(Long id) {
         try {
-            stateRepository.remove(id);
+            stateRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException(String.format("State not found with id %d", id));
         } catch (DataIntegrityViolationException e) {

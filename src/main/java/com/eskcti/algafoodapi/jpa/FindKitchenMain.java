@@ -15,9 +15,9 @@ public class FindKitchenMain {
 
         KitchenRepository kitchenRepository = applicationContext.getBean(KitchenRepository.class);
 
-        Kitchen kitchen1 = kitchenRepository.find(1L);
+        Kitchen kitchen1 = kitchenRepository.findById(1L).get();
 
-        Kitchen kitchen2 = kitchenRepository.find(2L);
+        Kitchen kitchen2 = kitchenRepository.findById(2L).get();
 
         System.out.printf("%d - %s\n", kitchen1.getId(), kitchen1.getName());
         System.out.printf("%d - %s\n", kitchen2.getId(), kitchen2.getName());

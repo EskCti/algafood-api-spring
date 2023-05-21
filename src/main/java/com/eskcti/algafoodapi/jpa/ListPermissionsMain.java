@@ -17,7 +17,7 @@ public class ListPermissionsMain {
 
         PermissionRepository permissionRepository = applicationContext.getBean(PermissionRepository.class);
 
-        List<Permission> permissions = permissionRepository.list();
+        List<Permission> permissions = permissionRepository.findAll();
 
         for (Permission permission : permissions) {
             System.out.println(permission.getName());

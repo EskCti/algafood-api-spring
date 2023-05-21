@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KitchenService {
@@ -22,7 +23,7 @@ public class KitchenService {
 
     public void remove(Long id) {
         try {
-            kitchenRepository.remove(id);
+            kitchenRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException(String.format("Kitchen with id %d not found", id));
         } catch (DataIntegrityViolationException e) {
@@ -31,14 +32,12 @@ public class KitchenService {
     }
 
     public Kitchen find(Long id) {
-        try {
-            return kitchenRepository.find(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Kitchen with id %d not found", id));
-        }
+        Optional<Kitchen> kitchen = kitchenRepository.findById(id);
+        if (kitchen.isPresent()) return kitchen.get();
+        throw new EntityNotFoundException(String.format("Kitchen with id %d not found", id));
     }
 
     public List<Kitchen> list() {
-        return kitchenRepository.list();
+        return kitchenRepository.findAll();
     }
 }

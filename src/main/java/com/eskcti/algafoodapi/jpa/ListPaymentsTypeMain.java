@@ -17,7 +17,7 @@ public class ListPaymentsTypeMain {
 
         PaymentTypeRepository paymentTypeRepository = applicationContext.getBean(PaymentTypeRepository.class);
 
-        List<PaymentType> paymentTypes = paymentTypeRepository.list();
+        List<PaymentType> paymentTypes = paymentTypeRepository.findAll();
 
         for (PaymentType paymentType : paymentTypes) {
             System.out.println(paymentType.getDescription());

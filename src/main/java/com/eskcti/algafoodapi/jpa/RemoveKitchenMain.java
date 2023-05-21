@@ -17,10 +17,10 @@ public class RemoveKitchenMain {
 
         Kitchen kitchen1 = new Kitchen();
         kitchen1.setId(1L);
-        kitchenRepository.remove(kitchen1.getId());
+        kitchenRepository.deleteById(kitchen1.getId());
 
         Kitchen kitchen2 = new Kitchen();
         kitchen2.setId(2L);
-        kitchenRepository.remove(kitchen2.getId());
+        kitchenRepository.deleteById(kitchen2.getId());
     }
 }

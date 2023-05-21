@@ -15,11 +15,11 @@ public class UpdateKitchenMain {
 
         KitchenRepository kitchenRepository = applicationContext.getBean(KitchenRepository.class);
 
-        Kitchen kitchen1 = kitchenRepository.find(1L);
+        Kitchen kitchen1 = kitchenRepository.findById(1L).get();
         kitchen1.setName("Italiano");
         kitchen1 = kitchenRepository.save(kitchen1);
 
-        Kitchen kitchen2 = kitchenRepository.find(2L);
+        Kitchen kitchen2 = kitchenRepository.findById(2L).get();
         kitchen2.setName("Havaiano");
         kitchen2 = kitchenRepository.save(kitchen2);
 

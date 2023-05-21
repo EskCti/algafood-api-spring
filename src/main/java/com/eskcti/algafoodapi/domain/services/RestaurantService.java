@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RestaurantService {
@@ -23,7 +24,7 @@ public class RestaurantService {
     private RestaurantRepository restaurantRepository;
 
     public List<Restaurant> list() {
-        return restaurantRepository.list();
+        return restaurantRepository.findAll();
     }
 
     public Restaurant save(Restaurant restaurant) {
@@ -34,20 +35,17 @@ public class RestaurantService {
         if (kitchenId == null) {
             throw new EntityNotFoundException("Not found kitchen without id");
         }
-        try {
-            Kitchen kitchen = kitchenRepository.find(kitchenId);
-            restaurant.setKitchen(kitchen);
-            return restaurantRepository.save(restaurant);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(
-                    String.format("Not found kitchen with id %d", kitchenId)
-            );
-        }
+        Kitchen kitchen = kitchenRepository.findById(kitchenId)
+                .orElseThrow(
+                        () -> new EntityNotFoundException(String.format("Not found kitchen with id %d", kitchenId))
+                );
+        restaurant.setKitchen(kitchen);
+        return restaurantRepository.save(restaurant);
     }
 
     public void remove(Long id) {
         try {
-            restaurantRepository.remove(id);
+            restaurantRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
         } catch (DataIntegrityViolationException e) {
@@ -56,10 +54,8 @@ public class RestaurantService {
     }
 
     public Restaurant find(Long id) {
-        try {
-            return restaurantRepository.find(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
-        }
+        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
+        if (restaurant.isPresent()) return restaurant.get();
+        throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
     }
 }

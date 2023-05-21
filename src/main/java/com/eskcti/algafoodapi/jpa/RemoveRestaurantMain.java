@@ -19,10 +19,10 @@ public class RemoveRestaurantMain {
 
         Restaurant restaurant1 = new Restaurant();
         restaurant1.setId(1L);
-        restaurantRepository.remove(restaurant1);
+        restaurantRepository.remove(restaurant1.getId());
 
         Restaurant restaurant2 = new Restaurant();
         restaurant2.setId(2L);
-        restaurantRepository.remove(restaurant2);
+        restaurantRepository.remove(restaurant2.getId());
     }
 }

@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.domain.repositories.StateRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,7 +22,9 @@ public class StateRepositoryImpl implements StateRepository {
 
     @Override
     public State find(Long id) {
-        return manager.find(State.class, id);
+        State state = manager.find(State.class, id);
+        if (state == null) throw new EmptyResultDataAccessException(1);
+        return state;
     }
 
     @Override
@@ -32,8 +35,8 @@ public class StateRepositoryImpl implements StateRepository {
 
     @Override
     @Transactional
-    public void remove(State state) {
-        state = find(state.getId());
+    public void remove(Long id) {
+        State state = find(id);
         manager.remove(state);
     }
 }

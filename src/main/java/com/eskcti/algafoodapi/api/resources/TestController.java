@@ -41,6 +41,11 @@ public class TestController {
         return restaurantRepository.findByNameContainingAndKitchenId(name, kitchenId);
     }
 
+    @GetMapping("/restaurants/by-name-and-kitchen/custom")
+    public List<Restaurant> listByNameAndKitchenCustom(String name, Long kitchenId) {
+        return restaurantRepository.queryByName(name, kitchenId);
+    }
+
     @GetMapping("/restaurants/by-name/first")
     public Restaurant listByNameFirst(String name) {
         Optional<Restaurant> restaurant = restaurantRepository.findFirstQualquerCoisaByNameContaining(name);

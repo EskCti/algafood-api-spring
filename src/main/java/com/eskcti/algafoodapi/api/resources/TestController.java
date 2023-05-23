@@ -72,4 +72,9 @@ public class TestController {
     public int countByKitchenId(Long kitchenId) {
         return restaurantRepository.countByKitchenId(kitchenId);
     }
+
+    @GetMapping("/restaurants/by-name-and-shipping-fee")
+    public List<Restaurant> queryByNameAndShippingFeeBetween(String name, BigDecimal shippingFeeInitial, BigDecimal shippingFeeFinal) {
+        return restaurantRepository.find(name, shippingFeeInitial, shippingFeeFinal);
+    }
 }

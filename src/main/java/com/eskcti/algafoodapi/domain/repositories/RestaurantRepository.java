@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface RestaurantRepository  extends JpaRepository<Restaurant, Long> {
     List<Restaurant> findByShippingFeeBetween(BigDecimal shippingFeeInitial, BigDecimal shippingFeeFinal);
 
-    @Query("from Restaurant where name like %:name% and kitchen.id = :id")
+//    @Query("from Restaurant where name like %:name% and kitchen.id = :id")
     List<Restaurant> queryByName(String name, @Param("id") Long kitchenId);
 
     List<Restaurant> findByNameContainingAndKitchenId(String name, Long kitchenId);

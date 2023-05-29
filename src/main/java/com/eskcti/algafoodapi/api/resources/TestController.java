@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
+import com.eskcti.algafoodapi.infrastruct.spec.RestaurantSpecs;
 import com.eskcti.algafoodapi.infrastruct.spec.RestaurantWithFreeShippingSpec;
 import com.eskcti.algafoodapi.infrastruct.spec.RestaurantWithSimilarName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,9 +83,6 @@ public class TestController {
 
     @GetMapping("/restaurants/with-free-shipping")
     public List<Restaurant> queryWithFreeShipping(String name) {
-        var withFreeShipping = new RestaurantWithFreeShippingSpec();
-        var withSimilarName = new RestaurantWithSimilarName(name);
-
-        return restaurantRepository.findAll(withFreeShipping.and(withSimilarName));
+        return restaurantRepository.findAll(RestaurantSpecs.withFreeShipping().and(RestaurantSpecs.withSimilarName(name)));
     }
 }

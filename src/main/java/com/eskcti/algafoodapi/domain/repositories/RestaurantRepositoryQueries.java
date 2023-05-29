@@ -8,4 +8,6 @@ import java.util.List;
 public interface RestaurantRepositoryQueries {
     List<Restaurant> find(String name,
                           BigDecimal shippingFeeInitial, BigDecimal shippingFeeFinal);
+
+    List<Restaurant> findFreeShipping(String name);
 }

@@ -1,7 +1,9 @@
 package com.eskcti.algafoodapi.infrastruct.repositories;
 
 import com.eskcti.algafoodapi.domain.models.Restaurant;
+import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
 import com.eskcti.algafoodapi.domain.repositories.RestaurantRepositoryQueries;
+import com.eskcti.algafoodapi.infrastruct.spec.RestaurantSpecs;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -9,6 +11,8 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +25,9 @@ import java.util.List;
 public class RestaurantRepositoryImpl implements RestaurantRepositoryQueries {
     @PersistenceContext
     private EntityManager manager;
+
+    @Autowired @Lazy
+    private RestaurantRepository restaurantRepository;
 
     public List<Restaurant> find(String name,
                                  BigDecimal shippingFeeInitial, BigDecimal shippingFeeFinal) {
@@ -75,5 +82,10 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryQueries {
 //        TypedQuery<Restaurant> query = manager.createQuery(jpql.toString(), Restaurant.class);
 //        params.forEach((key, value) -> query.setParameter(key, value));
 //        return query.getResultList();
+    }
+
+    @Override
+    public List<Restaurant> findFreeShipping(String name) {
+        return restaurantRepository.findAll(RestaurantSpecs.withFreeShipping().and(RestaurantSpecs.withSimilarName(name)));
     }
 }

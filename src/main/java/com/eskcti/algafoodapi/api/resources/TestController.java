@@ -83,6 +83,6 @@ public class TestController {
 
     @GetMapping("/restaurants/with-free-shipping")
     public List<Restaurant> queryWithFreeShipping(String name) {
-        return restaurantRepository.findAll(RestaurantSpecs.withFreeShipping().and(RestaurantSpecs.withSimilarName(name)));
+        return restaurantRepository.findFreeShipping(name);
     }
 }

@@ -17,7 +17,7 @@ public class ListKitchensMain {
 
         KitchenRepository kitchenRepository = applicationContext.getBean(KitchenRepository.class);
 
-        List<Kitchen> kitchens = kitchenRepository.list();
+        List<Kitchen> kitchens = kitchenRepository.findAll();
 
         for (Kitchen kitchen : kitchens) {
             System.out.println(kitchen.getName());

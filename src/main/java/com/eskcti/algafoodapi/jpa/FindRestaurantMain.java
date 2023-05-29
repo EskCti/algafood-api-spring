@@ -17,9 +17,9 @@ public class FindRestaurantMain {
 
         RestaurantRepository restaurantRepository = applicationContext.getBean(RestaurantRepository.class);
 
-        Restaurant restaurant1 = restaurantRepository.find(1L);
+        Restaurant restaurant1 = restaurantRepository.findById(1L).get();
 
-        Restaurant restaurant2 = restaurantRepository.find(2L);
+        Restaurant restaurant2 = restaurantRepository.findById(2L).get();
 
         System.out.printf("%d - %s - %.2f - %s\n",
                 restaurant1.getId(),

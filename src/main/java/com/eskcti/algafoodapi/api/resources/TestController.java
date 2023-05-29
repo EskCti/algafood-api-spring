@@ -85,4 +85,14 @@ public class TestController {
     public List<Restaurant> queryWithFreeShipping(String name) {
         return restaurantRepository.findFreeShipping(name);
     }
+
+    @GetMapping("/restaurants/first")
+    public Optional<Restaurant> restaurantFirst() {
+        return restaurantRepository.findFirst();
+    }
+
+    @GetMapping("/kitchens/first")
+    public Optional<Kitchen> kitchenFirst() {
+        return kitchenRepository.findFirst();
+    }
 }

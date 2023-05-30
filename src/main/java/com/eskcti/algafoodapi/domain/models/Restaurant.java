@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tab_restaurants")
@@ -22,4 +24,9 @@ public class Restaurant {
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
+    @ManyToMany
+    @JoinTable(name = "tab_restaurants_payments_types",
+        joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")
+    )
+    private List<PaymentType> paymentTypes = new ArrayList<>();
 }

@@ -21,5 +21,7 @@ INSERT INTO tab_payments_type (id, description) VALUES (1, "Cartão de crédito"
 INSERT INTO tab_payments_type (id, description) VALUES (2, "Cartão de débito");
 INSERT INTO tab_payments_type (id, description) VALUES (3, "Dinheiro");
 
-INSERT INTO tab_permissions (id, name, description) VALUES (1, "LIST_KITCHEN", "Permit list kitchen")
-INSERT INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHEN", "Permit edit kitchen")
+INSERT INTO tab_permissions (id, name, description) VALUES (1, "LIST_KITCHEN", "Permit list kitchen");
+INSERT INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHEN", "Permit edit kitchen");
+
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1), (3, 2), (3, 3), (4, 1), (4, 2), (4, 3);

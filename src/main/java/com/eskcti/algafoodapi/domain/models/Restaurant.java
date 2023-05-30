@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +25,7 @@ public class Restaurant {
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")

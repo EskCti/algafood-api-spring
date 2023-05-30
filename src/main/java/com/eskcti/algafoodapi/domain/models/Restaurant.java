@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,17 @@ public class Restaurant {
     private String name;
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
+
+    @JsonIgnore
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime")
+    private LocalDateTime createdAt;
+
+    @JsonIgnore
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
@@ -33,5 +47,6 @@ public class Restaurant {
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")
     )
+
     private List<PaymentType> paymentTypes = new ArrayList<>();
 }

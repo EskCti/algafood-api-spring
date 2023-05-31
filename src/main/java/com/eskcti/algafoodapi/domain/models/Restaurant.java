@@ -44,7 +44,7 @@ public class Restaurant {
     @JsonIgnore
     @Embedded
     private Address address;
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")

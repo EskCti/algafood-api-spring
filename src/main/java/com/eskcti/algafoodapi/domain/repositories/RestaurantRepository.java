@@ -2,6 +2,7 @@ package com.eskcti.algafoodapi.domain.repositories;
 
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,9 @@ public interface RestaurantRepository  extends
         RestaurantRepositoryQueries,
         JpaSpecificationExecutor<Restaurant>
 {
+
+    @Query("from Restaurant r join fetch r.kitchen left join r.paymentTypes")
+    List<Restaurant> findAll();
     List<Restaurant> findByShippingFeeBetween(BigDecimal shippingFeeInitial, BigDecimal shippingFeeFinal);
 
 //    @Query("from Restaurant where name like %:name% and kitchen.id = :id")

@@ -1,7 +1,6 @@
 package com.eskcti.algafoodapi.domain.models;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

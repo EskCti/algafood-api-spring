@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,7 +37,8 @@ public class Restaurant {
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @JsonIgnoreProperties("hibernateLazyInitializer")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
     @JsonIgnore

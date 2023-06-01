@@ -10,16 +10,18 @@ import lombok.Data;
 @Embeddable
 public class Address {
 
-    @Column(name = "zip_code")
+    @Column(name = "zip_code", length = 8)
     private String zipCode;
 
-    @Column(name = "public_place")
+    @Column(name = "public_place", length = 60)
     private String publicPlace;
 
     private String number;
 
+    @Column(length = 60)
     private String complement;
 
+    @Column(length = 60)
     private String neighborhood;
 
     @ManyToOne

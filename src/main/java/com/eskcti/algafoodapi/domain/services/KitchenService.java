@@ -7,15 +7,14 @@ import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class KitchenService {
+    public static final String KITCHEN_NOT_FOUND = "Kitchen with id %d not found";
+    public static final String KITCHEN_NOT_REMOVED_IN_USE = "Kitchen with id %d not removed in use ";
     @Autowired
     private KitchenRepository kitchenRepository;
 
@@ -26,21 +25,14 @@ public class KitchenService {
     public void remove(Long id) {
         try {
             kitchenRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-//            throw new ResponseStatusException(
-//                    HttpStatus.NOT_FOUND,
-//                    String.format("Kitchen with id %d not found", id)
-//            );
-            throw new EntityNotFoundException(String.format("Kitchen with id %d not found", id));
         } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("Kitchen with id %d not removed in use ", id));
+            throw new EntityInUseException(String.format(KITCHEN_NOT_REMOVED_IN_USE, id));
         }
     }
 
     public Kitchen find(Long id) {
-        Optional<Kitchen> kitchen = kitchenRepository.findById(id);
-        if (kitchen.isPresent()) return kitchen.get();
-        throw new EntityNotFoundException(String.format("Kitchen with id %d not found", id));
+        return kitchenRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(KITCHEN_NOT_FOUND, id)));
     }
 
     public List<Kitchen> list() {

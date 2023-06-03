@@ -25,42 +25,26 @@ public class StateController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(@PathVariable Long id) {
-        try {
-            State state = stateService.find(id);
-            return ResponseEntity.ok(state);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public State find(@PathVariable Long id) {
+        return stateService.find(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> insert(@RequestBody State state) {
-        state = stateService.save(state);
-        return ResponseEntity.status(HttpStatus.CREATED).body(state);
+    @ResponseStatus(HttpStatus.CREATED)
+    public State insert(@RequestBody State state) {
+        return stateService.save(state);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody State state) {
-        try {
-            State stateUpdate = stateService.find(id);
-            BeanUtils.copyProperties(state, stateUpdate, "id");
-            stateUpdate = stateService.save(stateUpdate);
-            return ResponseEntity.ok(stateUpdate);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public State update(@PathVariable Long id, @RequestBody State state) {
+        State stateUpdate = stateService.find(id);
+        BeanUtils.copyProperties(state, stateUpdate, "id");
+        return stateService.save(stateUpdate);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            stateService.remove(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        stateService.remove(id);
     }
 }

@@ -60,7 +60,7 @@ public class KitchenController {
     public ResponseEntity delete(@PathVariable Long id) {
         try {
             kitchenService.remove(id);
-            return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e ){
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

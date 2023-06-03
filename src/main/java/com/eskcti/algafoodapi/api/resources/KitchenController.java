@@ -29,12 +29,8 @@ public class KitchenController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Kitchen> find(@PathVariable Long id) {
-        try {
-            Kitchen kitchen = kitchenService.find(id);
-            return ResponseEntity.status(HttpStatus.OK).body(kitchen);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        Kitchen kitchen = kitchenService.find(id);
+        return ResponseEntity.status(HttpStatus.OK).body(kitchen);
     }
 
     @PostMapping
@@ -59,11 +55,9 @@ public class KitchenController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity delete(@PathVariable Long id) {
         try {
+            kitchenService.find(id);
             kitchenService.remove(id);
-        return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e ){
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.noContent().build();
         } catch (EntityInUseException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

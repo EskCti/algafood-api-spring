@@ -26,46 +26,26 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> find(@PathVariable Long id) {
-        try {
-            Restaurant restaurant = restaurantService.find(id);
-            return ResponseEntity.ok(restaurant);
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Restaurant find(@PathVariable Long id) {
+        return restaurantService.find(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> insert(@RequestBody Restaurant restaurant) {
-        try {
-            restaurant = restaurantService.save(restaurant);
-            return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    public Restaurant insert(@RequestBody Restaurant restaurant) {
+        return restaurantService.save(restaurant);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
-        try {
-            Restaurant restaurantUpdated = restaurantService.find(id);
-            BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
-            restaurantService.save(restaurantUpdated);
-            return ResponseEntity.ok(restaurantUpdated);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public Restaurant update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
+        Restaurant restaurantUpdated = restaurantService.find(id);
+        BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
+        return restaurantService.save(restaurantUpdated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity remove(@PathVariable Long id) {
-        try {
-            restaurantService.remove(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        restaurantService.remove(id);
     }
 }

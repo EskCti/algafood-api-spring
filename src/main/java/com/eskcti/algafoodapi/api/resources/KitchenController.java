@@ -55,14 +55,9 @@ public class KitchenController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity delete(@PathVariable Long id) {
-        try {
-            kitchenService.remove(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e ){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        kitchenService.remove(id);
+        return ResponseEntity.noContent().build();
     }
 }

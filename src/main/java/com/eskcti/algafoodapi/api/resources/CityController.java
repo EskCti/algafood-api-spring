@@ -25,46 +25,26 @@ public class CityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(@PathVariable Long id) {
-        try {
-            City city = cityService.find(id);
-            return ResponseEntity.ok(city);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public City find(@PathVariable Long id) {
+        return cityService.find(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> insert(@RequestBody City city) {
-        try {
-            city = cityService.save(city);
-            return ResponseEntity.status(HttpStatus.CREATED).body(city);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public City insert(@RequestBody City city) {
+        return cityService.save(city);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody City city) {
-        try {
-            City cityUpdate = cityService.find(id);
-            BeanUtils.copyProperties(city, cityUpdate, "id");
-            cityUpdate = cityService.save(cityUpdate);
-            return ResponseEntity.ok(cityUpdate);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public City update(@PathVariable Long id, @RequestBody City city) {
+        City cityUpdate = cityService.find(id);
+        BeanUtils.copyProperties(city, cityUpdate, "id");
+        cityUpdate = cityService.save(cityUpdate);
+        return cityUpdate;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            cityService.remove(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityInUseException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        cityService.remove(id);
     }
 }

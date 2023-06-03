@@ -8,16 +8,15 @@ import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RestaurantService {
 
+    public static final String RESTAURANT_NOT_FOUND = "Restaurant with id %d not found";
+    public static final String RESTAURANT_REMOVED_IN_USE = "Restaurant with id %d not removed in use ";
     @Autowired
     private KitchenRepository kitchenRepository;
     @Autowired
@@ -45,17 +44,16 @@ public class RestaurantService {
 
     public void remove(Long id) {
         try {
+            find(id);
             restaurantRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
         } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("Restaurant with id %d not removed in use ", id));
+            throw new EntityInUseException(String.format(RESTAURANT_REMOVED_IN_USE, id));
         }
     }
 
     public Restaurant find(Long id) {
-        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
-        if (restaurant.isPresent()) return restaurant.get();
-        throw new EntityNotFoundException(String.format("Restaurant with id %d not found", id));
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format(RESTAURANT_NOT_FOUND, id)));
+        return restaurant;
     }
 }

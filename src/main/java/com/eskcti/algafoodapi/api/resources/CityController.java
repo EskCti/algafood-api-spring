@@ -1,15 +1,13 @@
 package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.services.CityService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,20 +32,20 @@ public class CityController {
     public City insert(@RequestBody City city) {
         try {
             return cityService.save(city);
-        } catch (EntityNotFoundException e) {
-            throw new BusinessException(e.getMessage());
+        } catch (StateNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{id}")
     public City update(@PathVariable Long id, @RequestBody City city) {
-        City cityUpdate = cityService.find(id);
-        BeanUtils.copyProperties(city, cityUpdate, "id");
         try {
+            City cityUpdate = cityService.find(id);
+            BeanUtils.copyProperties(city, cityUpdate, "id");
             cityUpdate = cityService.save(cityUpdate);
             return cityUpdate;
-        } catch (EntityNotFoundException e) {
-            throw new BusinessException(e.getMessage());
+        } catch (StateNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 

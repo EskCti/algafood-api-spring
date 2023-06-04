@@ -1,7 +1,7 @@
 package com.eskcti.algafoodapi.domain.services;
 
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.State;
 import com.eskcti.algafoodapi.domain.repositories.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class StateService {
 
     public State find(Long id) {
         State state = stateRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(STATE_NOT_FOUND, id)));
+                .orElseThrow(() -> new StateNotFoundException(String.format(STATE_NOT_FOUND, id)));
         return state;
     }
 

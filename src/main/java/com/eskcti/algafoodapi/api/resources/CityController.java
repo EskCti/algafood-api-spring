@@ -32,7 +32,11 @@ public class CityController {
 
     @PostMapping
     public City insert(@RequestBody City city) {
-        return cityService.save(city);
+        try {
+            return cityService.save(city);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")

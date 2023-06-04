@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
@@ -33,14 +34,22 @@ public class RestaurantController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurant insert(@RequestBody Restaurant restaurant) {
-        return restaurantService.save(restaurant);
+        try {
+            return restaurantService.save(restaurant);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
     public Restaurant update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
         Restaurant restaurantUpdated = restaurantService.find(id);
         BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
-        return restaurantService.save(restaurantUpdated);
+        try {
+            return restaurantService.save(restaurantUpdated);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

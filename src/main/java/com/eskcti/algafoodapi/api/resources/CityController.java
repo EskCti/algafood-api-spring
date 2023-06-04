@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
@@ -38,8 +39,12 @@ public class CityController {
     public City update(@PathVariable Long id, @RequestBody City city) {
         City cityUpdate = cityService.find(id);
         BeanUtils.copyProperties(city, cityUpdate, "id");
-        cityUpdate = cityService.save(cityUpdate);
-        return cityUpdate;
+        try {
+            cityUpdate = cityService.save(cityUpdate);
+            return cityUpdate;
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

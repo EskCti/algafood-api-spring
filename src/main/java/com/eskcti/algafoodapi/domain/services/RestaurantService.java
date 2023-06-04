@@ -1,7 +1,8 @@
 package com.eskcti.algafoodapi.domain.services;
 
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.KitchenNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
@@ -15,7 +16,6 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
-    public static final String RESTAURANT_NOT_FOUND = "Restaurant with id %d not found";
     public static final String RESTAURANT_REMOVED_IN_USE = "Restaurant with id %d not removed in use ";
     @Autowired
     private KitchenRepository kitchenRepository;
@@ -28,15 +28,15 @@ public class RestaurantService {
 
     public Restaurant save(Restaurant restaurant) {
         if (restaurant.getKitchen() == null) {
-            throw new EntityNotFoundException("Not found kitchen in request");
+            throw new KitchenNotFoundException("Not found kitchen in request");
         }
         Long kitchenId = restaurant.getKitchen().getId();
         if (kitchenId == null) {
-            throw new EntityNotFoundException("Not found kitchen without id");
+            throw new KitchenNotFoundException("Not found kitchen without id");
         }
         Kitchen kitchen = kitchenRepository.findById(kitchenId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException(String.format("Not found kitchen with id %d", kitchenId))
+                        () -> new KitchenNotFoundException(kitchenId)
                 );
         restaurant.setKitchen(kitchen);
         return restaurantRepository.save(restaurant);
@@ -53,7 +53,7 @@ public class RestaurantService {
 
     public Restaurant find(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(RESTAURANT_NOT_FOUND, id)));
+                .orElseThrow(() -> new RestaurantNotFoundException(id));
         return restaurant;
     }
 }

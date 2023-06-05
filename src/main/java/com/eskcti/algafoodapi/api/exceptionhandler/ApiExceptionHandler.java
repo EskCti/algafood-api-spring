@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.api.exceptionhandler;
 
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
+import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,17 @@ public class ApiExceptionHandler {
                 .message(e.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(problem);
+    }
+
+
+    @ExceptionHandler(EntityInUseException.class)
+    public ResponseEntity<?> handleEntityInUseException(EntityInUseException e) {
+        Problem problem = Problem.builder()
+                .dateTime(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(problem);
     }
 

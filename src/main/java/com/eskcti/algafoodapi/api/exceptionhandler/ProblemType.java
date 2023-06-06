@@ -4,7 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ProblemType {
-    ENTITY_NOT_FOUND("/entity-not-found", "Entity not found");
+    ENTITY_NOT_FOUND("/entity-not-found", "Entity not found"),
+    ENTITY_IN_USE("/entity-in-use", "Entity in use"),
+    ERROR_BUSINESS("/error_business", "Error business");
 
     private String title;
     private String uri;

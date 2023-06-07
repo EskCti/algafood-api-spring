@@ -3,7 +3,9 @@ package com.eskcti.algafoodapi.api.exceptionhandler;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,8 +30,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request
     ) {
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
-
-        if (rootCause instanceof InvalidFormatException) {
+        if (rootCause instanceof IgnoredPropertyException) {
+            return handleIgnoredPropertyException((IgnoredPropertyException) rootCause, headers, (HttpStatus) statusCode, request);
+        } else if (rootCause instanceof UnrecognizedPropertyException) {
+            return handleUnrecognizedPropertyException((UnrecognizedPropertyException) rootCause, headers, (HttpStatus) statusCode, request);
+        } else if (rootCause instanceof InvalidFormatException) {
             return handleInvalidFormatException((InvalidFormatException) rootCause, headers, (HttpStatus) statusCode, request);
         }
         ProblemType problemType = ProblemType.INCOMPREHENSIBLE_MESSAGE;
@@ -38,6 +43,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         Problem problem = createProblemBuilder((HttpStatus) statusCode, problemType, detail).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), statusCode, request);
+    }
+
+    private ResponseEntity<Object> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String path = ex.getPath().stream()
+                .map(ref -> ref.getFieldName())
+                .collect(Collectors.joining("."));
+
+        ProblemType problemType = ProblemType.UNRECOGNIZED_PROPERTY;
+        String detail = String.format("Property '%s' invalid.",
+                path);
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    private ResponseEntity<Object> handleIgnoredPropertyException(
+            IgnoredPropertyException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ) {
+        String path = ex.getPath().stream()
+                .map(ref -> ref.getFieldName())
+                .collect(Collectors.joining("."));
+
+        ProblemType problemType = ProblemType.IGNORED_PROPERTY;
+        String detail = String.format("Property '%s' ignored.",
+                path);
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     private ResponseEntity<Object> handleInvalidFormatException(

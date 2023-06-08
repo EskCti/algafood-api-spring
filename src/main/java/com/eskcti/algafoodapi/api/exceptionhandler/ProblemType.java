@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ProblemType {
+    RESOURCE_NOT_FOUND("/resource-not-found", "Resource not found"),
     PARAMETER_INVALID("/parameter-invalid", "Parameter inválid"),
     UNRECOGNIZED_PROPERTY("/unrecognized-property", "Unrecognized Property"),
     IGNORED_PROPERTY("/ignored-property", "Ignored Property"),

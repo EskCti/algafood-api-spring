@@ -1,19 +1,19 @@
 package com.eskcti.algafoodapi.domain.services;
 
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.State;
 import com.eskcti.algafoodapi.domain.repositories.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StateService {
+    public static final String STATE_NOT_FOUND = "State not found with id %d";
+    public static final String STATE_NOT_REMOVED_IN_USE = "State with id %d not removed in use ";
     @Autowired
     StateRepository stateRepository;
 
@@ -26,18 +26,17 @@ public class StateService {
     }
 
     public State find(Long id) {
-        Optional<State> state = stateRepository.findById(id);
-        if (state.isPresent()) return state.get();
-        throw new EntityNotFoundException(String.format("State not found with id %d", id));
+        State state = stateRepository.findById(id)
+                .orElseThrow(() -> new StateNotFoundException(String.format(STATE_NOT_FOUND, id)));
+        return state;
     }
 
     public void remove(Long id) {
         try {
+            find(id);
             stateRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("State not found with id %d", id));
         } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("State with id %d not removed in use ", id));
+            throw new EntityInUseException(String.format(STATE_NOT_REMOVED_IN_USE, id));
         }
     }
 }

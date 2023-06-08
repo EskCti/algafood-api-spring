@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,13 +28,8 @@ public class KitchenController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Kitchen> find(@PathVariable Long id) {
-        try {
-            Kitchen kitchen = kitchenService.find(id);
-            return ResponseEntity.status(HttpStatus.OK).body(kitchen);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public Kitchen find(@PathVariable Long id) {
+        return kitchenService.find(id);
     }
 
     @PostMapping
@@ -43,26 +39,17 @@ public class KitchenController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Kitchen> update(@PathVariable Long id, @RequestBody Kitchen kitchen) {
-        try {
-            Kitchen kitchenUpdate = kitchenService.find(id);
-            BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
-            kitchenService.save(kitchenUpdate);
-            return ResponseEntity.ok(kitchenUpdate);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public Kitchen update(@PathVariable Long id, @RequestBody Kitchen kitchen) {
+        Kitchen kitchenUpdate = kitchenService.find(id);
+        BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
+        kitchenService.save(kitchenUpdate);
+        return kitchenUpdate;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
-        try {
-            kitchenService.remove(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e ){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        kitchenService.find(id);
+        kitchenService.remove(id);
     }
 }

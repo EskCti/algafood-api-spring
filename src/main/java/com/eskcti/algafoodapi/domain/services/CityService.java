@@ -1,7 +1,9 @@
 package com.eskcti.algafoodapi.domain.services;
 
+import com.eskcti.algafoodapi.domain.exceptions.CityNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.models.State;
 import com.eskcti.algafoodapi.domain.repositories.CityRepository;
@@ -12,10 +14,12 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CityService {
+    public static final String NOT_FOUND_STATE_INTO_CITY_REQUEST = "Not found state into city request";
+    public static final String NOT_FOUND_STATE_WITHOUT_ID = "Not found state without id";
+    public static final String NOT_REMOVED_IN_USE = "City with id %d not removed in use";
     @Autowired
     StateRepository stateRepository;
     @Autowired
@@ -27,38 +31,37 @@ public class CityService {
 
     public City save(City city) {
         if (city.getState() == null) {
-            throw new EntityNotFoundException("Not found state into city request");
+            throw new StateNotFoundException(NOT_FOUND_STATE_INTO_CITY_REQUEST);
         }
         Long stateId = city.getState().getId();
         if (stateId == null) {
-            throw new EntityNotFoundException("Not found state without id");
+            throw new StateNotFoundException(NOT_FOUND_STATE_WITHOUT_ID);
         }
         try {
             State state = stateRepository.findById(stateId)
                     .orElseThrow(() ->
-                            new EntityNotFoundException(String.format("Not found State with id %d", stateId)
-                            )
+                            new StateNotFoundException(stateId)
                     );
+
             city.setState(state);
             return cityRepository.save(city);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Not found State with id %d", stateId));
+            throw new StateNotFoundException(stateId);
         }
     }
 
     public void remove(Long id) {
         try {
-            cityRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(String.format("Not found city with id %d", id)));
+            find(id);
             cityRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityInUseException(String.format("City with id %d not removed in use", id));
+            throw new EntityInUseException(String.format(NOT_REMOVED_IN_USE, id));
         }
     }
 
     public City find(Long id) {
-        Optional<City> city = cityRepository.findById(id);
-        if (city.isPresent()) { return city.get(); }
-        throw new EntityNotFoundException(String.format("Not found city with id %d", id));
+        City city = cityRepository.findById(id)
+                .orElseThrow(() -> new CityNotFoundException(id));
+        return city;
     }
 }

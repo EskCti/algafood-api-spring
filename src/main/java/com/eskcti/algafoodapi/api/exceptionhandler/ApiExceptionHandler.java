@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    public static final String END_USER_GENERIC_ERROR_MESSAGE = "An unexpected internal system error has occurred." +
+            " Try again and if the problem persists, contact your system administrator.";
+
     @Override
     public ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex,
@@ -98,7 +101,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("Property '%s' received value '%s', which is of an invalid type." +
                 " Correct and inform the value compatible with type '%s'.",
                 path, ex.getValue(), ex.getTargetType().getSimpleName());
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(END_USER_GENERIC_ERROR_MESSAGE).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
@@ -140,8 +145,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ProblemType problemType = ProblemType.SYSTEM_ERROR;
-        String detail = "An unexpected internal system error has occurred." +
-                " Try again and if the problem persists, contact your system administrator.";
+        String detail = END_USER_GENERIC_ERROR_MESSAGE;
 
         // Importante colocar o printStackTrace (pelo menos por enquanto, que não estamos
         // fazendo logging) para mostrar a stacktrace no console

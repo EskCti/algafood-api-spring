@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ProblemType {
+    PARAMETER_INVALID("/parameter-invalid", "Parameter inválid"),
     UNRECOGNIZED_PROPERTY("/unrecognized-property", "Unrecognized Property"),
     IGNORED_PROPERTY("/ignored-property", "Ignored Property"),
     INCOMPREHENSIBLE_MESSAGE("/incomprehensible-message", "Incomprehensible message"),

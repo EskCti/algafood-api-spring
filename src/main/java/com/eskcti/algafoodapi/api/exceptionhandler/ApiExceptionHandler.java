@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.exc.IgnoredPropertyException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,6 +16,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request
     ) {
         Throwable rootCause = ExceptionUtils.getRootCause(ex);
+        System.out.printf(rootCause.toString());
         if (rootCause instanceof IgnoredPropertyException) {
             return handleIgnoredPropertyException((IgnoredPropertyException) rootCause, headers, (HttpStatus) statusCode, request);
         } else if (rootCause instanceof UnrecognizedPropertyException) {
@@ -37,6 +40,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         } else if (rootCause instanceof InvalidFormatException) {
             return handleInvalidFormatException((InvalidFormatException) rootCause, headers, (HttpStatus) statusCode, request);
         }
+
         ProblemType problemType = ProblemType.INCOMPREHENSIBLE_MESSAGE;
         String detail = "The request body is invalid. Check syntax error.";
 
@@ -45,7 +49,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), statusCode, request);
     }
 
-    private ResponseEntity<Object> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    private ResponseEntity<Object> handleUnrecognizedPropertyException(
+            UnrecognizedPropertyException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ) {
         String path = ex.getPath().stream()
                 .map(ref -> ref.getFieldName())
                 .collect(Collectors.joining("."));
@@ -126,6 +135,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         if (body == null) {
@@ -139,4 +149,33 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
         return Problem.builder().status(status.value()).type(problemType.getUri()).title(problemType.getTitle()).detail(detail);
     }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(
+            TypeMismatchException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request
+    ) {
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            return handleMethodArgumentTypeMismatch(
+                    (MethodArgumentTypeMismatchException) ex, headers,(HttpStatus) status, request);
+        }
+
+        return super.handleTypeMismatch(ex, headers, status, request);
+    }
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ) {
+        ProblemType problemType = ProblemType.PARAMETER_INVALID;
+        String detail = String.format("Property '%s' received value '%s', which is of an invalid type." +
+                        " Correct and inform the value compatible with type '%s'.",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
 }

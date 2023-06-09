@@ -8,6 +8,7 @@ import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant insert(@RequestBody Restaurant restaurant) {
+    public Restaurant insert(@RequestBody @Valid Restaurant restaurant) {
         try {
             return restaurantService.save(restaurant);
         } catch (EntityNotFoundException e) {

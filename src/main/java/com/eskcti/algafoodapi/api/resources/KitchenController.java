@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.services.KitchenService;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -34,7 +35,7 @@ public class KitchenController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Kitchen save(@RequestBody Kitchen kitchen) {
+    public Kitchen save(@RequestBody @Valid Kitchen kitchen) {
         return kitchenService.save(kitchen);
     }
 

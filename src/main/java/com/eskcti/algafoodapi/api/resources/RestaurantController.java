@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.Groups;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
@@ -43,7 +45,7 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant insert(@RequestBody @Valid Restaurant restaurant) {
+    public Restaurant insert(@RequestBody @Validated(Groups.RestaurantRegistration.class) Restaurant restaurant) {
         try {
             return restaurantService.save(restaurant);
         } catch (EntityNotFoundException e) {

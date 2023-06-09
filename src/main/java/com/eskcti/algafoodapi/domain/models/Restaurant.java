@@ -1,9 +1,13 @@
 package com.eskcti.algafoodapi.domain.models;
 
+import com.eskcti.algafoodapi.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,9 +28,11 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank(groups = Groups.RestaurantRegistration.class)
     @Column(nullable = false, length = 100)
     private String name;
+
+    @PositiveOrZero(groups = Groups.RestaurantRegistration.class)
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 
@@ -40,13 +46,17 @@ public class Restaurant {
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
     private LocalDateTime updatedAt;
 
+    @Valid
+    @NotNull(groups = Groups.RestaurantRegistration.class)
     @JsonIgnoreProperties("hibernateLazyInitializer")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
+
     @JsonIgnore
     @Embedded
     private Address address;
+
 //    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "tab_restaurants_payments_types",

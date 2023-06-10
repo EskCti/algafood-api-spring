@@ -1,6 +1,6 @@
 package com.eskcti.algafoodapi.domain.models;
 
-import com.eskcti.algafoodapi.Groups;
+import com.eskcti.algafoodapi.core.validation.Groups;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

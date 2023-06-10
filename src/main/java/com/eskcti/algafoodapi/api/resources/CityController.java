@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.services.CityService;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class CityController {
     }
 
     @PostMapping
-    public City insert(@RequestBody City city) {
+    public City insert(@RequestBody @Valid City city) {
         try {
             return cityService.save(city);
         } catch (StateNotFoundException e) {
@@ -42,7 +43,7 @@ public class CityController {
     }
 
     @PutMapping("/{id}")
-    public City update(@PathVariable Long id, @RequestBody City city) {
+    public City update(@PathVariable Long id, @RequestBody @Valid City city) {
         try {
             City cityUpdate = cityService.find(id);
             BeanUtils.copyProperties(city, cityUpdate, "id");

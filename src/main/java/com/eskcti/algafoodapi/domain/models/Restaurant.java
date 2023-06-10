@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.groups.ConvertGroup;
+import jakarta.validation.groups.Default;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,11 +30,11 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(groups = Groups.RestaurantRegistration.class)
+    @NotBlank
     @Column(nullable = false, length = 100)
     private String name;
 
-    @PositiveOrZero(groups = Groups.RestaurantRegistration.class)
+    @PositiveOrZero
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 
@@ -47,7 +49,8 @@ public class Restaurant {
     private LocalDateTime updatedAt;
 
     @Valid
-    @NotNull(groups = Groups.RestaurantRegistration.class)
+    @NotNull
+    @ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
     @JsonIgnoreProperties("hibernateLazyInitializer")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kitchen_id", nullable = false)

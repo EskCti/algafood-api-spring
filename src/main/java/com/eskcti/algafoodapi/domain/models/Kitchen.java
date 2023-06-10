@@ -7,14 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Objects;
-
 @Entity
 @Table(name = "tab_kitchens")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Kitchen {
-    @NotNull(groups = Groups.RestaurantRegistration.class)
+    @NotNull(groups = Groups.KitchenId.class)
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

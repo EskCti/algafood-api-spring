@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.domain.models;
 
 import com.eskcti.algafoodapi.core.validation.Groups;
+import com.eskcti.algafoodapi.core.validation.ShippingFee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -34,7 +35,8 @@ public class Restaurant {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @PositiveOrZero
+//    @PositiveOrZero
+    @ShippingFee
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 

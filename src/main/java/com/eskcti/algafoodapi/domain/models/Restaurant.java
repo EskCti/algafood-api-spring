@@ -1,6 +1,6 @@
 package com.eskcti.algafoodapi.domain.models;
 
-import com.eskcti.algafoodapi.Groups;
+import com.eskcti.algafoodapi.core.validation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;

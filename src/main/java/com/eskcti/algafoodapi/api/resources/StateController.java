@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.State;
 import com.eskcti.algafoodapi.domain.services.StateService;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,12 +32,12 @@ public class StateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public State insert(@RequestBody State state) {
+    public State insert(@RequestBody @Valid State state) {
         return stateService.save(state);
     }
 
     @PutMapping("/{id}")
-    public State update(@PathVariable Long id, @RequestBody State state) {
+    public State update(@PathVariable Long id, @RequestBody @Valid State state) {
         State stateUpdate = stateService.find(id);
         BeanUtils.copyProperties(state, stateUpdate, "id");
         return stateService.save(stateUpdate);

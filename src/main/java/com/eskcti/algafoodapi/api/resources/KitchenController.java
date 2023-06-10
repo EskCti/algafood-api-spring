@@ -40,7 +40,7 @@ public class KitchenController {
     }
 
     @PutMapping("/{id}")
-    public Kitchen update(@PathVariable Long id, @RequestBody Kitchen kitchen) {
+    public Kitchen update(@PathVariable Long id, @RequestBody @Valid Kitchen kitchen) {
         Kitchen kitchenUpdate = kitchenService.find(id);
         BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
         kitchenService.save(kitchenUpdate);

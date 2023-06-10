@@ -54,7 +54,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public Restaurant update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
+    public Restaurant update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
         Restaurant restaurantUpdated = restaurantService.find(id);
         BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
         try {

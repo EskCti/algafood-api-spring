@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.domain.models;
 
 import com.eskcti.algafoodapi.core.validation.Groups;
+import com.eskcti.algafoodapi.core.validation.Multiple;
 import com.eskcti.algafoodapi.core.validation.ShippingFee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -37,6 +38,7 @@ public class Restaurant {
 
 //    @PositiveOrZero
     @ShippingFee
+    @Multiple(number = 5)
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 

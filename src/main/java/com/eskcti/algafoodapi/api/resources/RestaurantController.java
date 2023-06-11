@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
@@ -16,6 +17,8 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
@@ -27,6 +30,9 @@ import java.util.Map;
 public class RestaurantController {
     @Autowired
     RestaurantService restaurantService;
+
+    @Autowired
+    SmartValidator validator;
 
     @GetMapping
     public List<Restaurant> list() {
@@ -74,8 +80,18 @@ public class RestaurantController {
         Restaurant restaurant = restaurantService.find(restaurantId);
 
         merge(fields, restaurant, request);
+        validate(restaurant, "restaurant");
 
         return update(restaurantId, restaurant);
+    }
+
+    private void validate(Restaurant restaurant, String objectName) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);
+        validator.validate(restaurant, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
     }
 
     private void merge(Map<String, Object> fieldsSource, Restaurant restaurantTarget, HttpServletRequest request) {

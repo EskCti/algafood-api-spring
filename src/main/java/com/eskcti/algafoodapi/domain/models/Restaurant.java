@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.domain.models;
 import com.eskcti.algafoodapi.core.validation.Groups;
 import com.eskcti.algafoodapi.core.validation.Multiple;
 import com.eskcti.algafoodapi.core.validation.ShippingFee;
+import com.eskcti.algafoodapi.core.validation.ValueZeroIncludesDescription;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -22,6 +23,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@ValueZeroIncludesDescription(
+        valueField = "shippingFee",
+        descriptionField = "name",
+        descriptionRequired = "Free Shipping"
+)
 @Entity
 @Table(name = "tab_restaurants")
 @Data

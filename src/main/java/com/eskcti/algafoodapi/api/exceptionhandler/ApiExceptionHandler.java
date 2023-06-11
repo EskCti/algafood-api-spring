@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.exceptionhandler;
 
+import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -8,11 +9,17 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -21,6 +28,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -155,6 +163,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
+    
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<?> handleValidationException(ValidationException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return handleValidationInternal(ex, ex.getBindingResult(), status, request);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
@@ -238,4 +252,48 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .userMessage(detail).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request
+    ) {
+        BindingResult bindingResult = ex.getBindingResult();
+
+        return handleValidationInternal(ex, bindingResult, status, request);
+    }
+
+    private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpStatusCode status, WebRequest request) {
+        ProblemType problemType = ProblemType.DATA_INVALID;
+        String detail = "One or more fields are invalid. Fill in correctly and try again.";
+
+        List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
+                .map(objectError -> {
+                    String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+
+                    String name = objectError.getObjectName();
+
+                    if (objectError instanceof FieldError) {
+                        name = ((FieldError) objectError).getField();
+                    }
+
+                    return Problem.Object.builder()
+                                    .name(name)
+                                    .userMessage(message)
+                                    .build();
+
+                }).collect(Collectors.toList());
+
+        Problem problem = createProblemBuilder((HttpStatus) status, problemType, detail)
+                .dateTime(LocalDateTime.now())
+                .userMessage(detail)
+                .objects(problemObjects).build();
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.exceptionhandler;
 
+import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -162,6 +163,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
+    
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<?> handleValidationException(ValidationException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return handleValidationInternal(ex, ex.getBindingResult(), status, request);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
@@ -256,10 +263,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request
     ) {
+        BindingResult bindingResult = ex.getBindingResult();
+
+        return handleValidationInternal(ex, bindingResult, status, request);
+    }
+
+    private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpStatusCode status, WebRequest request) {
         ProblemType problemType = ProblemType.DATA_INVALID;
         String detail = "One or more fields are invalid. Fill in correctly and try again.";
-
-        BindingResult bindingResult = ex.getBindingResult();
 
         List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
                 .map(objectError -> {

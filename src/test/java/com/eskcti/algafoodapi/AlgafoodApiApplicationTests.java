@@ -2,12 +2,14 @@ package com.eskcti.algafoodapi;
 
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.services.KitchenService;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Assertions;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class RegisterKitchenIntegrationTests {
@@ -24,5 +26,13 @@ class RegisterKitchenIntegrationTests {
 
 		assertThat(newKitchen, notNullValue());
 		assertThat(newKitchen.getId(), notNullValue());
+	}
+
+	@Test
+	public void shouldFail_ToRegisterKitchen_WhenWithoutName() {
+		Kitchen newKitchen = new Kitchen();
+		newKitchen.setName(null);
+
+		assertThrows(ConstraintViolationException.class, () -> kitchenService.save(newKitchen));
 	}
 }

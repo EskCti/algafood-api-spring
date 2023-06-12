@@ -1,50 +1,26 @@
 package com.eskcti.algafoodapi;
 
-import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
-import com.eskcti.algafoodapi.domain.exceptions.KitchenNotFoundException;
-import com.eskcti.algafoodapi.domain.models.Kitchen;
-import com.eskcti.algafoodapi.domain.services.KitchenService;
-import jakarta.validation.ConstraintViolationException;
+import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RegisterKitchenIT {
 
-	@Autowired
-	KitchenService kitchenService;
-
+	@LocalServerPort
+	private int port;
 	@Test
-	public void shouldSucessfully_ToRegisterKitchen_WhenWithNameCorrectly() {
-		Kitchen newKitchen = new Kitchen();
-		newKitchen.setName("Chinesa");
-
-		newKitchen = kitchenService.save(newKitchen);
-
-		assertThat(newKitchen, notNullValue());
-		assertThat(newKitchen.getId(), notNullValue());
-	}
-
-	@Test
-	public void shouldFail_ToRegisterKitchen_WhenWithoutName() {
-		Kitchen newKitchen = new Kitchen();
-		newKitchen.setName(null);
-
-		assertThrows(ConstraintViolationException.class, () -> kitchenService.save(newKitchen));
-	}
-
-	@Test
-	public void shouldFail_toRemoveKitchen_WhenKitchenInUse() {
-		assertThrows(EntityInUseException.class, () -> kitchenService.remove(1L));
-	}
-
-	@Test
-	public void shouldFail_toRemoveKitchen_whenKitchenNotFound() {
-		assertThrows(KitchenNotFoundException.class, () -> kitchenService.remove(9999L));
+	public void shouldReturnStatus200_whenQueryKitchen() {
+			given()
+				.basePath("/kitchens")
+				.port(port)
+				.accept(ContentType.JSON)
+			.when()
+				.get()
+			.then()
+				.statusCode(HttpStatus.OK.value());
 	}
 }

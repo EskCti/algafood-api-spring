@@ -2,6 +2,7 @@ package com.eskcti.algafoodapi;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
+import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -22,5 +23,19 @@ class RegisterKitchenIT {
 				.get()
 			.then()
 				.statusCode(HttpStatus.OK.value());
+	}
+
+	@Test
+	public void souldContainFourKitchens_whenQueryingKitchens() {
+		given()
+				.basePath("/kitchens")
+				.port(port)
+				.accept(ContentType.JSON)
+			.when()
+				.get()
+			.then()
+				.body("name", hasSize(12))
+				.body("name", hasItems("Indiana", "Chines"));
+
 	}
 }

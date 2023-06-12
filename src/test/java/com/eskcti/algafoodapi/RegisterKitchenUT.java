@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-class RegisterKitchenIT {
+class RegisterKitchenUT {
 
 	@Autowired
 	KitchenService kitchenService;

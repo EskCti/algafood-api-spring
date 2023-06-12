@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi;
 
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
+import com.eskcti.algafoodapi.domain.exceptions.KitchenNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.services.KitchenService;
 import jakarta.validation.ConstraintViolationException;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.data.crossstore.ChangeSetPersister;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,5 +43,10 @@ class RegisterKitchenIntegrationTests {
 	@Test
 	public void shouldFail_toRemoveKitchen_WhenKitchenInUse() {
 		assertThrows(EntityInUseException.class, () -> kitchenService.remove(1L));
+	}
+
+	@Test
+	public void shouldFail_toRemoveKitchen_whenKitchenNotFound() {
+		assertThrows(KitchenNotFoundException.class, () -> kitchenService.remove(9999L));
 	}
 }

@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi;
 
+import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.services.KitchenService;
 import jakarta.validation.ConstraintViolationException;
@@ -34,5 +35,10 @@ class RegisterKitchenIntegrationTests {
 		newKitchen.setName(null);
 
 		assertThrows(ConstraintViolationException.class, () -> kitchenService.save(newKitchen));
+	}
+
+	@Test
+	public void shouldFail_toRemoveKitchen_WhenKitchenInUse() {
+		assertThrows(EntityInUseException.class, () -> kitchenService.remove(1L));
 	}
 }

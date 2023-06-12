@@ -16,7 +16,7 @@ class RegisterKitchenIntegrationTests {
 	KitchenService kitchenService;
 
 	@Test
-	public void testKitchenRegistrationSuccessfully() {
+	public void shouldSucessfully_ToRegisterKitchen_WhenWithNameCorrectly() {
 		Kitchen newKitchen = new Kitchen();
 		newKitchen.setName("Chinesa");
 

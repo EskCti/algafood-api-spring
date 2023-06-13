@@ -1,3 +1,21 @@
+DELETE FROM tab_restaurants_payments_types;
+DELETE FROM tab_products;
+DELETE FROM tab_payments_type;
+DELETE FROM tab_permissions;
+DELETE FROM tab_restaurants;
+DELETE FROM tab_cities;
+DELETE FROM tab_states;
+DELETE FROM tab_kitchens;
+
+ALTER TABLE tab_kitchens AUTO_INCREMENT = 1;
+ALTER TABLE tab_states AUTO_INCREMENT = 1;
+ALTER TABLE tab_cities AUTO_INCREMENT = 1;
+ALTER TABLE tab_restaurants AUTO_INCREMENT = 1;
+ALTER TABLE tab_payments_type AUTO_INCREMENT = 1;
+ALTER TABLE tab_permissions AUTO_INCREMENT = 1;
+ALTER TABLE tab_products AUTO_INCREMENT = 1;
+
+
 INSERT INTO tab_kitchens (id, name) VALUES (1, "Japonês");
 INSERT INTO tab_kitchens (id, name) VALUES (2, "Indiana");
 INSERT INTO tab_kitchens (id, name) VALUES (3, "Chines");
@@ -24,15 +42,26 @@ INSERT INTO tab_payments_type (id, description) VALUES (3, "Dinheiro");
 INSERT INTO tab_permissions (id, name, description) VALUES (1, "LIST_KITCHEN", "Permit list kitchen");
 INSERT INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHEN", "Permit edit kitchen");
 
-INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1), (3, 2), (3, 3), (4, 1), (4, 2), (4, 3);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (1, 1);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (1, 2);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (1, 3);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (2, 1);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (2, 2);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (2, 3);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (3, 1);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (3, 2);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (3, 3);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (4, 1);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (4, 2);
+INSERT INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (4, 3);
 
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 1.01', 'Description product 01', 15, true, 1)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 1.02', 'Description product 02', 10, true, 1)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 1.03', 'Description product 03', 25, true, 1)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 2.01', 'Description product 01', 15, true, 2)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 2.02', 'Description product 02', 10, true, 2)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 3.01', 'Description product 01', 15, true, 3)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 3.02', 'Description product 02', 10, true, 3)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 3.03', 'Description product 03', 25, true, 3)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.01', 'Description product 01', 15, true, 4)
-INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.02', 'Description product 02', 10, true, 4)
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 1.01', 'Description product 01', 15, true, 1);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 1.02', 'Description product 02', 10, true, 1);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 1.03', 'Description product 03', 25, true, 1);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 2.01', 'Description product 01', 15, true, 2);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 2.02', 'Description product 02', 10, true, 2);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 3.01', 'Description product 01', 15, true, 3);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 3.02', 'Description product 02', 10, true, 3);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 3.03', 'Description product 03', 25, true, 3);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.01', 'Description product 01', 15, true, 4);
+INSERT INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.02', 'Description product 02', 10, true, 4);

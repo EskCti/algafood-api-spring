@@ -32,6 +32,24 @@ services:
     volumes:
       - ./dbdata:/var/lib/mysql
 
+  db-test:
+    image: mysql:8.0
+    container_name: mysql-db-algafoodapi-test
+    ports:
+      - '3351:3306'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE_TEST}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - ./.env
+    networks:
+      - app-network-algafoodapi
+    volumes:
+      - ./dbdata-test:/var/lib/mysql
+
   # JAVA service
   app:
     build:

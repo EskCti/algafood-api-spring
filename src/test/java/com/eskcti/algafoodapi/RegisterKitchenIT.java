@@ -1,8 +1,12 @@
 package com.eskcti.algafoodapi;
 
 import static io.restassured.RestAssured.given;
+
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import static org.hamcrest.Matchers.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -13,11 +17,17 @@ class RegisterKitchenIT {
 
 	@LocalServerPort
 	private int port;
+
+	@BeforeEach
+	public void setup() {
+		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+		RestAssured.port = port;
+		RestAssured.basePath = "/kitchens";
+	}
+
 	@Test
 	public void shouldReturnStatus200_whenQueryKitchen() {
 			given()
-				.basePath("/kitchens")
-				.port(port)
 				.accept(ContentType.JSON)
 			.when()
 				.get()
@@ -28,8 +38,6 @@ class RegisterKitchenIT {
 	@Test
 	public void souldContainFourKitchens_whenQueryingKitchens() {
 		given()
-				.basePath("/kitchens")
-				.port(port)
 				.accept(ContentType.JSON)
 			.when()
 				.get()

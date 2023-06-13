@@ -7,16 +7,19 @@ import io.restassured.http.ContentType;
 import static org.hamcrest.Matchers.*;
 
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql(scripts = "/_import.sql")
+@TestPropertySource("/application-test.properties")
+//@Sql(scripts = "/_import.sql")
 class RegisterKitchenIT {
 
 	@LocalServerPort

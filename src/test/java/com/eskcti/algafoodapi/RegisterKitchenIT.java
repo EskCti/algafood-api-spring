@@ -1,13 +1,11 @@
 package com.eskcti.algafoodapi;
 
-import static io.restassured.RestAssured.given;
-
+import com.eskcti.algafoodapi.domain.models.Kitchen;
+import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
+import com.eskcti.algafoodapi.utils.DatabaseCleaner;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import static org.hamcrest.Matchers.*;
-
 import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +15,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
-//@Sql(scripts = "/_import.sql")
+@Sql(scripts = "/_import.sql")
 class RegisterKitchenIT {
 
 	@LocalServerPort
 	private int port;
 
 	@Autowired
-	private Flyway flyway;
+	private DatabaseCleaner databaseCleaner;
+
+	@Autowired
+	private KitchenRepository kitchenRepository;
+
+//	@Autowired
+//	private Flyway flyway;
 
 	@BeforeEach
 	public void setup() {
@@ -34,7 +42,10 @@ class RegisterKitchenIT {
 		RestAssured.port = port;
 		RestAssured.basePath = "/kitchens";
 
-		flyway.migrate();
+//		flyway.migrate();
+
+//		databaseCleaner.clearTables();
+//		populateKtchen();
 	}
 
 	@Test
@@ -69,5 +80,15 @@ class RegisterKitchenIT {
 				.post()
 			.then()
 				.statusCode(HttpStatus.CREATED.value());
+	}
+
+	private void populateKtchen() {
+		Kitchen kitchen1 = new Kitchen();
+		kitchen1.setName("Indiana");
+		kitchenRepository.save(kitchen1);
+
+		Kitchen kitchen2 = new Kitchen();
+		kitchen2.setName("Chines");
+		kitchenRepository.save(kitchen2);
 	}
 }

@@ -1,0 +1,7 @@
+{
+  "name": "restaurant 2",
+  "shippingFee": 0,
+  "kitchen": {
+    "id": 1
+  }
+}

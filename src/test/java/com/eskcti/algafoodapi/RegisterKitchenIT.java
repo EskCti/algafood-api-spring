@@ -16,8 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
@@ -80,6 +79,18 @@ class RegisterKitchenIT {
 				.post()
 			.then()
 				.statusCode(HttpStatus.CREATED.value());
+	}
+
+	@Test
+	public void shouldReturnCorrectAnswerAndStatus_whenQueryingExistingKitchen() {
+		given()
+				.pathParam("kitchenId", 2)
+				.accept(ContentType.JSON)
+			.when()
+				.get("/{kitchenId}")
+			.then()
+				.statusCode(HttpStatus.OK.value())
+				.body("name", equalTo("Indiana"));
 	}
 
 	private void populateKtchen() {

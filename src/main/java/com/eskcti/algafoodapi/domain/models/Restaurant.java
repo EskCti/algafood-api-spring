@@ -4,13 +4,10 @@ import com.eskcti.algafoodapi.core.validation.Groups;
 import com.eskcti.algafoodapi.core.validation.Multiple;
 import com.eskcti.algafoodapi.core.validation.ShippingFee;
 import com.eskcti.algafoodapi.core.validation.ValueZeroIncludesDescription;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 import lombok.Data;
@@ -48,12 +45,10 @@ public class Restaurant {
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime")
     private LocalDateTime createdAt;
 
-    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
     private LocalDateTime updatedAt;
@@ -61,24 +56,19 @@ public class Restaurant {
     @Valid
     @NotNull
     @ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
-    @JsonIgnoreProperties(value = {"name"}, allowGetters = true)
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
 
-    @JsonIgnore
     @Embedded
     private Address address;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")
     )
     private List<PaymentType> paymentTypes = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
-
 }

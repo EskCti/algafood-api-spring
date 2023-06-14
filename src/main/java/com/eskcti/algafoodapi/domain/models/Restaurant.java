@@ -61,8 +61,8 @@ public class Restaurant {
     @Valid
     @NotNull
     @ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
-    @JsonIgnoreProperties("hibernateLazyInitializer")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"name"}, allowGetters = true)
+    @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
 
@@ -70,7 +70,7 @@ public class Restaurant {
     @Embedded
     private Address address;
 
-//    @JsonIgnore
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")

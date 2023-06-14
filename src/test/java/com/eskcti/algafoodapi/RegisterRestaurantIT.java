@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.hasSize;
 @Sql(scripts = "/_import.sql")
 public class RegisterRestaurantIT {
     public static final int RESTAURANT_ID_FOUND = 1;
+    public static final int RESTAURANT_ID_NOT_FOUND = 99;
     @LocalServerPort
     private int port;
 
@@ -72,5 +73,16 @@ public class RegisterRestaurantIT {
                 .get("/{kitchenId}")
                 .then()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void shouldReturnStatus404_whenQueryingNotExistingRestaurant() {
+        given()
+                .pathParam("restaurantId", RESTAURANT_ID_NOT_FOUND)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/{restaurantId}")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

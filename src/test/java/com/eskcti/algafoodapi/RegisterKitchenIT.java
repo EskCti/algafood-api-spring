@@ -93,6 +93,17 @@ class RegisterKitchenIT {
 				.body("name", equalTo("Indiana"));
 	}
 
+	@Test
+	public void shouldReturnStatus404_whenQueryingNotExistingKitchen() {
+		given()
+				.pathParam("kitchenId", 99)
+				.accept(ContentType.JSON)
+			.when()
+				.get("/{kitchenId}")
+			.then()
+				.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+
 	private void populateKtchen() {
 		Kitchen kitchen1 = new Kitchen();
 		kitchen1.setName("Indiana");

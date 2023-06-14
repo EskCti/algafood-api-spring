@@ -7,6 +7,7 @@ import com.eskcti.algafoodapi.domain.repositories.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class StateService {
     @Autowired
     StateRepository stateRepository;
 
+    @Transactional
     public State save(State state) {
         return stateRepository.save(state);
     }
@@ -31,6 +33,7 @@ public class StateService {
         return state;
     }
 
+    @Transactional
     public void remove(Long id) {
         try {
             find(id);

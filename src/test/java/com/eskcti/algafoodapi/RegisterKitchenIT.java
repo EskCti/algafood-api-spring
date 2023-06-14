@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.utils.DatabaseCleaner;
+import com.eskcti.algafoodapi.utils.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.flywaydb.core.Flyway;
@@ -23,6 +24,9 @@ import static org.hamcrest.Matchers.*;
 @Sql(scripts = "/_import.sql")
 class RegisterKitchenIT {
 
+	public static final int KITCHEN_ID_INDIANA = 2;
+	public static final String NAME_KITCHEN_INDIANA = "Indiana";
+	public static final int KITCHEN_ID_NOT_FOUND = 99;
 	@LocalServerPort
 	private int port;
 
@@ -32,6 +36,10 @@ class RegisterKitchenIT {
 	@Autowired
 	private KitchenRepository kitchenRepository;
 
+	private Kitchen kitchenIndiana;
+	private Integer quantityKitchenRegister;
+	private String jsonCorrectKitchenChines;
+
 //	@Autowired
 //	private Flyway flyway;
 
@@ -40,6 +48,11 @@ class RegisterKitchenIT {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 		RestAssured.port = port;
 		RestAssured.basePath = "/kitchens";
+
+		quantityKitchenRegister = (int) kitchenRepository.count();
+
+		jsonCorrectKitchenChines = ResourceUtils.getContentFromResource(
+				"/json/correct/kitchen-chinesa.json");
 
 //		flyway.migrate();
 
@@ -58,21 +71,19 @@ class RegisterKitchenIT {
 	}
 
 	@Test
-	public void souldContainFourKitchens_whenQueryingKitchens() {
+	public void shouldReturnQuantityCorrectOfKitchens_whenQueryingKitchens() {
 		given()
 				.accept(ContentType.JSON)
 			.when()
 				.get()
 			.then()
-				.body("name", hasSize(3))
-				.body("name", hasItems("Indiana", "Chines"));
-
+				.body("name", hasSize(quantityKitchenRegister));
 	}
 
 	@Test
 	public void shouldReturnStatus201_whenRegisterKitchen() {
 		given()
-				.body("{\"name\": \"Chinesa\"}")
+				.body(jsonCorrectKitchenChines)
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 			.when()
@@ -84,19 +95,19 @@ class RegisterKitchenIT {
 	@Test
 	public void shouldReturnCorrectAnswerAndStatus_whenQueryingExistingKitchen() {
 		given()
-				.pathParam("kitchenId", 2)
+				.pathParam("kitchenId", KITCHEN_ID_INDIANA)
 				.accept(ContentType.JSON)
 			.when()
 				.get("/{kitchenId}")
 			.then()
 				.statusCode(HttpStatus.OK.value())
-				.body("name", equalTo("Indiana"));
+				.body("name", equalTo(NAME_KITCHEN_INDIANA));
 	}
 
 	@Test
 	public void shouldReturnStatus404_whenQueryingNotExistingKitchen() {
 		given()
-				.pathParam("kitchenId", 99)
+				.pathParam("kitchenId", KITCHEN_ID_NOT_FOUND)
 				.accept(ContentType.JSON)
 			.when()
 				.get("/{kitchenId}")
@@ -104,9 +115,9 @@ class RegisterKitchenIT {
 				.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 
-	private void populateKtchen() {
+	private void populateKitchen() {
 		Kitchen kitchen1 = new Kitchen();
-		kitchen1.setName("Indiana");
+		kitchen1.setName(NAME_KITCHEN_INDIANA);
 		kitchenRepository.save(kitchen1);
 
 		Kitchen kitchen2 = new Kitchen();

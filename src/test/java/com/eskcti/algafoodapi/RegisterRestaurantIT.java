@@ -14,12 +14,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
 @Sql(scripts = "/_import.sql")
 public class RegisterRestaurantIT {
+    public static final int RESTAURANT_ID_FOUND = 1;
     @LocalServerPort
     private int port;
 
@@ -59,5 +61,16 @@ public class RegisterRestaurantIT {
                 .get()
                 .then()
                 .body("name", hasSize(quantityRestaurantRegister));
+    }
+
+    @Test
+    public void shouldReturnCorrectStatus_whenQueryingExistingRestaurant() {
+        given()
+                .pathParam("kitchenId", RESTAURANT_ID_FOUND)
+                .accept(ContentType.JSON)
+                .when()
+                .get("/{kitchenId}")
+                .then()
+                .statusCode(HttpStatus.OK.value());
     }
 }

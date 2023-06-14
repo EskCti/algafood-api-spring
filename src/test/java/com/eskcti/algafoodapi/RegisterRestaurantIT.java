@@ -14,6 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
@@ -32,7 +33,7 @@ public class RegisterRestaurantIT {
     public void setup() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = port;
-        RestAssured.basePath = "/kitchens";
+        RestAssured.basePath = "/restaurants";
 
         quantityRestaurantRegister = (int) restaurantRepository.count();
 
@@ -48,5 +49,15 @@ public class RegisterRestaurantIT {
                 .get()
             .then()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void shouldReturnQuantityCorrectOfRestaurants_whenQueryingRestaurants() {
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get()
+                .then()
+                .body("name", hasSize(quantityRestaurantRegister));
     }
 }

@@ -8,15 +8,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantMixin {
-    @JsonIgnore
-    private LocalDateTime createdAt;
+//    @JsonIgnore
+    private OffsetDateTime createdAt;
 
-    @JsonIgnore
-    private LocalDateTime updatedAt;
+//    @JsonIgnore
+    private OffsetDateTime updatedAt;
 
     @JsonIgnoreProperties(value = {"name"}, allowGetters = true)
     private Kitchen kitchen;

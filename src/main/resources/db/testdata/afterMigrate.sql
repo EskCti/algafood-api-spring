@@ -1,3 +1,21 @@
+DELETE FROM tab_restaurants_payments_types;
+DELETE FROM tab_products;
+DELETE FROM tab_payments_type;
+DELETE FROM tab_permissions;
+DELETE FROM tab_restaurants;
+DELETE FROM tab_cities;
+DELETE FROM tab_states;
+DELETE FROM tab_kitchens;
+
+ALTER TABLE tab_kitchens AUTO_INCREMENT = 1;
+ALTER TABLE tab_states AUTO_INCREMENT = 1;
+ALTER TABLE tab_cities AUTO_INCREMENT = 1;
+ALTER TABLE tab_restaurants AUTO_INCREMENT = 1;
+ALTER TABLE tab_payments_type AUTO_INCREMENT = 1;
+ALTER TABLE tab_permissions AUTO_INCREMENT = 1;
+ALTER TABLE tab_products AUTO_INCREMENT = 1;
+
+
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (1, "Japonês");
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (2, "Indiana");
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (3, "Chines");

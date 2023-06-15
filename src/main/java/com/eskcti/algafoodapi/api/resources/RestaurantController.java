@@ -1,9 +1,11 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.model.KitchenModel;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
+import com.eskcti.algafoodapi.api.model.RestaurantModel;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,11 +14,11 @@ import jakarta.validation.Valid;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/restaurants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -40,26 +43,28 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public Restaurant find(@PathVariable Long id) {
-        return restaurantService.find(id);
+    public RestaurantModel find(@PathVariable Long id) {
+        Restaurant restaurant = restaurantService.find(id);
+
+        return toModel(restaurant);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant insert(@RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel insert(@RequestBody @Valid Restaurant restaurant) {
         try {
-            return restaurantService.save(restaurant);
+            return toModel(restaurantService.save(restaurant));
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public Restaurant update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
         Restaurant restaurantUpdated = restaurantService.find(id);
         BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
         try {
-            return restaurantService.save(restaurantUpdated);
+            return toModel(restaurantService.save(restaurantUpdated));
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -72,7 +77,7 @@ public class RestaurantController {
     }
 
     @PatchMapping("/{restaurantId}")
-    public Restaurant updatePartial(
+    public RestaurantModel updatePartial(
             @PathVariable Long restaurantId,
             @RequestBody Map<String, Object> fields,
             HttpServletRequest request
@@ -115,5 +120,25 @@ public class RestaurantController {
             Throwable rootCause = ExceptionUtils.getRootCause(e);
             throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
         }
+    }
+
+    private RestaurantModel toModel(Restaurant restaurant) {
+        KitchenModel kitchenModel = new KitchenModel();
+        kitchenModel.setId(restaurant.getKitchen().getId());
+        kitchenModel.setName(restaurant.getKitchen().getName());
+
+        RestaurantModel restaurantModel = new RestaurantModel();
+        restaurantModel.setId(restaurant.getId());
+        restaurantModel.setName(restaurant.getName());
+        restaurantModel.setShippingFee(restaurant.getShippingFee());
+        restaurantModel.setKitchen(kitchenModel);
+
+        return restaurantModel;
+    }
+
+    private List<RestaurantModel> toCollectionModel(List<Restaurant> restaurants) {
+        return restaurants.stream()
+                .map(restaurant -> toModel(restaurant))
+                .collect(Collectors.toList());
     }
 }

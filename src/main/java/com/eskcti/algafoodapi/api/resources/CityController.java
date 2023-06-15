@@ -1,8 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
-import com.eskcti.algafoodapi.api.exceptionhandler.Problem;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.services.CityService;
@@ -11,10 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

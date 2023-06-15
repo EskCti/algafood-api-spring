@@ -1,4 +1,4 @@
-package com.eskcti.algafoodapi.domain.models.mixins;
+package com.eskcti.algafoodapi.api.model.mixins;
 
 import com.eskcti.algafoodapi.domain.models.Address;
 import com.eskcti.algafoodapi.domain.models.Kitchen;

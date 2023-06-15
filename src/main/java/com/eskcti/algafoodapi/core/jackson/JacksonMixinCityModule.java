@@ -1,7 +1,7 @@
 package com.eskcti.algafoodapi.core.jackson;
 
 import com.eskcti.algafoodapi.domain.models.City;
-import com.eskcti.algafoodapi.domain.models.mixins.CityMixin;
+import com.eskcti.algafoodapi.api.model.mixins.CityMixin;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.stereotype.Component;
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 
@@ -19,7 +19,7 @@ public class Problem {
     private String detail;
 
     private String userMessage;
-    private LocalDateTime dateTime;
+    private OffsetDateTime dateTime;
     private List<Object> objects;
 
     @Getter

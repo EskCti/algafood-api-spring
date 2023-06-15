@@ -6,7 +6,6 @@ import com.eskcti.algafoodapi.utils.DatabaseCleaner;
 import com.eskcti.algafoodapi.utils.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

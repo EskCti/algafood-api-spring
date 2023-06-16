@@ -1,9 +1,11 @@
 package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.api.model.KitchenModel;
+import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.api.model.RestaurantModel;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
@@ -51,8 +53,10 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestaurantModel insert(@RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel insert(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
+            Restaurant restaurant = toDomainObject(restaurantInput);
+
             return toModel(restaurantService.save(restaurant));
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage());
@@ -60,10 +64,13 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
-        Restaurant restaurantUpdated = restaurantService.find(id);
-        BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
+    public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
+            Restaurant restaurant = toDomainObject(restaurantInput);
+
+            Restaurant restaurantUpdated = restaurantService.find(id);
+
+            BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
             return toModel(restaurantService.save(restaurantUpdated));
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage());
@@ -87,7 +94,7 @@ public class RestaurantController {
         merge(fields, restaurant, request);
         validate(restaurant, "restaurant");
 
-        return update(restaurantId, restaurant);
+        return toModel(restaurantService.save(restaurant));
     }
 
     private void validate(Restaurant restaurant, String objectName) {
@@ -140,5 +147,18 @@ public class RestaurantController {
         return restaurants.stream()
                 .map(restaurant -> toModel(restaurant))
                 .collect(Collectors.toList());
+    }
+
+    private Restaurant toDomainObject(RestaurantInput restaurantInput) {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(restaurantInput.getName());
+        restaurant.setShippingFee(restaurantInput.getShippingFee());
+
+        Kitchen kitchen = new Kitchen();
+        kitchen.setId(restaurantInput.getKitchen().getId());
+
+        restaurant.setKitchen(kitchen);
+
+        return restaurant;
     }
 }

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -25,36 +26,16 @@ import java.util.stream.Collectors;
 
 @Component
 public class RestaurantModelAssemblier {
+
+    @Autowired
+    private ModelMapper modelMapper;
     public RestaurantModel toModel(Restaurant restaurant) {
-        KitchenModel kitchenModel = new KitchenModel();
-        kitchenModel.setId(restaurant.getKitchen().getId());
-        kitchenModel.setName(restaurant.getKitchen().getName());
-
-        RestaurantModel restaurantModel = new RestaurantModel();
-        restaurantModel.setId(restaurant.getId());
-        restaurantModel.setName(restaurant.getName());
-        restaurantModel.setShippingFee(restaurant.getShippingFee());
-        restaurantModel.setKitchen(kitchenModel);
-
-        return restaurantModel;
+        return modelMapper.map(restaurant, RestaurantModel.class);
     }
 
     public List<RestaurantModel> toCollectionModel(List<Restaurant> restaurants) {
         return restaurants.stream()
                 .map(restaurant -> toModel(restaurant))
                 .collect(Collectors.toList());
-    }
-
-    public Restaurant toDomainObject(RestaurantInput restaurantInput) {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName(restaurantInput.getName());
-        restaurant.setShippingFee(restaurantInput.getShippingFee());
-
-        Kitchen kitchen = new Kitchen();
-        kitchen.setId(restaurantInput.getKitchen().getId());
-
-        restaurant.setKitchen(kitchen);
-
-        return restaurant;
     }
 }

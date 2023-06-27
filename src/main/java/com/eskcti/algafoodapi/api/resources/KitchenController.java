@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.KitchenInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.KitchenModelAssemblier;
 import com.eskcti.algafoodapi.api.model.KitchenModel;
 import com.eskcti.algafoodapi.api.model.input.KitchenInput;
@@ -25,6 +26,9 @@ public class KitchenController {
     @Autowired
     private KitchenModelAssemblier modelAssemblier;
 
+    @Autowired
+    private KitchenInputDisassembler inputDisassembler;
+
     @GetMapping
     public List<Kitchen> list() {
         return kitchenService.list();
@@ -42,7 +46,7 @@ public class KitchenController {
     @ResponseStatus(HttpStatus.CREATED)
     public KitchenModel save(@RequestBody @Valid KitchenInput kitchenInput) {
         try {
-            Kitchen kitchen = modelAssemblier.toDomainObject(kitchenInput);
+            Kitchen kitchen = inputDisassembler.toDomainObject(kitchenInput);
             return modelAssemblier.toModel(kitchenService.save(kitchen));
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage());
@@ -52,10 +56,11 @@ public class KitchenController {
 
     @PutMapping("/{id}")
     public KitchenModel update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
-        Kitchen kitchen = modelAssemblier.toDomainObject(kitchenInput);
+//        Kitchen kitchen = modelAssemblier.toDomainObject(kitchenInput);
 
         Kitchen kitchenUpdate = kitchenService.find(id);
-        BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
+        inputDisassembler.copyToDomainObject(kitchenInput, kitchenUpdate);
+//        BeanUtils.copyProperties(kitchen, kitchenUpdate, "id");
         return modelAssemblier.toModel(kitchenService.save(kitchenUpdate));
     }
 

@@ -26,12 +26,4 @@ public class KitchenModelAssemblier {
                 .map(kitchen -> toModel(kitchen))
                 .collect(Collectors.toList());
     }
-
-    public Kitchen toDomainObject(KitchenInput kitchenInput) {
-
-        Kitchen kitchen = new Kitchen();
-        kitchen.setName(kitchenInput.getName());
-
-        return kitchen;
-    }
 }

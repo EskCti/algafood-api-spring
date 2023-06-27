@@ -1,5 +1,9 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.CityInputDisassembler;
+import com.eskcti.algafoodapi.api.assembliers.CityModelAssemblier;
+import com.eskcti.algafoodapi.api.model.CityModel;
+import com.eskcti.algafoodapi.api.model.input.CityInput;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
@@ -19,32 +23,40 @@ public class CityController {
     @Autowired
     private CityService cityService;
 
+    @Autowired
+    private CityModelAssemblier modelAssemblier;
+
+    @Autowired
+    private CityInputDisassembler inputDisassembler;
+
     @GetMapping
     public List<City> list() {
         return cityService.list();
     }
 
     @GetMapping("/{id}")
-    public City find(@PathVariable Long id) {
-        return cityService.find(id);
+    public CityModel find(@PathVariable Long id) {
+
+        return modelAssemblier.toModel(cityService.find(id));
     }
 
     @PostMapping
-    public City insert(@RequestBody @Valid City city) {
+    public CityModel insert(@RequestBody @Valid CityInput cityInput) {
         try {
-            return cityService.save(city);
+            City city = inputDisassembler.toDomainObject(cityInput);
+            return modelAssemblier.toModel(cityService.save(city));
         } catch (StateNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{id}")
-    public City update(@PathVariable Long id, @RequestBody @Valid City city) {
+    public CityModel update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput) {
         try {
             City cityUpdate = cityService.find(id);
-            BeanUtils.copyProperties(city, cityUpdate, "id");
-            cityUpdate = cityService.save(cityUpdate);
-            return cityUpdate;
+//            BeanUtils.copyProperties(city, cityUpdate, "id");
+            inputDisassembler.copyToDomainObject(cityInput, cityUpdate);
+            return modelAssemblier.toModel(cityService.save(cityUpdate));
         } catch (StateNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }

@@ -1,5 +1,9 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.StateInputDisassembler;
+import com.eskcti.algafoodapi.api.assembliers.StateModelAssemblier;
+import com.eskcti.algafoodapi.api.model.StateModel;
+import com.eskcti.algafoodapi.api.model.input.StateInput;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.State;
@@ -20,27 +24,36 @@ public class StateController {
     @Autowired
     private StateService stateService;
 
+    @Autowired
+    private StateModelAssemblier modelAssemblier;
+
+    @Autowired
+    private StateInputDisassembler inputDisassembler;
+
     @GetMapping
     public List<State> list() {
         return stateService.list();
     }
 
     @GetMapping("/{id}")
-    public State find(@PathVariable Long id) {
-        return stateService.find(id);
+    public StateModel find(@PathVariable Long id) {
+
+        return modelAssemblier.toModel(stateService.find(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public State insert(@RequestBody @Valid State state) {
-        return stateService.save(state);
+    public StateModel insert(@RequestBody @Valid StateInput stateInput) {
+        State state = inputDisassembler.toDomainObject(stateInput);
+        return modelAssemblier.toModel(stateService.save(state));
     }
 
     @PutMapping("/{id}")
-    public State update(@PathVariable Long id, @RequestBody @Valid State state) {
+    public StateModel update(@PathVariable Long id, @RequestBody @Valid StateInput stateInput) {
         State stateUpdate = stateService.find(id);
-        BeanUtils.copyProperties(state, stateUpdate, "id");
-        return stateService.save(stateUpdate);
+        inputDisassembler.copyToDomainObject(stateInput, stateUpdate);
+//        BeanUtils.copyProperties(state, stateUpdate, "id");
+        return modelAssemblier.toModel(stateService.save(stateUpdate));
     }
 
     @DeleteMapping("/{id}")

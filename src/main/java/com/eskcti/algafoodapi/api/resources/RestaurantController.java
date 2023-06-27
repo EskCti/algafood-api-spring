@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.RestaurantInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.RestaurantModelAssemblier;
 import com.eskcti.algafoodapi.api.model.RestaurantModel;
 import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
@@ -38,6 +39,9 @@ public class RestaurantController {
     private RestaurantModelAssemblier modelAssemblier;
 
     @Autowired
+    private RestaurantInputDisassembler inputDisassembler;
+
+    @Autowired
     private SmartValidator validator;
 
     @GetMapping
@@ -56,7 +60,7 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.CREATED)
     public RestaurantModel insert(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
-            Restaurant restaurant = modelAssemblier.toDomainObject(restaurantInput);
+            Restaurant restaurant = inputDisassembler.toDomainObject(restaurantInput);
 
             return modelAssemblier.toModel(restaurantService.save(restaurant));
         } catch (EntityNotFoundException e) {
@@ -67,7 +71,7 @@ public class RestaurantController {
     @PutMapping("/{id}")
     public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
-            Restaurant restaurant = modelAssemblier.toDomainObject(restaurantInput);
+            Restaurant restaurant = inputDisassembler.toDomainObject(restaurantInput);
 
             Restaurant restaurantUpdated = restaurantService.find(id);
 

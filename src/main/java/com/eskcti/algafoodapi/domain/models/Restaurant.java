@@ -45,6 +45,9 @@ public class Restaurant {
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 
+    @NotNull
+    private Boolean active = Boolean.TRUE;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime")
     private OffsetDateTime createdAt;
@@ -71,4 +74,12 @@ public class Restaurant {
 
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
+
+    public void activate() {
+        setActive(true);
+    }
+
+    public void deactivate() {
+        setActive(false);
+    }
 }

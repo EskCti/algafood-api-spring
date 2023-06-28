@@ -7,6 +7,7 @@ import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,14 +17,17 @@ public class KitchenService {
     @Autowired
     private KitchenRepository kitchenRepository;
 
+    @Transactional
     public Kitchen save(Kitchen kitchen) {
         return kitchenRepository.save(kitchen);
     }
 
+    @Transactional
     public void remove(Long id) {
         try {
             this.find(id);
             kitchenRepository.deleteById(id);
+            kitchenRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(KITCHEN_NOT_REMOVED_IN_USE, id));
         }

@@ -10,6 +10,7 @@ import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class RestaurantService {
         return restaurantRepository.findAll();
     }
 
+    @Transactional
     public Restaurant save(Restaurant restaurant) {
         if (restaurant.getKitchen() == null) {
             throw new KitchenNotFoundException("Not found kitchen in request");
@@ -42,10 +44,12 @@ public class RestaurantService {
         return restaurantRepository.save(restaurant);
     }
 
+    @Transactional
     public void remove(Long id) {
         try {
             find(id);
             restaurantRepository.deleteById(id);
+            restaurantRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(RESTAURANT_REMOVED_IN_USE, id));
         }

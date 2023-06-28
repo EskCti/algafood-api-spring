@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class CityService {
         return cityRepository.findAll();
     }
 
+    @Transactional
     public City save(City city) {
         if (city.getState() == null) {
             throw new StateNotFoundException(NOT_FOUND_STATE_INTO_CITY_REQUEST);
@@ -50,10 +52,12 @@ public class CityService {
         }
     }
 
+    @Transactional
     public void remove(Long id) {
         try {
             find(id);
             cityRepository.deleteById(id);
+            cityRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(NOT_REMOVED_IN_USE, id));
         }

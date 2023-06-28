@@ -27,7 +27,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +58,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = "The request body is invalid. Check syntax error.";
 
         Problem problem = createProblemBuilder((HttpStatus) statusCode, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), statusCode, request);
@@ -78,7 +78,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("Property '%s' invalid.",
                 path);
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -97,7 +97,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("Property '%s' ignored.",
                 path);
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -119,7 +119,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .userMessage(END_USER_GENERIC_ERROR_MESSAGE)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -131,7 +131,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = ex.getMessage();
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -144,7 +144,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = ex.getMessage();
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -158,7 +158,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = ex.getMessage();
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -183,7 +183,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ex.printStackTrace();
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
@@ -193,11 +193,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         if (body == null) {
             body = Problem.builder().title(ex.getMessage()).status(statusCode.value())
-                    .dateTime(LocalDateTime.now())
+                    .dateTime(OffsetDateTime.now())
                     .userMessage(ex.getMessage()).build();
         } else if (body instanceof String) {
             body = Problem.builder().title(ex.getMessage()).status(statusCode.value())
-                    .dateTime(LocalDateTime.now())
+                    .dateTime(OffsetDateTime.now())
                     .userMessage(ex.getMessage()).build();
         }
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
@@ -232,7 +232,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         " Correct and inform the value compatible with type '%s'.",
                 ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -248,7 +248,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("The resource %s you tried to access does not exist",
                 ex.getRequestURL());
         Problem problem = createProblemBuilder((HttpStatus) status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -290,7 +290,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 }).collect(Collectors.toList());
 
         Problem problem = createProblemBuilder((HttpStatus) status, problemType, detail)
-                .dateTime(LocalDateTime.now())
+                .dateTime(OffsetDateTime.now())
                 .userMessage(detail)
                 .objects(problemObjects).build();
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);

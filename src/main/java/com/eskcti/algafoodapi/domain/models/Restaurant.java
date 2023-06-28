@@ -4,13 +4,10 @@ import com.eskcti.algafoodapi.core.validation.Groups;
 import com.eskcti.algafoodapi.core.validation.Multiple;
 import com.eskcti.algafoodapi.core.validation.ShippingFee;
 import com.eskcti.algafoodapi.core.validation.ValueZeroIncludesDescription;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 import lombok.Data;
@@ -19,7 +16,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,37 +45,30 @@ public class Restaurant {
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @Valid
     @NotNull
     @ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
-    @JsonIgnoreProperties("hibernateLazyInitializer")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
 
-    @JsonIgnore
     @Embedded
     private Address address;
 
-//    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")
     )
     private List<PaymentType> paymentTypes = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
-
 }

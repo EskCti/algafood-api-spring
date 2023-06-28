@@ -1,5 +1,9 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.RestaurantInputDisassembler;
+import com.eskcti.algafoodapi.api.assembliers.RestaurantModelAssemblier;
+import com.eskcti.algafoodapi.api.model.RestaurantModel;
+import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -12,11 +16,11 @@ import jakarta.validation.Valid;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +33,16 @@ import java.util.Map;
 @RequestMapping(value = "/restaurants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 public class RestaurantController {
     @Autowired
-    RestaurantService restaurantService;
+    private RestaurantService restaurantService;
 
     @Autowired
-    SmartValidator validator;
+    private RestaurantModelAssemblier modelAssemblier;
+
+    @Autowired
+    private RestaurantInputDisassembler inputDisassembler;
+
+    @Autowired
+    private SmartValidator validator;
 
     @GetMapping
     public List<Restaurant> list() {
@@ -40,26 +50,34 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public Restaurant find(@PathVariable Long id) {
-        return restaurantService.find(id);
+    public RestaurantModel find(@PathVariable Long id) {
+        Restaurant restaurant = restaurantService.find(id);
+
+        return modelAssemblier.toModel(restaurant);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant insert(@RequestBody @Valid Restaurant restaurant) {
+    public RestaurantModel insert(@RequestBody @Valid RestaurantInput restaurantInput) {
         try {
-            return restaurantService.save(restaurant);
+            Restaurant restaurant = inputDisassembler.toDomainObject(restaurantInput);
+
+            return modelAssemblier.toModel(restaurantService.save(restaurant));
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public Restaurant update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
-        Restaurant restaurantUpdated = restaurantService.find(id);
-        BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
+    public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
-            return restaurantService.save(restaurantUpdated);
+//            Restaurant restaurant = inputDisassembler.toDomainObject(restaurantInput);
+
+            Restaurant restaurantUpdated = restaurantService.find(id);
+
+            inputDisassembler.copyToDomainObject(restaurantInput, restaurantUpdated);
+//            BeanUtils.copyProperties(restaurant, restaurantUpdated, "id", "paymentTypes", "address", "createdAt");
+            return modelAssemblier.toModel(restaurantService.save(restaurantUpdated));
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage());
         }
@@ -72,7 +90,7 @@ public class RestaurantController {
     }
 
     @PatchMapping("/{restaurantId}")
-    public Restaurant updatePartial(
+    public RestaurantModel updatePartial(
             @PathVariable Long restaurantId,
             @RequestBody Map<String, Object> fields,
             HttpServletRequest request
@@ -82,10 +100,10 @@ public class RestaurantController {
         merge(fields, restaurant, request);
         validate(restaurant, "restaurant");
 
-        return update(restaurantId, restaurant);
+        return modelAssemblier.toModel(restaurantService.save(restaurant));
     }
 
-    private void validate(Restaurant restaurant, String objectName) {
+    public void validate(Restaurant restaurant, String objectName) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);
         validator.validate(restaurant, bindingResult);
 
@@ -94,7 +112,7 @@ public class RestaurantController {
         }
     }
 
-    private void merge(Map<String, Object> fieldsSource, Restaurant restaurantTarget, HttpServletRequest request) {
+    public void merge(Map<String, Object> fieldsSource, Restaurant restaurantTarget, HttpServletRequest request) {
         ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
         try {
             ObjectMapper objectMapper = new ObjectMapper();

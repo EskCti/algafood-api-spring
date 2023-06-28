@@ -103,6 +103,18 @@ public class RestaurantController {
         return modelAssemblier.toModel(restaurantService.save(restaurant));
     }
 
+    @PutMapping("/{restaurantId}/activate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void activate (@PathVariable Long restaurantId){
+        restaurantService.activate(restaurantId);
+    }
+
+    @DeleteMapping("/{restaurantId}/deactivate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivate (@PathVariable Long restaurantId){
+        restaurantService.deactivate(restaurantId);
+    }
+
     public void validate(Restaurant restaurant, String objectName) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);
         validator.validate(restaurant, bindingResult);

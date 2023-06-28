@@ -27,6 +27,7 @@ public class KitchenService {
         try {
             this.find(id);
             kitchenRepository.deleteById(id);
+            kitchenRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(KITCHEN_NOT_REMOVED_IN_USE, id));
         }

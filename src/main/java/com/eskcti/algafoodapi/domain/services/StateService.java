@@ -38,6 +38,7 @@ public class StateService {
         try {
             find(id);
             stateRepository.deleteById(id);
+            stateRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(STATE_NOT_REMOVED_IN_USE, id));
         }

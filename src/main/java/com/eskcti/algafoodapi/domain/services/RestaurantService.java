@@ -49,6 +49,7 @@ public class RestaurantService {
         try {
             find(id);
             restaurantRepository.deleteById(id);
+            restaurantRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(RESTAURANT_REMOVED_IN_USE, id));
         }

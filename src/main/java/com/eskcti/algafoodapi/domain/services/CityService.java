@@ -57,6 +57,7 @@ public class CityService {
         try {
             find(id);
             cityRepository.deleteById(id);
+            cityRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(String.format(NOT_REMOVED_IN_USE, id));
         }

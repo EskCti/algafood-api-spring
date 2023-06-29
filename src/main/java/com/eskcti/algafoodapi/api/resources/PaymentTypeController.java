@@ -50,4 +50,9 @@ public class PaymentTypeController {
         return modelAssemblier.toModel(paymentTypeService.save(paymentTypeUpdate));
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        paymentTypeService.remove(id);
+    }
 }

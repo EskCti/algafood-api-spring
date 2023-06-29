@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class PaymentTypeService {
     @Autowired
@@ -14,6 +16,10 @@ public class PaymentTypeService {
     @Transactional
     public PaymentType save(PaymentType paymentType) {
         return paymentTypeRepository.save(paymentType);
+    }
+
+    public List<PaymentType> list() {
+        return paymentTypeRepository.findAll();
     }
 
 

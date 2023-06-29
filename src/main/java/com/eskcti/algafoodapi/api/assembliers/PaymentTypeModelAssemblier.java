@@ -1,6 +1,8 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
+import com.eskcti.algafoodapi.api.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.api.model.StateModel;
+import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.models.State;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +12,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class StateModelAssemblier {
+public class PaymentTypeModelAssemblier {
     @Autowired
     private ModelMapper modelMapper;
-    public StateModel toModel(State state) {
-        return modelMapper.map(state, StateModel.class);
+    public PaymentTypeModel toModel(PaymentType paymentType) {
+        return modelMapper.map(paymentType, PaymentTypeModel.class);
     }
 
-    public List<StateModel> toCollectionModel(List<State> states) {
-        return states.stream()
-                .map(state -> toModel(state))
+    public List<PaymentTypeModel> toCollectionModel(List<PaymentType> paymentTypes) {
+        return paymentTypes.stream()
+                .map(paymentType -> toModel(paymentType))
                 .collect(Collectors.toList());
     }
 }

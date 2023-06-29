@@ -42,4 +42,12 @@ public class PaymentTypeController {
         PaymentType paymentType = inputDisassembler.toDomainObject(paymentTypeInput);
         return modelAssemblier.toModel(paymentTypeService.save(paymentType));
     }
+
+    @PutMapping("/{id}")
+    public PaymentTypeModel update(@PathVariable Long id, @RequestBody PaymentTypeInput paymentTypeInput) {
+        PaymentType paymentTypeUpdate = paymentTypeService.find(id);
+        inputDisassembler.copyToDomainObject(paymentTypeInput, paymentTypeUpdate);
+        return modelAssemblier.toModel(paymentTypeService.save(paymentTypeUpdate));
+    }
+
 }

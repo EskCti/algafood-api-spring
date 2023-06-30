@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.domain.services;
 
+import com.eskcti.algafoodapi.domain.exceptions.GroupNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.repositories.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,5 +15,11 @@ public class GroupService {
 
     public List<Group> list() {
         return groupRepository.findAll();
+    }
+
+    public Group find(Long id) {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new GroupNotFoundException(id));
+        return group;
     }
 }

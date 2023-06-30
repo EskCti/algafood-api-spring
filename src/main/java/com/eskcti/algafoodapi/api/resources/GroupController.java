@@ -1,15 +1,15 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.GroupInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.GroupModelAssemblier;
 import com.eskcti.algafoodapi.api.model.GroupModel;
+import com.eskcti.algafoodapi.api.model.input.GroupInput;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +22,9 @@ public class GroupController {
     @Autowired
     GroupModelAssemblier modelAssemblier;
 
+    @Autowired
+    GroupInputDisassembler inputDisassembler;
+
     @GetMapping
     public List<GroupModel> list() {
         return modelAssemblier.toCollectionModel(groupService.list());
@@ -30,5 +33,11 @@ public class GroupController {
     @GetMapping("/{id}")
     public GroupModel find(@PathVariable Long id) {
         return modelAssemblier.toModel(groupService.find(id));
+    }
+
+    @PostMapping
+    public GroupModel insert(@RequestBody @Valid GroupInput groupInput) {
+        Group group =  inputDisassembler.toDomainObject(groupInput);
+        return modelAssemblier.toModel(groupService.save(group));
     }
 }

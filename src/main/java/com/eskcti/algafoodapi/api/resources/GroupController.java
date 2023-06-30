@@ -1,5 +1,7 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.GroupModelAssemblier;
+import com.eskcti.algafoodapi.api.model.GroupModel;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,11 @@ public class GroupController {
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    GroupModelAssemblier modelAssemblier;
+
     @GetMapping
-    public List<Group> list() {
-        return groupService.list();
+    public List<GroupModel> list() {
+        return modelAssemblier.toCollectionModel(groupService.list());
     }
 }

@@ -40,4 +40,11 @@ public class GroupController {
         Group group =  inputDisassembler.toDomainObject(groupInput);
         return modelAssemblier.toModel(groupService.save(group));
     }
+
+    @PutMapping("/{id}")
+    public GroupModel update(@PathVariable Long id, @RequestBody @Valid GroupInput groupInput) {
+        Group groupUpdate = groupService.find(id);
+        inputDisassembler.copyToDomainObject(groupInput, groupUpdate);
+        return modelAssemblier.toModel(groupService.save(groupUpdate));
+    }
 }

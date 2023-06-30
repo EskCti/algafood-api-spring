@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.repositories.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,5 +22,10 @@ public class GroupService {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new GroupNotFoundException(id));
         return group;
+    }
+
+    @Transactional
+    public Group save(Group group) {
+        return groupRepository.save(group);
     }
 }

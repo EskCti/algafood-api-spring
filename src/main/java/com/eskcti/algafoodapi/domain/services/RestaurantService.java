@@ -1,10 +1,13 @@
 package com.eskcti.algafoodapi.domain.services;
 
+import com.eskcti.algafoodapi.domain.exceptions.CityNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.KitchenNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
+import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
+import com.eskcti.algafoodapi.domain.repositories.CityRepository;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,8 @@ public class RestaurantService {
     public static final String RESTAURANT_REMOVED_IN_USE = "Restaurant with id %d not removed in use ";
     @Autowired
     private KitchenRepository kitchenRepository;
+    @Autowired
+    private CityRepository cityRepository;
     @Autowired
     private RestaurantRepository restaurantRepository;
 
@@ -40,7 +45,19 @@ public class RestaurantService {
                 .orElseThrow(
                         () -> new KitchenNotFoundException(kitchenId)
                 );
+        if (restaurant.getKitchen() == null) {
+            throw new KitchenNotFoundException("Not found kitchen in request");
+        }
+        Long cityId = restaurant.getAddress().getCity().getId();
+        if (cityId == null) {
+            throw new CityNotFoundException("Not found city without id");
+        }
+        City city = cityRepository.findById(cityId)
+                .orElseThrow(
+                        () -> new CityNotFoundException(cityId)
+                );
         restaurant.setKitchen(kitchen);
+        restaurant.getAddress().setCity(city);
         return restaurantRepository.save(restaurant);
     }
 

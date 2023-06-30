@@ -54,3 +54,5 @@ INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id
 INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 3.03', 'Description product 03', 25, true, 3);
 INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.01', 'Description product 01', 15, true, 4);
 INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.02', 'Description product 02', 10, true, 4);
+
+INSERT INTO tab_groups (name) VALUES ("Administrador"), ("Cadastrador"), ("Secretária"), ("Escrituário")

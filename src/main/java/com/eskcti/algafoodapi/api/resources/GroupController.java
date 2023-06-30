@@ -7,6 +7,7 @@ import com.eskcti.algafoodapi.domain.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,5 +25,10 @@ public class GroupController {
     @GetMapping
     public List<GroupModel> list() {
         return modelAssemblier.toCollectionModel(groupService.list());
+    }
+
+    @GetMapping("/{id}")
+    public GroupModel find(@PathVariable Long id) {
+        return modelAssemblier.toModel(groupService.find(id));
     }
 }

@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.model.UserModel;
 import com.eskcti.algafoodapi.domain.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,5 +22,10 @@ public class UserController {
     @GetMapping
     public List<UserModel> list() {
         return modelAssemblier.toCollectionModel(userService.list());
+    }
+
+    @GetMapping("/{id}")
+    public UserModel find(@PathVariable Long id) {
+        return modelAssemblier.toModel(userService.find(id));
     }
 }

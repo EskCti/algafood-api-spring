@@ -7,6 +7,7 @@ DELETE FROM tab_cities;
 DELETE FROM tab_states;
 DELETE FROM tab_kitchens;
 DELETE FROM tab_groups;
+DELETE FROM tab_users;
 
 ALTER TABLE tab_kitchens AUTO_INCREMENT = 1;
 ALTER TABLE tab_states AUTO_INCREMENT = 1;
@@ -16,7 +17,7 @@ ALTER TABLE tab_payments_type AUTO_INCREMENT = 1;
 ALTER TABLE tab_permissions AUTO_INCREMENT = 1;
 ALTER TABLE tab_products AUTO_INCREMENT = 1;
 ALTER TABLE tab_groups AUTO_INCREMENT = 1;
-
+ALTER TABLE tab_users AUTO_INCREMENT = 1;
 
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (1, "Japonês");
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (2, "Indiana");
@@ -57,4 +58,8 @@ INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id
 INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.01', 'Description product 01', 15, true, 4);
 INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.02', 'Description product 02', 10, true, 4);
 
-INSERT IGNORE INTO tab_groups (name) VALUES ("Administrador"), ("Cadastrador"), ("Secretária"), ("Escrituário")
+INSERT IGNORE INTO tab_groups (name) VALUES ("Administrador"), ("Cadastrador"), ("Secretária"), ("Escrituário");
+
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Administrador', 'admin@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Contato', 'contato@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Edson S Kokado', 'edsonskokado@algafood.com.br', '123456', utc_timestamp, utc_timestamp);

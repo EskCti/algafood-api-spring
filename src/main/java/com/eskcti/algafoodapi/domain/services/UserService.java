@@ -28,4 +28,10 @@ public class UserService {
     public User save(User user) {
         return userRepository.save(user);
     }
+
+    @Transactional
+    public void delete(Long id) {
+        User user = find(id);
+        userRepository.delete(user);
+    }
 }

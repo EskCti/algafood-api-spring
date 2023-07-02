@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.assembliers.UserInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.UserModelAssemblier;
 import com.eskcti.algafoodapi.api.model.UserModel;
 import com.eskcti.algafoodapi.api.model.input.UserInput;
+import com.eskcti.algafoodapi.api.model.input.UserUpdate;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.UserService;
 import jakarta.validation.Valid;
@@ -38,5 +39,13 @@ public class UserController {
     public UserModel insert(@RequestBody @Valid UserInput userInput) {
         User user = inputDisassembler.toDomainObject(userInput);
         return modelAssemblier.toModel(userService.save(user));
+    }
+
+    @PutMapping("/{id}")
+    public UserModel update(@PathVariable Long id, @RequestBody @Valid UserUpdate userUpdate) {
+        User userActual = userService.find(id);
+        inputDisassembler.copyToDomainObject(userUpdate, userActual);
+
+        return modelAssemblier.toModel(userService.save(userActual));
     }
 }

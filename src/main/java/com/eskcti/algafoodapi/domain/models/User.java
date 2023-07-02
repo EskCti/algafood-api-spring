@@ -43,4 +43,12 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
     private OffsetDateTime updatedAt;
+
+    public boolean passwordMatchWith(String password) {
+        return getPassword().equals(password);
+    }
+
+    public boolean passwordNotMatchWith(String password) {
+        return !passwordMatchWith(password);
+    }
 }

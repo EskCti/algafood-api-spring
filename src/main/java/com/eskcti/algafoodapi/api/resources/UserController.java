@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.assembliers.UserModelAssemblier;
 import com.eskcti.algafoodapi.api.model.UserModel;
 import com.eskcti.algafoodapi.api.model.input.UserInput;
 import com.eskcti.algafoodapi.api.model.input.UserUpdate;
+import com.eskcti.algafoodapi.api.model.input.UserUpdatePassword;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.UserService;
 import jakarta.validation.Valid;
@@ -53,5 +54,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         userService.delete(id);
+    }
+
+    @PutMapping("/{id}/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updatePassword(@PathVariable Long id, @RequestBody @Valid UserUpdatePassword userUpdatePassword) {
+        userService.updatePassword(id, userUpdatePassword.getCurrentPassword(), userUpdatePassword.getNewPassword());
     }
 }

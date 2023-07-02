@@ -1,8 +1,6 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
-import com.eskcti.algafoodapi.api.model.GroupModel;
 import com.eskcti.algafoodapi.api.model.UserModel;
-import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.models.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

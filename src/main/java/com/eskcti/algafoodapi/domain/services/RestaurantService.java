@@ -107,6 +107,7 @@ public class RestaurantService {
 
         return productService.findByRestaurantIdAndId(restaurantId, productId);
     }
+
     public Restaurant find(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(id));

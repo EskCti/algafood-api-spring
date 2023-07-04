@@ -1,10 +1,10 @@
 package com.eskcti.algafoodapi.domain.services;
 
-import com.eskcti.algafoodapi.domain.exceptions.*;
-import com.eskcti.algafoodapi.domain.models.City;
-import com.eskcti.algafoodapi.domain.models.Kitchen;
-import com.eskcti.algafoodapi.domain.models.PaymentType;
-import com.eskcti.algafoodapi.domain.models.Restaurant;
+import com.eskcti.algafoodapi.domain.exceptions.CityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
+import com.eskcti.algafoodapi.domain.exceptions.KitchenNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
+import com.eskcti.algafoodapi.domain.models.*;
 import com.eskcti.algafoodapi.domain.repositories.CityRepository;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
@@ -28,6 +28,9 @@ public class RestaurantService {
 
     @Autowired
     private PaymentTypeService paymentTypeService;
+
+    @Autowired
+    private ProductService productService;
 
     public List<Restaurant> list() {
         return restaurantRepository.findAll();
@@ -98,6 +101,13 @@ public class RestaurantService {
 
         restaurant.associatePaymentType(paymentType);
     }
+    public Product findByRestaurantIdAndProductId(Long restaurantId, Long productId) {
+        Restaurant restaurant = find(restaurantId);
+        Product product = productService.find(productId);
+
+        return productService.findByRestaurantIdAndId(restaurantId, productId);
+    }
+
     public Restaurant find(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(id));

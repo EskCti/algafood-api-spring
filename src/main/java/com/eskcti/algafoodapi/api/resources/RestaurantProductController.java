@@ -1,7 +1,9 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.ProductInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.ProductModelAssemblier;
 import com.eskcti.algafoodapi.api.model.ProductModel;
+import com.eskcti.algafoodapi.api.model.input.ProductInput;
 import com.eskcti.algafoodapi.domain.models.Product;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.ProductService;
@@ -25,6 +27,9 @@ public class RestaurantProductController {
     @Autowired
     private ProductModelAssemblier modelAssemblier;
 
+    @Autowired
+    private ProductInputDisassembler inputDisassembler;
+
     @GetMapping
     public List<ProductModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
@@ -46,5 +51,15 @@ public class RestaurantProductController {
         productService.findByRestaurantIdAndId(restaurantId, productId);
 
         productService.remove(productId);
+    }
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductModel insert(@PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
+        Restaurant restaurant = restaurantService.find(restaurantId);
+
+        Product product = inputDisassembler.toDomainObject(productInput);
+        product.setRestaurant(restaurant);
+        return modelAssemblier.toModel(productService.save(product));
     }
 }

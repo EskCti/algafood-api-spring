@@ -18,7 +18,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ValueZeroIncludesDescription(
         valueField = "shippingFee",
@@ -70,7 +72,7 @@ public class Restaurant {
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")
     )
-    private List<PaymentType> paymentTypes = new ArrayList<>();
+    private Set<PaymentType> paymentTypes = new HashSet<>();
 
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
@@ -81,5 +83,13 @@ public class Restaurant {
 
     public void deactivate() {
         setActive(false);
+    }
+
+    public boolean disassociatePaymentType(PaymentType paymentType) {
+        return this.getPaymentTypes().remove(paymentType);
+    }
+
+    public boolean associatePaymentType(PaymentType paymentType) {
+        return this.getPaymentTypes().add(paymentType);
     }
 }

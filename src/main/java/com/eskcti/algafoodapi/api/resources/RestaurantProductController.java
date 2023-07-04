@@ -62,4 +62,13 @@ public class RestaurantProductController {
         product.setRestaurant(restaurant);
         return modelAssemblier.toModel(productService.save(product));
     }
+
+    @PutMapping("/{productId}")
+    public ProductModel update(@PathVariable Long restaurantId, @PathVariable Long productId, @RequestBody ProductInput productInput) {
+        Restaurant restaurant = restaurantService.find(restaurantId);
+        Product productUpdate = productService.findByRestaurantIdAndId(restaurantId, productId);
+
+        inputDisassembler.copyToDomainObject(productInput, productUpdate);
+        return modelAssemblier.toModel(productService.save(productUpdate));
+    }
 }

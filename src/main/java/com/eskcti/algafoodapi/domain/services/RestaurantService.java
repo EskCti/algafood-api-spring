@@ -91,6 +91,13 @@ public class RestaurantService {
 
         restaurant.disassociatePaymentType(paymentType);
     }
+    @Transactional
+    public void associatePaymentType(Long restaurantId, Long paymentTypeId) {
+        Restaurant restaurant = find(restaurantId);
+        PaymentType paymentType = paymentTypeService.find(paymentTypeId);
+
+        restaurant.associatePaymentType(paymentType);
+    }
     public Restaurant find(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(id));

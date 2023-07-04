@@ -32,4 +32,10 @@ public class RestaurantPaymentTypeController {
     public void disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {
         restaurantService.disassociatePaymentType(restaurantId, paymentTypeId);
     }
+
+    @PutMapping("/{paymentTypeId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void associate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {
+        restaurantService.associatePaymentType(restaurantId, paymentTypeId);
+    }
 }

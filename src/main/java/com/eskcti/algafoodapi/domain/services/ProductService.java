@@ -36,4 +36,9 @@ public class ProductService {
             throw new EntityInUseException(String.format(PRODUCT_REMOVED_IN_USE, id));
         }
     }
+
+    @Transactional
+    public Product save(Product product) {
+        return productRepository.save(product);
+    }
 }

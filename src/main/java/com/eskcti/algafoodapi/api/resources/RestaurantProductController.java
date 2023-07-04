@@ -2,7 +2,9 @@ package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.api.assembliers.ProductModelAssemblier;
 import com.eskcti.algafoodapi.api.model.ProductModel;
+import com.eskcti.algafoodapi.domain.models.Product;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
+import com.eskcti.algafoodapi.domain.services.ProductService;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,6 +22,9 @@ public class RestaurantProductController {
     private RestaurantService restaurantService;
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private ProductModelAssemblier modelAssemblier;
 
     @GetMapping
@@ -27,5 +32,12 @@ public class RestaurantProductController {
         Restaurant restaurant = restaurantService.find(restaurantId);
 
         return modelAssemblier.toCollectionModel(restaurant.getProducts());
+    }
+
+    @GetMapping("/{productId}")
+    public ProductModel find(@PathVariable Long restaurantId, @PathVariable Long productId) {
+        Product product = productService.findByRestaurantIdAndId(restaurantId, productId);
+
+        return modelAssemblier.toModel(product);
     }
 }

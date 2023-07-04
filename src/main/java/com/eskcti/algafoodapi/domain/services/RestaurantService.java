@@ -1,11 +1,9 @@
 package com.eskcti.algafoodapi.domain.services;
 
-import com.eskcti.algafoodapi.domain.exceptions.CityNotFoundException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
-import com.eskcti.algafoodapi.domain.exceptions.KitchenNotFoundException;
-import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.*;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
+import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.repositories.CityRepository;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
@@ -27,6 +25,9 @@ public class RestaurantService {
     private CityRepository cityRepository;
     @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private PaymentTypeService paymentTypeService;
 
     public List<Restaurant> list() {
         return restaurantRepository.findAll();
@@ -82,6 +83,13 @@ public class RestaurantService {
     public void deactivate(Long id) {
         Restaurant restaurant = find(id);
         restaurant.deactivate();
+    }
+    @Transactional
+    public void disassociatePaymentType(Long restaurantId, Long paymentTypeId) {
+        Restaurant restaurant = find(restaurantId);
+        PaymentType paymentType = paymentTypeService.find(paymentTypeId);
+
+        restaurant.disassociatePaymentType(paymentType);
     }
     public Restaurant find(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)

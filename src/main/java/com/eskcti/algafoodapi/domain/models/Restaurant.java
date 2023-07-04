@@ -82,4 +82,8 @@ public class Restaurant {
     public void deactivate() {
         setActive(false);
     }
+
+    public boolean disassociatePaymentType(PaymentType paymentType) {
+        return this.getPaymentTypes().remove(paymentType);
+    }
 }

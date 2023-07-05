@@ -35,4 +35,10 @@ public class GroupPermissionController {
     public void associate(@PathVariable Long groupId, @PathVariable Long permissionId) {
         groupService.associatePermission(groupId, permissionId);
     }
+
+    @DeleteMapping("/{permissionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disassociate(@PathVariable Long groupId, @PathVariable Long permissionId) {
+        groupService.disassociatePermission(groupId, permissionId);
+    }
 }

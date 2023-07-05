@@ -54,4 +54,12 @@ public class GroupService {
 
         group.associatePermission(permission);
     }
+
+    @Transactional
+    public void disassociatePermission(Long groupId, Long permissionId) {
+        Group group = find(groupId);
+        Permission permission = permissionService.find(permissionId);
+
+        group.disassociatePermission(permission);
+    }
 }

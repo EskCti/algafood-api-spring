@@ -87,6 +87,19 @@ public class RestaurantService {
         Restaurant restaurant = find(id);
         restaurant.deactivate();
     }
+
+    @Transactional
+    public void opening(Long id) {
+        Restaurant restaurant = find(id);
+        restaurant.opening();;
+    }
+
+    @Transactional
+    public void closing(Long id) {
+        Restaurant restaurant = find(id);
+        restaurant.closing();
+    }
+
     @Transactional
     public void disassociatePaymentType(Long restaurantId, Long paymentTypeId) {
         Restaurant restaurant = find(restaurantId);

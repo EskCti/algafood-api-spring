@@ -30,4 +30,8 @@ public class Group {
     public Boolean associatePermission(Permission permission) {
         return this.getPermissions().add(permission);
     }
+
+    public Boolean disassociatePermission(Permission permission) {
+        return this.getPermissions().remove(permission);
+    }
 }

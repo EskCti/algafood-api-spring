@@ -33,10 +33,10 @@ INSERT IGNORE INTO tab_cities (id, name, state_id) VALUES (3, "São Paulo", 2);
 INSERT IGNORE INTO tab_cities (id, name, state_id) VALUES (4, "Campinas", 2);
 INSERT IGNORE INTO tab_cities (id, name, state_id) VALUES (5, "Fortaleza", 3);
 
-INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, zip_code, public_place, number, complement, neighborhood, city_id, created_at, updated_at) VALUES ("Restaurant 1", 5, 1, "12345678", "logradouro tal", "123", "apto 25", "santana", 1, utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at) VALUES ("Restaurant 2", 10, 2, utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at) VALUES ("Restaurant 3", 0, 3, utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at) VALUES ("Restaurant 4", 0, 3, utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, zip_code, public_place, number, complement, neighborhood, city_id, created_at, updated_at, active, open) VALUES ("Restaurant 1", 5, 1, "12345678", "logradouro tal", "123", "apto 25", "santana", 1, utc_timestamp, utc_timestamp, true, false);
+INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at, active, open) VALUES ("Restaurant 2", 10, 2, utc_timestamp, utc_timestamp, true, false);
+INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at, active, open) VALUES ("Restaurant 3", 0, 3, utc_timestamp, utc_timestamp, true, false);
+INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at, active, open) VALUES ("Restaurant 4", 0, 3, utc_timestamp, utc_timestamp, true, false);
 
 INSERT IGNORE INTO tab_payments_type (id, description) VALUES (1, "Cartão de crédito");
 INSERT IGNORE INTO tab_payments_type (id, description) VALUES (2, "Cartão de débito");

@@ -50,6 +50,9 @@ public class Restaurant {
     @NotNull
     private Boolean active = Boolean.TRUE;
 
+    @NotNull
+    private Boolean open = Boolean.FALSE;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime")
     private OffsetDateTime createdAt;
@@ -83,6 +86,14 @@ public class Restaurant {
 
     public void deactivate() {
         setActive(false);
+    }
+
+    public void opening() {
+        setOpen(true);
+    }
+
+    public void closing() {
+        setOpen(false);
     }
 
     public boolean disassociatePaymentType(PaymentType paymentType) {

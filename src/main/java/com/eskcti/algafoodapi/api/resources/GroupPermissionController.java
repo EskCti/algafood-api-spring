@@ -4,11 +4,10 @@ import com.eskcti.algafoodapi.api.assembliers.PermissionModelAssemblier;
 import com.eskcti.algafoodapi.api.model.PermissionModel;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
+import com.eskcti.algafoodapi.domain.services.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,11 +19,20 @@ public class GroupPermissionController {
     private GroupService groupService;
 
     @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
     private PermissionModelAssemblier modelAssemblier;
 
     @GetMapping
     public List<PermissionModel> list(@PathVariable Long groupId) {
         Group group = groupService.find(groupId);
         return modelAssemblier.toCollectionModel(group.getPermissions());
+    }
+
+    @PutMapping("/{permissionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void associate(@PathVariable Long groupId, @PathVariable Long permissionId) {
+        groupService.associatePermission(groupId, permissionId);
     }
 }

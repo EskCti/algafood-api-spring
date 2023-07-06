@@ -67,4 +67,12 @@ public class UserService {
 
         user.associateGroup(group);
     }
+
+    @Transactional
+    public void disassociateGroup(Long userId, Long groupId) {
+        User user = find(userId);
+        Group group = groupService.find(groupId);
+
+        user.disassociateGroup(group);
+    }
 }

@@ -1,5 +1,6 @@
 DELETE FROM tab_restaurants_payments_types;
 DELETE FROM tab_groups_permissions;
+DELETE FROM tab_users_groups;
 DELETE FROM tab_products;
 DELETE FROM tab_payments_type;
 DELETE FROM tab_permissions;
@@ -66,3 +67,5 @@ INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id) VALUES (1, 1
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Administrador', 'admin@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Contato', 'contato@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Edson S Kokado', 'edsonskokado@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
+
+INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 1), (2, 2), (2, 3), (2, 4);

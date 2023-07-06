@@ -2,6 +2,7 @@ package com.eskcti.algafoodapi.domain.services;
 
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.UserNotFoundException;
+import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GroupService groupService;
 
     public List<User> list() {
         return userRepository.findAll();
@@ -54,5 +58,21 @@ public class UserService {
         }
         user.setPassword(newPassword);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public void associateGroup(Long userId, Long groupId) {
+        User user = find(userId);
+        Group group = groupService.find(groupId);
+
+        user.associateGroup(group);
+    }
+
+    @Transactional
+    public void disassociateGroup(Long userId, Long groupId) {
+        User user = find(userId);
+        Group group = groupService.find(groupId);
+
+        user.disassociateGroup(group);
     }
 }

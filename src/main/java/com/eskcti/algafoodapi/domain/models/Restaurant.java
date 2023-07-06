@@ -80,6 +80,14 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "tab_restaurants_responsible",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> responsible = new HashSet<>();
+
+
     public void activate() {
         setActive(true);
     }
@@ -102,5 +110,13 @@ public class Restaurant {
 
     public boolean associatePaymentType(PaymentType paymentType) {
         return this.getPaymentTypes().add(paymentType);
+    }
+
+    public Boolean associateResponsible(User responsible) {
+        return this.getResponsible().add(responsible);
+    }
+
+    public Boolean disassociateResponsible(User responsible) {
+        return this.getResponsible().remove(responsible);
     }
 }

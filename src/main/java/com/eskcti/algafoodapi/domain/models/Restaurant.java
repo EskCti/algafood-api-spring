@@ -111,4 +111,8 @@ public class Restaurant {
     public boolean associatePaymentType(PaymentType paymentType) {
         return this.getPaymentTypes().add(paymentType);
     }
+
+    public Boolean associateResponsible(User responsible) {
+        return this.getResponsible().add(responsible);
+    }
 }

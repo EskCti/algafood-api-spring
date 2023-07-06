@@ -56,4 +56,8 @@ public class User {
     public Boolean associateGroup(Group group) {
         return this.getGroups().add(group);
     }
+
+    public Boolean disassociateGroup(Group group) {
+        return this.getGroups().remove(group);
+    }
 }

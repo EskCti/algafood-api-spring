@@ -34,4 +34,10 @@ public class UserGroupController {
     public void associate(@PathVariable Long userId, @PathVariable Long groupId) {
         userService.associateGroup(userId, groupId);
     }
+
+    @DeleteMapping("/{groupId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disassociate(@PathVariable Long userId, @PathVariable Long groupId) {
+        userService.disassociateGroup(userId, groupId);
+    }
 }

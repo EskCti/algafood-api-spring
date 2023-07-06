@@ -30,4 +30,10 @@ public class RestaurantResponsibleController {
     public void associate(@PathVariable Long restaurantId, @PathVariable Long userId) {
         restaurantService.associateResponsible(restaurantId, userId);
     }
+
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disassociate(@PathVariable Long restaurantId, @PathVariable Long userId) {
+        restaurantService.disassociateResponsible(restaurantId, userId);
+    }
 }

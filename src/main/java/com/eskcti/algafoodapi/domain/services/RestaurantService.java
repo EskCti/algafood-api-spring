@@ -137,4 +137,12 @@ public class RestaurantService {
 
         restaurant.associateResponsible(responsible);
     }
+
+    @Transactional
+    public void disassociateResponsible(Long restaurantId, Long userId) {
+        Restaurant restaurant = find(restaurantId);
+        User responsible = userService.find(userId);
+
+        restaurant.disassociateResponsible(responsible);
+    }
 }

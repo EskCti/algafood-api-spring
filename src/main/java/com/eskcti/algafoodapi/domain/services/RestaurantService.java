@@ -32,6 +32,9 @@ public class RestaurantService {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private UserService userService;
+
     public List<Restaurant> list() {
         return restaurantRepository.findAll();
     }
@@ -125,5 +128,13 @@ public class RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(id));
         return restaurant;
+    }
+
+    @Transactional
+    public void associateResponsible(Long restaurantId, Long userId) {
+        Restaurant restaurant = find(restaurantId);
+        User responsible = userService.find(userId);
+
+        restaurant.associateResponsible(responsible);
     }
 }

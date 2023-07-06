@@ -115,4 +115,8 @@ public class Restaurant {
     public Boolean associateResponsible(User responsible) {
         return this.getResponsible().add(responsible);
     }
+
+    public Boolean disassociateResponsible(User responsible) {
+        return this.getResponsible().remove(responsible);
+    }
 }

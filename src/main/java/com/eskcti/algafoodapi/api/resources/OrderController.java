@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -22,5 +24,10 @@ public class OrderController {
     @GetMapping("/{id}")
     public OrderModel find(@PathVariable Long id) {
         return modelAssemblier.toModel(orderService.find(id));
+    }
+
+    @GetMapping
+    public List<OrderModel> list() {
+        return modelAssemblier.toCollectionModel(orderService.list());
     }
 }

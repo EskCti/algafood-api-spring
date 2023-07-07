@@ -43,6 +43,7 @@ public class Order {
     private OffsetDateTime deliveryDate;
 
     @Column(name = "order_status", length = 15)
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.CREATED;
 
     @ManyToOne

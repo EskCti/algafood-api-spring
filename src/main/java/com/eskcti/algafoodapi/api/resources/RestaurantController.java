@@ -7,11 +7,13 @@ import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
@@ -45,8 +47,8 @@ public class RestaurantController {
     private SmartValidator validator;
 
     @GetMapping
-    public List<Restaurant> list() {
-        return restaurantService.list();
+    public List<RestaurantModel> list() {
+        return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
     @GetMapping("/{id}")
@@ -113,6 +115,30 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deactivate (@PathVariable Long restaurantId){
         restaurantService.deactivate(restaurantId);
+    }
+
+    @PutMapping("/activate-multiples")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void activateMultiples(@RequestBody List<Long> restaurantsIds) {
+        try {
+            restaurantService.activate(restaurantsIds);
+        } catch (ConstraintViolationException e) {
+            throw new BusinessException(e.getMessage(), e);
+        } catch (RestaurantNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
+    }
+
+    @PutMapping("/deactivate-multiples")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivateMultiples(@RequestBody List<Long> restaurantsIds) {
+        try {
+            restaurantService.deactivate(restaurantsIds);
+        } catch (ConstraintViolationException e) {
+            throw new BusinessException(e.getMessage(), e);
+        } catch (RestaurantNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{restaurantId}/opening")

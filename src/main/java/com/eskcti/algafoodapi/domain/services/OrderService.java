@@ -17,4 +17,8 @@ public class OrderService {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
     }
+
+    public List<Order> list() {
+        return orderRepository.findAll();
+    }
 }

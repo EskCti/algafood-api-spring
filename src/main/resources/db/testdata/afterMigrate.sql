@@ -2,6 +2,8 @@ DELETE FROM tab_restaurants_responsible;
 DELETE FROM tab_restaurants_payments_types;
 DELETE FROM tab_groups_permissions;
 DELETE FROM tab_users_groups;
+DELETE FROM tab_orders_items;
+DELETE FROM tab_orders;
 DELETE FROM tab_products;
 DELETE FROM tab_payments_type;
 DELETE FROM tab_permissions;
@@ -21,6 +23,9 @@ ALTER TABLE tab_permissions AUTO_INCREMENT = 1;
 ALTER TABLE tab_products AUTO_INCREMENT = 1;
 ALTER TABLE tab_groups AUTO_INCREMENT = 1;
 ALTER TABLE tab_users AUTO_INCREMENT = 1;
+ALTER TABLE tab_orders_items AUTO_INCREMENT = 1;
+ALTER TABLE tab_orders AUTO_INCREMENT = 1;
+
 
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (1, "Japonês");
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (2, "Indiana");
@@ -71,4 +76,28 @@ INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VAL
 
 INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 1), (2, 2), (2, 3), (2, 4);
 
-INSERT IGNORE INTO tab_restaurants_responsible (restaurant_id, user_id) VALUES (1,1), (2,2), (3,3)
+INSERT IGNORE INTO tab_restaurants_responsible (restaurant_id, user_id) VALUES (1,1), (2,2), (3,3);
+
+INSERT INTO tab_orders
+(complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
+VALUES('Apto x', 'Bairro Tal', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 110, 1, 1, 1, 1, 1);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal', 40, 40, 1, 1, 1);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal x', 60, 60, 1, 1, 2);
+
+INSERT INTO tab_orders
+(complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
+VALUES('Apto y', 'Bairro Tal y', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 100, 2, 2, 2, 2, 2);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal y', 40, 40, 1, 2, 3);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal y', 60, 60, 1, 2, 4);

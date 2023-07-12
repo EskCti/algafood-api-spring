@@ -63,4 +63,14 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> items = new ArrayList<>();
+
+    public void calculateValueTotal() {
+        getItems().forEach(OrderItem::calculatePriceTotal);
+
+        this.subtotal = getItems().stream()
+                .map(item -> item.getPriceTotal())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        this.valueTotal = this.subtotal.add(this.shippingFee);
+    }
 }

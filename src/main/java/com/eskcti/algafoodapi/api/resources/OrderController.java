@@ -1,15 +1,21 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.assembliers.OrderInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.OrderModelAssemblier;
 import com.eskcti.algafoodapi.api.assembliers.OrderSummaryModelAssemblier;
 import com.eskcti.algafoodapi.api.model.OrderModel;
 import com.eskcti.algafoodapi.api.model.OrderSummaryModel;
+import com.eskcti.algafoodapi.api.model.input.OrderInput;
+import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
+import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.models.Order;
+import com.eskcti.algafoodapi.domain.models.User;
+import com.eskcti.algafoodapi.domain.services.IssuanceOrderService;
 import com.eskcti.algafoodapi.domain.services.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,6 +31,12 @@ public class OrderController {
     @Autowired
     private OrderSummaryModelAssemblier modelSummaryAssemblier;
 
+    @Autowired
+    private OrderInputDisassembler inputDisassembler;
+
+    @Autowired
+    private IssuanceOrderService issuanceOrderService;
+
     @GetMapping("/{id}")
     public OrderModel find(@PathVariable Long id) {
         return modelAssemblier.toModel(orderService.find(id));
@@ -33,5 +45,21 @@ public class OrderController {
     @GetMapping
     public List<OrderSummaryModel> list() {
         return modelSummaryAssemblier.toCollectionModel(orderService.list());
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderModel add(@Valid @RequestBody OrderInput orderInput) {
+        try {
+            Order newOrder = inputDisassembler.toDomainObject(orderInput);
+            newOrder.setCustomer(new User());
+            newOrder.getCustomer().setId(1L);
+
+            newOrder = issuanceOrderService.issuance(newOrder);
+
+            return modelAssemblier.toModel(newOrder);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 }

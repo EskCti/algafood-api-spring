@@ -119,4 +119,11 @@ public class Restaurant {
     public Boolean disassociateResponsible(User responsible) {
         return this.getResponsible().remove(responsible);
     }
+
+    public boolean acceptPaymentType(PaymentType paymentType) {
+        return getPaymentTypes().contains(paymentType);
+    }
+    public boolean doesNotAcceptPaymentType(PaymentType paymentType) {
+        return !acceptPaymentType(paymentType);
+    }
 }

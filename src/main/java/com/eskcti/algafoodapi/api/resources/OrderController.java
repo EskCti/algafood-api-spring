@@ -1,7 +1,9 @@
 package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.api.assembliers.OrderModelAssemblier;
+import com.eskcti.algafoodapi.api.assembliers.OrderSummaryModelAssemblier;
 import com.eskcti.algafoodapi.api.model.OrderModel;
+import com.eskcti.algafoodapi.api.model.OrderSummaryModel;
 import com.eskcti.algafoodapi.domain.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,8 @@ public class OrderController {
 
     @Autowired
     private OrderModelAssemblier modelAssemblier;
+    @Autowired
+    private OrderSummaryModelAssemblier modelSummaryAssemblier;
 
     @GetMapping("/{id}")
     public OrderModel find(@PathVariable Long id) {
@@ -27,7 +31,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderModel> list() {
-        return modelAssemblier.toCollectionModel(orderService.list());
+    public List<OrderSummaryModel> list() {
+        return modelSummaryAssemblier.toCollectionModel(orderService.list());
     }
 }

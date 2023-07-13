@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderModel {
-    private Long id;
+    private String code;
     private BigDecimal subtotal;
     private BigDecimal shippingFee;
     private BigDecimal valueTotal;

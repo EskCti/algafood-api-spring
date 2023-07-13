@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tab_orders")
@@ -20,6 +21,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String code;
 
     @Column(nullable = false)
     private BigDecimal subtotal;
@@ -93,8 +96,8 @@ public class Order {
     private void setStatus(OrderStatus newStatus) {
         if (getOrderStatus().cannotChangeTo(newStatus)) {
             throw new BusinessException(
-                    String.format("Order status %d cannot be changed from %s to %s",
-                            getId(),
+                    String.format("Order status %s cannot be changed from %s to %s",
+                            getCode(),
                             getOrderStatus().getDescription(),
                             OrderStatus.CANCELED.getDescription()
                     )
@@ -102,5 +105,10 @@ public class Order {
         }
 
         this.orderStatus = newStatus;
+    }
+
+    @PrePersist
+    private void generateCode() {
+        setCode(UUID.randomUUID().toString());
     }
 }

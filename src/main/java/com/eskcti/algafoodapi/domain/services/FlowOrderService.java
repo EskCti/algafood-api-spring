@@ -15,19 +15,19 @@ public class FlowOrderService {
     private IssuanceOrderService issuanceOrderService;
 
     @Transactional
-    public void confirm(Long orderId) {
-        Order order = issuanceOrderService.findById(orderId);
+    public void confirm(String orderCode) {
+        Order order = issuanceOrderService.findByCode(orderCode);
         order.confirm();
     }
 
     @Transactional
-    public void delivery(Long orderId) {
-        Order order = issuanceOrderService.findById(orderId);
+    public void delivery(String orderCode) {
+        Order order = issuanceOrderService.findByCode(orderCode);
         order.delivery();
     }
     @Transactional
-    public void cancel(Long orderId) {
-        Order order = issuanceOrderService.findById(orderId);
+    public void cancel(String orderCode) {
+        Order order = issuanceOrderService.findByCode(orderCode);
         order.cancel();
     }
 }

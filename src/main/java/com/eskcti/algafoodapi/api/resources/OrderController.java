@@ -37,9 +37,9 @@ public class OrderController {
     @Autowired
     private IssuanceOrderService issuanceOrderService;
 
-    @GetMapping("/{id}")
-    public OrderModel find(@PathVariable Long id) {
-        return modelAssemblier.toModel(orderService.find(id));
+    @GetMapping("/{orderCode}")
+    public OrderModel find(@PathVariable String orderCode) {
+        return modelAssemblier.toModel(orderService.find(orderCode));
     }
 
     @GetMapping

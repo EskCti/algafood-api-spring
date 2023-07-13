@@ -79,8 +79,8 @@ INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 1), (
 INSERT IGNORE INTO tab_restaurants_responsible (restaurant_id, user_id) VALUES (1,1), (2,2), (3,3);
 
 INSERT INTO tab_orders
-(complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
-VALUES('Apto x', 'Bairro Tal', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 110, 1, 1, 1, 1, 1);
+(code, complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
+VALUES(uuid(), 'Apto x', 'Bairro Tal', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 110, 1, 1, 1, 1, 1);
 
 INSERT INTO tab_orders_items
 (observation, price_total, price_unit, quantity, order_id, product_id)
@@ -91,8 +91,8 @@ INSERT INTO tab_orders_items
 VALUES('Tal x', 60, 60, 1, 1, 2);
 
 INSERT INTO tab_orders
-(complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
-VALUES('Apto y', 'Bairro Tal y', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 100, 2, 2, 2, 2, 2);
+(code, complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
+VALUES(uuid(), 'Apto y', 'Bairro Tal y', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 100, 2, 2, 2, 2, 2);
 
 INSERT INTO tab_orders_items
 (observation, price_total, price_unit, quantity, order_id, product_id)

@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tab_groups")
@@ -24,5 +25,13 @@ public class Group {
         joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private List<Permission> permissions;
+    private Set<Permission> permissions = new HashSet<>();
+
+    public Boolean associatePermission(Permission permission) {
+        return this.getPermissions().add(permission);
+    }
+
+    public Boolean disassociatePermission(Permission permission) {
+        return this.getPermissions().remove(permission);
+    }
 }

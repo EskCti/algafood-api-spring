@@ -29,4 +29,8 @@ public class RestaurantInput {
     @NotNull
 //    @ConvertGroup(from = Default.class, to = Groups.KitchenId.class)
     private KitchenIdInput kitchen;
+
+    @Valid
+    @NotNull
+    private AddressInput address;
 }

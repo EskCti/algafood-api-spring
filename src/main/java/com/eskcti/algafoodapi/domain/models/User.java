@@ -7,7 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tab_users")
@@ -22,6 +23,9 @@ public class User {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(nullable = false, length = 250)
+    private String email;
+
     @Column(nullable = false, length = 40)
     private String password;
 
@@ -31,7 +35,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
 
-    private List<Group> groups;
+    private Set<Group> groups = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime")
@@ -40,4 +44,20 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
     private OffsetDateTime updatedAt;
+
+    public boolean passwordMatchWith(String password) {
+        return getPassword().equals(password);
+    }
+
+    public boolean passwordNotMatchWith(String password) {
+        return !passwordMatchWith(password);
+    }
+
+    public Boolean associateGroup(Group group) {
+        return this.getGroups().add(group);
+    }
+
+    public Boolean disassociateGroup(Group group) {
+        return this.getGroups().remove(group);
+    }
 }

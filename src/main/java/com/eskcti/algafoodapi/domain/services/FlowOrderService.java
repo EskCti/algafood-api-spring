@@ -49,4 +49,21 @@ public class FlowOrderService {
         order.setOrderStatus(OrderStatus.DELIVERED);
         order.setConfirmationDate(OffsetDateTime.now());
     }
+    @Transactional
+    public void cancel(Long orderId) {
+        Order order = issuanceOrderService.findById(orderId);
+
+        if (!order.getOrderStatus().equals(OrderStatus.CREATED)) {
+            throw new BusinessException(
+                    String.format("Order status %d cannot be changed from %s to %s",
+                            order.getId(),
+                            order.getOrderStatus().getDescription(),
+                            OrderStatus.CANCELED.getDescription()
+                    )
+            );
+        }
+
+        order.setOrderStatus(OrderStatus.CANCELED);
+        order.setConfirmationDate(OffsetDateTime.now());
+    }
 }

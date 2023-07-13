@@ -38,9 +38,9 @@ public class IssuanceOrderService {
         return orderRepository.save(order);
     }
 
-    public Order findById(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException(orderId));
+    public Order findByCode(String orderCode) {
+        return orderRepository.findByCode(orderCode)
+                .orElseThrow(() -> new OrderNotFoundException(orderCode));
     }
 
     private void validateOrder(Order order) {

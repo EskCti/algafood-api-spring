@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.domain.models;
 
+import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -72,5 +73,34 @@ public class Order {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valueTotal = this.subtotal.add(this.shippingFee);
+    }
+
+    public void confirm() {
+        setOrderStatus(OrderStatus.CONFIRMED);
+        setConfirmationDate(OffsetDateTime.now());
+    }
+
+    public void delivery() {
+        setOrderStatus(OrderStatus.DELIVERED);
+        setDeliveryDate(OffsetDateTime.now());
+    }
+
+    public void cancel() {
+        setOrderStatus(OrderStatus.CANCELED);
+        setCancellationDate(OffsetDateTime.now());
+    }
+
+    private void setStatus(OrderStatus newStatus) {
+        if (getOrderStatus().cannotChangeTo(newStatus)) {
+            throw new BusinessException(
+                    String.format("Order status %d cannot be changed from %s to %s",
+                            getId(),
+                            getOrderStatus().getDescription(),
+                            OrderStatus.CANCELED.getDescription()
+                    )
+            );
+        }
+
+        this.orderStatus = newStatus;
     }
 }

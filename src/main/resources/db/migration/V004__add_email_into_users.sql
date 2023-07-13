@@ -1,0 +1,1 @@
+ALTER TABLE tab_users ADD email varchar(250) not null;

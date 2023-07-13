@@ -7,14 +7,15 @@ import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
+import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,8 +46,8 @@ public class RestaurantController {
     private SmartValidator validator;
 
     @GetMapping
-    public List<Restaurant> list() {
-        return restaurantService.list();
+    public List<RestaurantModel> list() {
+        return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
     @GetMapping("/{id}")
@@ -102,6 +103,50 @@ public class RestaurantController {
 
         return modelAssemblier.toModel(restaurantService.save(restaurant));
     }
+
+    @PutMapping("/{restaurantId}/activate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void activate (@PathVariable Long restaurantId){
+        restaurantService.activate(restaurantId);
+    }
+
+    @DeleteMapping("/{restaurantId}/deactivate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivate (@PathVariable Long restaurantId){
+        restaurantService.deactivate(restaurantId);
+    }
+
+    @PutMapping("/activate-multiples")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void activateMultiples(@RequestBody List<Long> restaurantsIds) {
+        try {
+            restaurantService.activate(restaurantsIds);
+        } catch (ConstraintViolationException e) {
+            throw new BusinessException(e.getMessage(), e);
+        } catch (RestaurantNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
+    }
+
+    @PutMapping("/deactivate-multiples")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivateMultiples(@RequestBody List<Long> restaurantsIds) {
+        try {
+            restaurantService.deactivate(restaurantsIds);
+        } catch (ConstraintViolationException e) {
+            throw new BusinessException(e.getMessage(), e);
+        } catch (RestaurantNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
+    }
+
+    @PutMapping("/{restaurantId}/opening")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void opening (@PathVariable Long restaurantId) { restaurantService.opening(restaurantId); }
+
+    @PutMapping("/{restaurantId}/closing")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void closing (@PathVariable Long restaurantId) { restaurantService.closing(restaurantId); }
 
     public void validate(Restaurant restaurant, String objectName) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);

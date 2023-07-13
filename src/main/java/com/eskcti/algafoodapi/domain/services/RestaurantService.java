@@ -1,10 +1,11 @@
 package com.eskcti.algafoodapi.domain.services;
 
+import com.eskcti.algafoodapi.domain.exceptions.CityNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.KitchenNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
-import com.eskcti.algafoodapi.domain.models.Kitchen;
-import com.eskcti.algafoodapi.domain.models.Restaurant;
+import com.eskcti.algafoodapi.domain.models.*;
+import com.eskcti.algafoodapi.domain.repositories.CityRepository;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,18 @@ public class RestaurantService {
     @Autowired
     private KitchenRepository kitchenRepository;
     @Autowired
+    private CityRepository cityRepository;
+    @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private PaymentTypeService paymentTypeService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private UserService userService;
 
     public List<Restaurant> list() {
         return restaurantRepository.findAll();
@@ -40,7 +52,19 @@ public class RestaurantService {
                 .orElseThrow(
                         () -> new KitchenNotFoundException(kitchenId)
                 );
+        if (restaurant.getKitchen() == null) {
+            throw new KitchenNotFoundException("Not found kitchen in request");
+        }
+        Long cityId = restaurant.getAddress().getCity().getId();
+        if (cityId == null) {
+            throw new CityNotFoundException("Not found city without id");
+        }
+        City city = cityRepository.findById(cityId)
+                .orElseThrow(
+                        () -> new CityNotFoundException(cityId)
+                );
         restaurant.setKitchen(kitchen);
+        restaurant.getAddress().setCity(city);
         return restaurantRepository.save(restaurant);
     }
 
@@ -55,9 +79,80 @@ public class RestaurantService {
         }
     }
 
+    @Transactional
+    public void activate(Long id) {
+       Restaurant restaurant = find(id);
+       restaurant.activate();
+    }
+
+    @Transactional
+    public void deactivate(Long id) {
+        Restaurant restaurant = find(id);
+        restaurant.deactivate();
+    }
+
+    @Transactional
+    public void activate(List<Long> restaurantIds) {
+        restaurantIds.forEach(this::activate);
+    }
+
+    @Transactional
+    public void deactivate(List<Long> restaurantIds) {
+        restaurantIds.forEach(this::deactivate);
+    }
+
+    @Transactional
+    public void opening(Long id) {
+        Restaurant restaurant = find(id);
+        restaurant.opening();;
+    }
+
+    @Transactional
+    public void closing(Long id) {
+        Restaurant restaurant = find(id);
+        restaurant.closing();
+    }
+
+    @Transactional
+    public void disassociatePaymentType(Long restaurantId, Long paymentTypeId) {
+        Restaurant restaurant = find(restaurantId);
+        PaymentType paymentType = paymentTypeService.find(paymentTypeId);
+
+        restaurant.disassociatePaymentType(paymentType);
+    }
+    @Transactional
+    public void associatePaymentType(Long restaurantId, Long paymentTypeId) {
+        Restaurant restaurant = find(restaurantId);
+        PaymentType paymentType = paymentTypeService.find(paymentTypeId);
+
+        restaurant.associatePaymentType(paymentType);
+    }
+    public Product findByRestaurantIdAndProductId(Long restaurantId, Long productId) {
+        Restaurant restaurant = find(restaurantId);
+        Product product = productService.find(productId);
+
+        return productService.findByRestaurantIdAndId(restaurantId, productId);
+    }
+
     public Restaurant find(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(id));
         return restaurant;
+    }
+
+    @Transactional
+    public void associateResponsible(Long restaurantId, Long userId) {
+        Restaurant restaurant = find(restaurantId);
+        User responsible = userService.find(userId);
+
+        restaurant.associateResponsible(responsible);
+    }
+
+    @Transactional
+    public void disassociateResponsible(Long restaurantId, Long userId) {
+        Restaurant restaurant = find(restaurantId);
+        User responsible = userService.find(userId);
+
+        restaurant.disassociateResponsible(responsible);
     }
 }

@@ -1,9 +1,9 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
-import com.eskcti.algafoodapi.api.model.KitchenModel;
 import com.eskcti.algafoodapi.api.model.StateModel;
-import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.models.State;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,12 +11,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class StateModelAssemblier {
+    @Autowired
+    private ModelMapper modelMapper;
     public StateModel toModel(State state) {
-        StateModel stateModel = new StateModel();
-        stateModel.setId(state.getId());
-        stateModel.setName(state.getName());
-
-        return stateModel;
+        return modelMapper.map(state, StateModel.class);
     }
 
     public List<StateModel> toCollectionModel(List<State> states) {

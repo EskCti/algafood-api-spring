@@ -18,7 +18,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ValueZeroIncludesDescription(
         valueField = "shippingFee",
@@ -45,6 +47,12 @@ public class Restaurant {
     @Column(name = "shipping_fee", nullable = false)
     private BigDecimal shippingFee;
 
+    @NotNull
+    private Boolean active = Boolean.TRUE;
+
+    @NotNull
+    private Boolean open = Boolean.FALSE;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime")
     private OffsetDateTime createdAt;
@@ -67,8 +75,55 @@ public class Restaurant {
     @JoinTable(name = "tab_restaurants_payments_types",
         joinColumns = @JoinColumn(name = "restaurant_id"), inverseJoinColumns = @JoinColumn(name = "payment_type_id")
     )
-    private List<PaymentType> paymentTypes = new ArrayList<>();
+    private Set<PaymentType> paymentTypes = new HashSet<>();
 
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "tab_restaurants_responsible",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> responsible = new HashSet<>();
+
+
+    public void activate() {
+        setActive(true);
+    }
+
+    public void deactivate() {
+        setActive(false);
+    }
+
+    public void opening() {
+        setOpen(true);
+    }
+
+    public void closing() {
+        setOpen(false);
+    }
+
+    public boolean disassociatePaymentType(PaymentType paymentType) {
+        return this.getPaymentTypes().remove(paymentType);
+    }
+
+    public boolean associatePaymentType(PaymentType paymentType) {
+        return this.getPaymentTypes().add(paymentType);
+    }
+
+    public Boolean associateResponsible(User responsible) {
+        return this.getResponsible().add(responsible);
+    }
+
+    public Boolean disassociateResponsible(User responsible) {
+        return this.getResponsible().remove(responsible);
+    }
+
+    public boolean acceptPaymentType(PaymentType paymentType) {
+        return getPaymentTypes().contains(paymentType);
+    }
+    public boolean doesNotAcceptPaymentType(PaymentType paymentType) {
+        return !acceptPaymentType(paymentType);
+    }
 }

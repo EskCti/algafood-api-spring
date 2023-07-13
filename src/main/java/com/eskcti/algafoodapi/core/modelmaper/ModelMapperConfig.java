@@ -1,5 +1,9 @@
 package com.eskcti.algafoodapi.core.modelmaper;
 
+import com.eskcti.algafoodapi.api.model.AddressModel;
+import com.eskcti.algafoodapi.api.model.RestaurantModel;
+import com.eskcti.algafoodapi.domain.models.Address;
+import com.eskcti.algafoodapi.domain.models.Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +12,18 @@ import org.springframework.context.annotation.Configuration;
 public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        var modelMapper = new ModelMapper();
+//        modelMapper().createTypeMap(Restaurant.class, RestaurantModel.class)
+//                .addMapping(Restaurant::getShippingFee, RestaurantModel::setShippingFee);
+
+        var addressToAddressModelTypeMap = modelMapper.createTypeMap(
+                Address.class, AddressModel.class
+        );
+
+        addressToAddressModelTypeMap.<String>addMapping(
+                addressSrc -> addressSrc.getCity().getState().getName(),
+                ((addressModelTarget, value) -> addressModelTarget.getCity().setState(value)));
+
+        return modelMapper;
     }
 }

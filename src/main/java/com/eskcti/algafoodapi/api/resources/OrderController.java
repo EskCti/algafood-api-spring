@@ -12,9 +12,13 @@ import com.eskcti.algafoodapi.domain.models.Order;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.IssuanceOrderService;
 import com.eskcti.algafoodapi.domain.services.OrderService;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +44,24 @@ public class OrderController {
     @GetMapping("/{orderCode}")
     public OrderModel find(@PathVariable String orderCode) {
         return modelAssemblier.toModel(orderService.find(orderCode));
+    }
+
+    @GetMapping("/filter")
+    public MappingJacksonValue listFilter(@RequestParam(required = false) String fields) {
+        List<Order> orders = orderService.list();
+        List<OrderModel> orderModels = modelAssemblier.toCollectionModel(orders);
+
+        MappingJacksonValue ordersWrapper = new MappingJacksonValue(orderModels);
+
+        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+        filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.serializeAll());
+
+        if (StringUtils.hasLength(fields)) {
+            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields.split(",")));
+        }
+
+        ordersWrapper.setFilters(filterProvider);
+        return ordersWrapper;
     }
 
     @GetMapping

@@ -10,6 +10,7 @@ import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Order;
 import com.eskcti.algafoodapi.domain.models.User;
+import com.eskcti.algafoodapi.domain.repositories.filters.OrderFilter;
 import com.eskcti.algafoodapi.domain.services.IssuanceOrderService;
 import com.eskcti.algafoodapi.domain.services.OrderService;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -65,8 +66,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderSummaryModel> list() {
-        return modelSummaryAssemblier.toCollectionModel(orderService.list());
+    public List<OrderSummaryModel> list(OrderFilter orderFilter) {
+        return modelSummaryAssemblier.toCollectionModel(orderService.list(orderFilter));
     }
 
     @PostMapping

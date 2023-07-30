@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,10 +32,16 @@ public class RestaurantProductController {
     private ProductInputDisassembler inputDisassembler;
 
     @GetMapping
-    public List<ProductModel> list(@PathVariable Long restaurantId) {
+    public List<ProductModel> list(@PathVariable Long restaurantId, @RequestParam(required = false) boolean includeInactive) {
         Restaurant restaurant = restaurantService.find(restaurantId);
+        List<Product> products = new ArrayList<>();
+        if (includeInactive) {
+            products = productService.findByRestaurant(restaurant);
+        } else {
+             products = productService.findActivesByRestaurant(restaurant);
+        }
 
-        return modelAssemblier.toCollectionModel(restaurant.getProducts());
+        return modelAssemblier.toCollectionModel(products);
     }
 
     @GetMapping("/{productId}")

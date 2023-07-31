@@ -26,18 +26,14 @@ public class OrderSpecs {
             }
 
             if(orderFilter.getDateFrom() != null) {
-                predicates.add(builder.greaterThanOrEqualTo(root.get("created_at"), orderFilter.getDateFrom()));
+                predicates.add(builder.greaterThanOrEqualTo(root.get("createdAt"), orderFilter.getDateFrom()));
             }
 
             if(orderFilter.getDateTo() != null) {
-                predicates.add(builder.lessThanOrEqualTo(root.get("created_at"), orderFilter.getDateTo()));
+                predicates.add(builder.lessThanOrEqualTo(root.get("createdAt"), orderFilter.getDateTo()));
             }
 
             return builder.and(predicates.toArray(new Predicate[0]));
         };
-    }
-
-    public static Specification<Restaurant> withSimilarName(String name) {
-        return (root, query, builder) -> builder.like(root.get("name"), "%" + name + "%");
     }
 }

@@ -12,8 +12,10 @@ import java.util.ArrayList;
 public class OrderSpecs {
     public static Specification<Order> withFilter(OrderFilter orderFilter) {
         return (root, query, builder) -> {
-            root.fetch("restaurant").fetch("kitchen");
-            root.fetch("customer");
+            if (Order.class.equals(query.getResultType())) {
+                root.fetch("restaurant").fetch("kitchen");
+                root.fetch("customer");
+            }
 
             var predicates = new ArrayList<Predicate>();
 

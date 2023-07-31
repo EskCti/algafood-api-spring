@@ -6,10 +6,10 @@ import com.eskcti.algafoodapi.domain.models.Kitchen;
 import com.eskcti.algafoodapi.domain.repositories.KitchenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class KitchenService {
@@ -38,7 +38,7 @@ public class KitchenService {
                 .orElseThrow(() -> new KitchenNotFoundException(id));
     }
 
-    public List<Kitchen> list() {
-        return kitchenRepository.findAll();
+    public Page<Kitchen> list(Pageable pageable) {
+        return kitchenRepository.findAll(pageable);
     }
 }

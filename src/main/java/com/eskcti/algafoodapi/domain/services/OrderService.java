@@ -6,6 +6,8 @@ import com.eskcti.algafoodapi.domain.repositories.OrderRepository;
 import com.eskcti.algafoodapi.domain.repositories.filters.OrderFilter;
 import com.eskcti.algafoodapi.infrastruct.spec.OrderSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +22,11 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException(code));
     }
 
-    public List<Order> list() {
-        return orderRepository.findAll();
+    public Page<Order> list(Pageable pageable) {
+        return orderRepository.findAll(pageable);
     }
 
-    public List<Order> list(OrderFilter orderFilter) {
-        return orderRepository.findAll(OrderSpecs.withFilter(orderFilter));
+    public Page<Order> list(OrderFilter orderFilter, Pageable pageable) {
+        return orderRepository.findAll(OrderSpecs.withFilter(orderFilter), pageable);
     }
 }

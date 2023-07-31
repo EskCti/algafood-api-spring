@@ -17,6 +17,9 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.StringUtils;
@@ -48,9 +51,9 @@ public class OrderController {
     }
 
     @GetMapping("/filter")
-    public MappingJacksonValue listFilter(@RequestParam(required = false) String fields) {
-        List<Order> orders = orderService.list();
-        List<OrderModel> orderModels = modelAssemblier.toCollectionModel(orders);
+    public MappingJacksonValue listFilter(@RequestParam(required = false) String fields, Pageable pageable) {
+        Page<Order> ordersPage = orderService.list(pageable);
+        List<OrderModel> orderModels = modelAssemblier.toCollectionModel(ordersPage.getContent());
 
         MappingJacksonValue ordersWrapper = new MappingJacksonValue(orderModels);
 
@@ -66,8 +69,11 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderSummaryModel> list(OrderFilter orderFilter) {
-        return modelSummaryAssemblier.toCollectionModel(orderService.list(orderFilter));
+    public Page<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {
+        Page<Order> orderPage = orderService.list(orderFilter, pageable);
+        List<OrderSummaryModel> orderSummaryModels = modelSummaryAssemblier.toCollectionModel(orderPage.getContent());
+        Page<OrderSummaryModel> orderSummaryModelPage = new PageImpl<>(orderSummaryModels, pageable, orderPage.getTotalElements());
+        return orderSummaryModelPage;
     }
 
     @PostMapping

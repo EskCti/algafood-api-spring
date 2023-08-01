@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.api.assembliers.OrderSummaryModelAssemblier;
 import com.eskcti.algafoodapi.api.model.OrderModel;
 import com.eskcti.algafoodapi.api.model.OrderSummaryModel;
 import com.eskcti.algafoodapi.api.model.input.OrderInput;
+import com.eskcti.algafoodapi.core.data.PageableTranslate;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Order;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
@@ -70,6 +72,7 @@ public class OrderController {
 
     @GetMapping
     public Page<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {
+        pageable = translatePageable(pageable);
         Page<Order> orderPage = orderService.list(orderFilter, pageable);
         List<OrderSummaryModel> orderSummaryModels = modelSummaryAssemblier.toCollectionModel(orderPage.getContent());
         Page<OrderSummaryModel> orderSummaryModelPage = new PageImpl<>(orderSummaryModels, pageable, orderPage.getTotalElements());
@@ -90,5 +93,18 @@ public class OrderController {
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
+    }
+
+    private Pageable translatePageable(Pageable pageable) {
+        var mapping = Map.of(
+                "code", "code",
+                "restaurant.id", "restaurant.id",
+                "restaurant.name", "restaurant.name",
+                "nameCustomer", "customer.name",
+                "subtotal", "subtotal",
+                "shippingFee", "shippingFee",
+                "valueTotal", "valueTotal"
+        );
+        return PageableTranslate.translate(pageable, mapping);
     }
 }

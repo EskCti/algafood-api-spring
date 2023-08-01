@@ -15,5 +15,6 @@ public class OrderSummaryModel {
     private BigDecimal valueTotal;
     private OffsetDateTime createdAt;
     private RestaurantSummaryModel restaurant;
-    private UserModel customer;
+//    private UserModel customer;
+    private String nameCustomer;
 }

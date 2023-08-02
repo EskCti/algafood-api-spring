@@ -1,4 +1,4 @@
-package com.eskcti.algafoodapi.domain.repositories.filters;
+package com.eskcti.algafoodapi.domain.filter;
 
 import lombok.Getter;
 import lombok.Setter;

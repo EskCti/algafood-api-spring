@@ -1,12 +1,10 @@
 package com.eskcti.algafoodapi.infrastruct.spec;
 
+import com.eskcti.algafoodapi.domain.filter.OrderFilter;
 import com.eskcti.algafoodapi.domain.models.Order;
-import com.eskcti.algafoodapi.domain.models.Restaurant;
-import com.eskcti.algafoodapi.domain.repositories.filters.OrderFilter;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class OrderSpecs {

@@ -1,4 +1,4 @@
-package com.eskcti.algafoodapi.domain.repositories.filters;
+package com.eskcti.algafoodapi.domain.filter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +10,7 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
 
 @Getter
 @Setter
-public class OrderFilter {
-    private Long customerId;
+public class DailySalesFilter {
     private Long restaurantId;
 
     @DateTimeFormat(iso = DATE_TIME)

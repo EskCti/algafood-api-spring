@@ -101,3 +101,27 @@ VALUES('Tal y', 40, 40, 1, 2, 3);
 INSERT INTO tab_orders_items
 (observation, price_total, price_unit, quantity, order_id, product_id)
 VALUES('Tal y', 60, 60, 1, 2, 4);
+
+INSERT INTO tab_orders
+(code, complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
+VALUES(uuid(), 'Apto x', 'Bairro Tal', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CONFIRMED', 100, 110, 4, 1, 1, 1, 1);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal', 40, 40, 1, 1, 1);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal x', 60, 60, 1, 1, 2);
+
+INSERT INTO tab_orders
+(code, complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
+VALUES(uuid(), 'Apto y', 'Bairro Tal y', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'DELIVERED', 100, 100, 3, 2, 2, 2, 2);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal y', 40, 40, 1, 2, 3);
+
+INSERT INTO tab_orders_items
+(observation, price_total, price_unit, quantity, order_id, product_id)
+VALUES('Tal y', 60, 60, 1, 2, 4);

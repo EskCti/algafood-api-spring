@@ -6,5 +6,5 @@ import com.eskcti.algafoodapi.domain.models.DailySales;
 import java.util.List;
 
 public interface SaleQueryService {
-    List<DailySales> queryDailySales(DailySalesFilter filter);
+    List<DailySales> queryDailySales(DailySalesFilter filter, String timeOffset);
 }

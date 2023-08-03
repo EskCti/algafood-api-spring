@@ -4,11 +4,14 @@ import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.ProductNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.RestaurantAndProductNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Product;
+import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -24,6 +27,14 @@ public class ProductService {
     public Product findByRestaurantIdAndId(Long restaurantId, Long productId) {
         return productRepository.findByRestaurantIdAndId(restaurantId, productId)
                 .orElseThrow(() -> new RestaurantAndProductNotFoundException(restaurantId, productId));
+    }
+
+    public List<Product> findActivesByRestaurant(Restaurant restaurant) {
+        return productRepository.findActivesByRestaurant(restaurant);
+    }
+
+    public List<Product> findByRestaurant(Restaurant restaurant) {
+        return productRepository.findByRestaurant(restaurant);
     }
 
     @Transactional

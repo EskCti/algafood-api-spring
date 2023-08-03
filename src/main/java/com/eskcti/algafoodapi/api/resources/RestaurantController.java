@@ -4,12 +4,14 @@ import com.eskcti.algafoodapi.api.assembliers.RestaurantInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.RestaurantModelAssemblier;
 import com.eskcti.algafoodapi.api.model.RestaurantModel;
 import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
+import com.eskcti.algafoodapi.api.model.view.RestaurantView;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.RestaurantNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -48,6 +51,24 @@ public class RestaurantController {
     @GetMapping
     public List<RestaurantModel> list() {
         return modelAssemblier.toCollectionModel(restaurantService.list());
+    }
+
+    @JsonView(RestaurantView.Summary.class)
+    @GetMapping(params = "project=summary")
+    public List<RestaurantModel> listSummary() {
+        return modelAssemblier.toCollectionModel(restaurantService.list());
+    }
+
+    @GetMapping(params = "project=wrapper")
+    public MappingJacksonValue listMapping() {
+        List<Restaurant> restaurants = restaurantService.list();
+        List<RestaurantModel> restaurantModels = modelAssemblier.toCollectionModel(restaurants);
+
+        MappingJacksonValue restaurantsWrappers = new MappingJacksonValue(restaurantModels);
+
+        restaurantsWrappers.setSerializationView(RestaurantView.Summary.class);
+
+        return restaurantsWrappers;
     }
 
     @GetMapping("/{id}")

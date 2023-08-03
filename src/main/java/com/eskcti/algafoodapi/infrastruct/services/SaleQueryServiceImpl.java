@@ -21,12 +21,17 @@ public class SaleQueryServiceImpl implements SaleQueryService {
     private EntityManager manager;
 
     @Override
-    public List<DailySales> queryDailySales(DailySalesFilter filter) {
+    public List<DailySales> queryDailySales(DailySalesFilter filter, String timeOffset) {
         var builder = manager.getCriteriaBuilder();
         var query = builder.createQuery(DailySales.class);
         var root = query.from(Order.class);
 
-        var functionDateCreatedAt = builder.function("date", LocalDate.class, root.get("createdAt"));
+        var functionConvertTzCreatedAt = builder.function(
+            "convert_tz", LocalDate.class, root.get("createdAt"),
+            builder.literal("+00:00"), builder.literal(timeOffset)
+        );
+
+        var functionDateCreatedAt = builder.function("date", LocalDate.class, functionConvertTzCreatedAt);
 
         var predicates = new ArrayList<Predicate>();
 

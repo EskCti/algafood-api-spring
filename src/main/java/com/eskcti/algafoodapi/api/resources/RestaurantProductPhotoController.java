@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.api.model.input.ProductPhotoInput;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,7 @@ public class RestaurantProductPhotoController {
     public void updatePhoto(
             @PathVariable Long restaurantId,
             @PathVariable Long productId,
-            ProductPhotoInput productPhotoInput
+            @Valid ProductPhotoInput productPhotoInput
     ) {
         var nameFile = UUID.randomUUID().toString()
                 + "_" + productPhotoInput.getFile().getOriginalFilename();

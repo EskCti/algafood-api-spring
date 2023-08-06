@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CatalogPhotoProductService {
 
@@ -14,6 +16,12 @@ public class CatalogPhotoProductService {
 
     @Transactional
     public ProductPhoto save(ProductPhoto photo) {
+        Long productId = photo.getProductId();
+        Optional<ProductPhoto> photoExists = productRepository.findPhotoById(productId);
+
+        if (photoExists.isPresent()) {
+            productRepository.delete(photoExists.get());
+        };
         return productRepository.save(photo);
     }
 }

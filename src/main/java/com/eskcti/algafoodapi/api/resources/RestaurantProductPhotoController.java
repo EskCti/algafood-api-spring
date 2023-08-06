@@ -36,6 +36,7 @@ public class RestaurantProductPhotoController {
         MultipartFile file = productPhotoInput.getFile();
 
         ProductPhoto photo = new ProductPhoto();
+        photo.setProductId(product.getId());
         photo.setProduct(product);
         photo.setDescription(productPhotoInput.getDescription());
         photo.setContentType(file.getContentType());

@@ -30,4 +30,11 @@ public class ProductPhoto {
 
     @Column(name = "file_size", nullable = false)
     private Integer fileSize;
+
+    public Long getRestaurantId() {
+        if (getProduct() != null) {
+            return this.getProduct().getRestaurant().getId();
+        }
+        return null;
+    }
 }

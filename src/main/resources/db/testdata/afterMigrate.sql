@@ -4,6 +4,7 @@ DELETE FROM tab_groups_permissions;
 DELETE FROM tab_users_groups;
 DELETE FROM tab_orders_items;
 DELETE FROM tab_orders;
+DELETE FROM tab_products_photos;
 DELETE FROM tab_products;
 DELETE FROM tab_payments_type;
 DELETE FROM tab_permissions;
@@ -13,7 +14,6 @@ DELETE FROM tab_states;
 DELETE FROM tab_kitchens;
 DELETE FROM tab_groups;
 DELETE FROM tab_users;
-DELETE FROM tab_products_photos;
 
 ALTER TABLE tab_kitchens AUTO_INCREMENT = 1;
 ALTER TABLE tab_states AUTO_INCREMENT = 1;

@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 @Service
@@ -14,14 +15,31 @@ public class CatalogPhotoProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private PhotoStorageService photoStorageService;
+
     @Transactional
-    public ProductPhoto save(ProductPhoto photo) {
+    public ProductPhoto save(ProductPhoto photo, InputStream dataFile) {
         Long productId = photo.getProductId();
         Optional<ProductPhoto> photoExists = productRepository.findPhotoById(productId);
+        String newNameFile = photoStorageService.generateFileName(photo.getNameFile());
 
         if (photoExists.isPresent()) {
             productRepository.delete(photoExists.get());
         };
-        return productRepository.save(photo);
+
+        photo.setNameFile(newNameFile);
+        photo = productRepository.save(photo);
+        productRepository.flush();
+
+        PhotoStorageService.NewPhoto newPhoto = PhotoStorageService
+                .NewPhoto.builder()
+                .nameFile(photo.getNameFile())
+                .inputStream(dataFile)
+                .build();
+
+        photoStorageService.storage(newPhoto);
+
+        return photo;
     }
 }

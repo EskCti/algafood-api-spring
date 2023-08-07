@@ -26,6 +26,7 @@ public class CatalogPhotoProductService {
 
         if (photoExists.isPresent()) {
             productRepository.delete(photoExists.get());
+            photoStorageService.remove(photoExists.get().getNameFile());
         };
 
         photo.setNameFile(newNameFile);

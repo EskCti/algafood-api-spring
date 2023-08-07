@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/products/{productId}/photo")
 public class RestaurantProductPhotoController {
@@ -30,7 +32,7 @@ public class RestaurantProductPhotoController {
             @PathVariable Long restaurantId,
             @PathVariable Long productId,
             @Valid ProductPhotoInput productPhotoInput
-    ) {
+    ) throws IOException {
         Product product = productService.findByRestaurantIdAndId(restaurantId, productId);
 
         MultipartFile file = productPhotoInput.getFile();
@@ -43,7 +45,7 @@ public class RestaurantProductPhotoController {
         photo.setFileSize((int) file.getSize());
         photo.setNameFile(file.getOriginalFilename());
 
-        ProductPhoto photoSave = catalogPhotoProductService.save(photo);
+        ProductPhoto photoSave = catalogPhotoProductService.save(photo, file.getInputStream());
 
         return productPhotoModelAssemblier.toModel(photoSave);
     }

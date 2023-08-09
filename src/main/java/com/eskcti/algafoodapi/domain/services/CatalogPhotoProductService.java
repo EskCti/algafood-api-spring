@@ -44,4 +44,16 @@ public class CatalogPhotoProductService {
 
         return photo;
     }
+
+    @Transactional
+    public void delete(ProductPhoto photo) {
+        Long productId = photo.getProductId();
+        Long restaurantId = photo.getProduct().getRestaurant().getId();
+        Optional<ProductPhoto> photoExists = productRepository.findPhotoById(restaurantId, productId);
+
+        if (photoExists.isPresent()) {
+            productRepository.delete(photoExists.get());
+            photoStorageService.remove(photoExists.get().getNameFile());
+        };
+    }
 }

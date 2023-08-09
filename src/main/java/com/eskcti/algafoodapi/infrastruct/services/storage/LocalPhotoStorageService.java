@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -34,6 +34,19 @@ public class LocalPhotoStorageService implements PhotoStorageService {
         } catch (IOException e) {
             throw new StorageException("Unable to remove file", e);
         }
+    }
+
+    @Override
+    public InputStream toRecover(String nameFile) {
+        Path filePath = getFilePath(nameFile);
+        if (Files.exists(filePath)) {
+            try {
+                return Files.newInputStream(filePath);
+            } catch (IOException e) {
+                throw new StorageException("Unable to recover file", e);
+            }
+        }
+        return null;
     }
 
     private Path getFilePath(String nameFile) {

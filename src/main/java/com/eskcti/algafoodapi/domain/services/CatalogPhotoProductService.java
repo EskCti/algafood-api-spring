@@ -21,7 +21,8 @@ public class CatalogPhotoProductService {
     @Transactional
     public ProductPhoto save(ProductPhoto photo, InputStream dataFile) {
         Long productId = photo.getProductId();
-        Optional<ProductPhoto> photoExists = productRepository.findPhotoById(productId);
+        Long restaurantId = photo.getProduct().getRestaurant().getId();
+        Optional<ProductPhoto> photoExists = productRepository.findPhotoById(restaurantId, productId);
         String newNameFile = photoStorageService.generateFileName(photo.getNameFile());
 
         if (photoExists.isPresent()) {

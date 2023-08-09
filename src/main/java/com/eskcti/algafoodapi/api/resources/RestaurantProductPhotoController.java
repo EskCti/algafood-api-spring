@@ -10,10 +10,7 @@ import com.eskcti.algafoodapi.domain.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -48,5 +45,12 @@ public class RestaurantProductPhotoController {
         ProductPhoto photoSave = catalogPhotoProductService.save(photo, file.getInputStream());
 
         return productPhotoModelAssemblier.toModel(photoSave);
+    }
+
+    @GetMapping
+    public ProductPhotoModel findPhoto(@PathVariable Long restaurantId, @PathVariable Long productId) {
+        ProductPhoto productPhoto = productService.findProductPhoto(restaurantId, productId);
+
+        return productPhotoModelAssemblier.toModel(productPhoto);
     }
 }

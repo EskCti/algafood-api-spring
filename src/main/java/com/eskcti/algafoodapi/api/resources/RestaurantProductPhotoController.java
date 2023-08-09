@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/products/{productId}/photo")
@@ -63,18 +65,37 @@ public class RestaurantProductPhotoController {
         return productPhotoModelAssemblier.toModel(productPhoto);
     }
 
-    @GetMapping(produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<InputStreamResource> servePhoto(@PathVariable Long restaurantId, @PathVariable Long productId) {
+    @GetMapping
+    public ResponseEntity<InputStreamResource> servePhoto(
+            @PathVariable Long restaurantId,
+            @PathVariable Long productId,
+            @RequestHeader(name = "Accept") String acceptHeader
+    ) throws HttpMediaTypeNotAcceptableException {
         try {
             ProductPhoto productPhoto = productService.findProductPhoto(restaurantId, productId);
+
+            MediaType mediaType = MediaType.parseMediaType(productPhoto.getContentType());
+            List<MediaType> mediaTypeList = MediaType.parseMediaTypes(acceptHeader);
+
+            checkMediaTypeCompatibility(mediaType, mediaTypeList);
 
             InputStream inputStream = photoStorageService.toRecover(productPhoto.getNameFile());
 
             return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
+                    .contentType(mediaType)
                     .body(new InputStreamResource(inputStream));
+
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    private void checkMediaTypeCompatibility(MediaType mediaType, List<MediaType> mediaTypeList)
+            throws HttpMediaTypeNotAcceptableException {
+        boolean compatibility = mediaTypeList.stream()
+                .anyMatch(mediaTypeAccept -> mediaTypeAccept.isCompatibleWith(mediaType));
+        if (!compatibility) {
+            throw new HttpMediaTypeNotAcceptableException(mediaTypeList);
         }
     }
 }

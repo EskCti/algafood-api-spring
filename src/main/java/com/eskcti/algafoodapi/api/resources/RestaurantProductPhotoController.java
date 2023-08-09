@@ -90,6 +90,15 @@ public class RestaurantProductPhotoController {
         }
     }
 
+    @DeleteMapping
+    public ResponseEntity deletePhoto(@PathVariable Long restaurantId, @PathVariable Long productId) {
+        ProductPhoto productPhoto = productService.findProductPhoto(restaurantId, productId);
+
+        catalogPhotoProductService.delete(productPhoto);
+
+        return ResponseEntity.noContent().build();
+    }
+
     private void checkMediaTypeCompatibility(MediaType mediaType, List<MediaType> mediaTypeList)
             throws HttpMediaTypeNotAcceptableException {
         boolean compatibility = mediaTypeList.stream()

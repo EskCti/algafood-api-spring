@@ -37,6 +37,7 @@ public class CatalogPhotoProductService {
         PhotoStorageService.NewPhoto newPhoto = PhotoStorageService
                 .NewPhoto.builder()
                 .nameFile(photo.getNameFile())
+                .contentType(photo.getContentType())
                 .inputStream(dataFile)
                 .build();
 

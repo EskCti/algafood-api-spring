@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.domain.repositories;
 
 import com.eskcti.algafoodapi.domain.models.Product;
+import com.eskcti.algafoodapi.domain.models.ProductPhoto;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends CustomJpaRepository<Product, Long>{
+public interface ProductRepository extends CustomJpaRepository<Product, Long>, ProductRepositoryQueries{
 
     @Query("from Product where restaurant.id = :restaurant and id = :product")
     Optional<Product> findById(@Param("restaurant") Long restaurantId, @Param("product") Long productId);
@@ -19,4 +20,7 @@ public interface ProductRepository extends CustomJpaRepository<Product, Long>{
     List<Product> findActivesByRestaurant(Restaurant restaurant);
 
     List<Product> findByRestaurant(Restaurant restaurant);
+
+    @Query("from ProductPhoto where product.restaurant.id = :restaurantId and productId = :productId")
+    Optional<ProductPhoto> findPhotoById(Long restaurantId, Long productId);
 }

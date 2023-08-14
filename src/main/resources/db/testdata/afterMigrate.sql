@@ -4,6 +4,7 @@ DELETE FROM tab_groups_permissions;
 DELETE FROM tab_users_groups;
 DELETE FROM tab_orders_items;
 DELETE FROM tab_orders;
+DELETE FROM tab_products_photos;
 DELETE FROM tab_products;
 DELETE FROM tab_payments_type;
 DELETE FROM tab_permissions;
@@ -25,7 +26,6 @@ ALTER TABLE tab_groups AUTO_INCREMENT = 1;
 ALTER TABLE tab_users AUTO_INCREMENT = 1;
 ALTER TABLE tab_orders_items AUTO_INCREMENT = 1;
 ALTER TABLE tab_orders AUTO_INCREMENT = 1;
-
 
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (1, "Japonês");
 INSERT IGNORE INTO tab_kitchens (id, name) VALUES (2, "Indiana");

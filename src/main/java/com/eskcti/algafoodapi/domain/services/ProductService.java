@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
 import com.eskcti.algafoodapi.domain.exceptions.ProductNotFoundException;
 import com.eskcti.algafoodapi.domain.exceptions.RestaurantAndProductNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Product;
+import com.eskcti.algafoodapi.domain.models.ProductPhoto;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,10 @@ public class ProductService {
     @Transactional
     public Product save(Product product) {
         return productRepository.save(product);
+    }
+
+    public ProductPhoto findProductPhoto(Long restaurantId, Long productId) {
+        return productRepository.findPhotoById(restaurantId, productId)
+                .orElseThrow(() -> new RestaurantAndProductNotFoundException(restaurantId, productId));
     }
 }

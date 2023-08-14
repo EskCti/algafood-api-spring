@@ -37,11 +37,14 @@ public class LocalPhotoStorageService implements PhotoStorageService {
     }
 
     @Override
-    public InputStream toRecover(String nameFile) {
+    public RecoveredPhoto toRecover(String nameFile) {
         Path filePath = getFilePath(nameFile);
         if (Files.exists(filePath)) {
             try {
-                return Files.newInputStream(filePath);
+                RecoveredPhoto recoveredPhoto = RecoveredPhoto.builder()
+                        .inputStream(Files.newInputStream(filePath))
+                        .build();
+                return recoveredPhoto;
             } catch (IOException e) {
                 throw new StorageException("Unable to recover file", e);
             }

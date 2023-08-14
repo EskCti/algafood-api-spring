@@ -9,7 +9,7 @@ import com.eskcti.algafoodapi.domain.services.PhotoStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
+import java.net.URL;
 
 @Service
 public class S3PhotoStorageService implements PhotoStorageService {
@@ -62,7 +62,13 @@ public class S3PhotoStorageService implements PhotoStorageService {
     }
 
     @Override
-    public InputStream toRecover(String nameFile) {
-        return null;
+    public RecoveredPhoto toRecover(String nameFile) {
+        String pathFile = getPathFile(nameFile);
+
+        URL url = amazonS3.getUrl(storageProperties.getS3().getBucket(), pathFile);
+
+        return RecoveredPhoto.builder()
+                .url(url.toString())
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.infrastruct.services.storage;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.eskcti.algafoodapi.core.storage.StorageProperties;
@@ -46,7 +47,18 @@ public class S3PhotoStorageService implements PhotoStorageService {
 
     @Override
     public void remove(String nameFile) {
+        try {
+            String pathFile = getPathFile(nameFile);
 
+            var deleteObjectRequest = new DeleteObjectRequest(
+                    storageProperties.getS3().getBucket(),
+                    pathFile
+            );
+
+            amazonS3.deleteObject(deleteObjectRequest);
+        } catch (Exception e) {
+            throw new StorageException("Unable to remove file to Amazon S3.", e);
+        }
     }
 
     @Override

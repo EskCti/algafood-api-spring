@@ -73,14 +73,15 @@ INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id) VALUES (1, 1
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Administrador', 'admin@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Contato', 'contato@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Edson S Kokado', 'edsonskokado@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('João Silva', 'email.test.joaosilva@gmail.com', '123456', utc_timestamp, utc_timestamp);
 
-INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 1), (2, 2), (2, 3), (2, 4);
+INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 1), (2, 2), (2, 3), (2, 4), (4, 1);
 
 INSERT IGNORE INTO tab_restaurants_responsible (restaurant_id, user_id) VALUES (1,1), (2,2), (3,3);
 
 INSERT INTO tab_orders
 (code, complement, neighborhood, `number`, public_place, zip_code, cancellation_date, confirmation_date, created_at, delivery_date, order_status, shipping_fee, subtotal, value_total, city_id, customer_id, payment_type_id, restaurant_id)
-VALUES(uuid(), 'Apto x', 'Bairro Tal', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 110, 1, 1, 1, 1, 1);
+VALUES(uuid(), 'Apto x', 'Bairro Tal', '123', null, '12345789', null, null, utc_timestamp, utc_timestamp, 'CREATED', 100, 110, 1, 1, 4, 1, 1);
 
 INSERT INTO tab_orders_items
 (observation, price_total, price_unit, quantity, order_id, product_id)

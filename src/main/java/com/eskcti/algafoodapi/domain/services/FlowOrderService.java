@@ -25,7 +25,8 @@ public class FlowOrderService {
         var message = SendEmailService.Message.builder()
                 .subject(order.getRestaurant().getName() + " - Pedido confirmado")
                 .addressee(order.getCustomer().getEmail())
-                .body("The Order of code <strong>" + order.getCode() + "</strong> foi confirmado!")
+                .variable("order", order)
+                .body("confirmed-order.htm")
                 .build();
 
 

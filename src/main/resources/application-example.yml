@@ -1,3 +1,7 @@
 sendgrid:
   api:
     key:
+
+spring:
+  mail:
+    password:

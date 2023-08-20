@@ -9,10 +9,16 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import java.io.IOException;
 
 @Service
 public class SmtpSendEmailService implements SendEmailService {
@@ -20,6 +26,8 @@ public class SmtpSendEmailService implements SendEmailService {
     private JavaMailSender mailSender;
     @Autowired
     private EmailProperties emailProperties;
+    @Autowired
+    private Configuration freeMarkerConfig;
 
     @Value("${sendgrid.api.key}")
     private String apiKey;
@@ -29,7 +37,10 @@ public class SmtpSendEmailService implements SendEmailService {
             Email from = new Email(emailProperties.getSender());
             String subject = message.getSubject();
             Email to = new Email(message.getAddressee());
-            Content content = new Content("text/html", message.getBody());
+
+            String body = processTemplate(message);
+
+            Content content = new Content("text/html", body);
 
             Mail mail = new Mail(from, subject, to, content);
 
@@ -49,6 +60,15 @@ public class SmtpSendEmailService implements SendEmailService {
             }
         } catch (Exception e) {
             throw new EmailException("Unable to send email", e);
+        }
+    }
+
+    private String processTemplate(Message message) {
+        try {
+            Template template = freeMarkerConfig.getTemplate(message.getBody());
+            return FreeMarkerTemplateUtils.processTemplateIntoString(template, message.getVariables());
+        } catch (IOException | TemplateException e) {
+            throw new EmailException("Unable to mount template of the email", e);
         }
     }
 }

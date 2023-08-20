@@ -1,14 +1,9 @@
 package com.eskcti.algafoodapi.domain.services;
 
-import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.models.Order;
-import com.eskcti.algafoodapi.domain.models.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.util.Collections;
 
 @Service
 public class FlowOrderService {
@@ -24,7 +19,7 @@ public class FlowOrderService {
 
         var message = SendEmailService.Message.builder()
                 .subject(order.getRestaurant().getName() + " - Pedido confirmado")
-                .addressee(order.getCustomer().getEmail())
+                .recipient(order.getCustomer().getEmail())
                 .variable("order", order)
                 .body("confirmed-order.htm")
                 .build();

@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.domain.services.SendEmailService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,20 +25,25 @@ public class SmtpSendEmailService implements SendEmailService {
     @Override
     public void send(Message message) {
         try {
-            String body = processTemplate(message);
-
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-            helper.setFrom(emailProperties.getSender());
-            helper.setTo(message.getRecipients().toArray(new String[0]));
-            helper.setSubject(message.getSubject());
-            helper.setText(body, true);
+            MimeMessage mimeMessage = createMimeMessage(message);
 
             mailSender.send(mimeMessage);
         } catch (Exception e) {
             throw new EmailException("Unable to send email", e);
         }
+    }
+
+    protected MimeMessage createMimeMessage(Message message) throws MessagingException {
+        String body = processTemplate(message);
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+        helper.setFrom(emailProperties.getSender());
+        helper.setTo(message.getRecipients().toArray(new String[0]));
+        helper.setSubject(message.getSubject());
+        helper.setText(body, true);
+        return mimeMessage;
     }
 
     protected String processTemplate(Message message) {

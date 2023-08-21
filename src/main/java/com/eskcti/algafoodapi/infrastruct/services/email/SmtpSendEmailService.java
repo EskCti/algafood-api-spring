@@ -9,12 +9,10 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.IOException;
 
-@Service
 public class SmtpSendEmailService implements SendEmailService {
     @Autowired
     private JavaMailSender mailSender;
@@ -42,7 +40,7 @@ public class SmtpSendEmailService implements SendEmailService {
         }
     }
 
-    private String processTemplate(Message message) {
+    protected String processTemplate(Message message) {
         try {
             Template template = freeMarkerConfig.getTemplate(message.getBody());
             return FreeMarkerTemplateUtils.processTemplateIntoString(template, message.getVariables());

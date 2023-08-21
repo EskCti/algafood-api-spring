@@ -81,16 +81,19 @@ public class Order {
     public void confirm() {
         setOrderStatus(OrderStatus.CONFIRMED);
         setConfirmationDate(OffsetDateTime.now());
+        calculateValueTotal();
     }
 
     public void delivery() {
         setOrderStatus(OrderStatus.DELIVERED);
         setDeliveryDate(OffsetDateTime.now());
+        calculateValueTotal();
     }
 
     public void cancel() {
         setOrderStatus(OrderStatus.CANCELED);
         setCancellationDate(OffsetDateTime.now());
+        calculateValueTotal();
     }
 
     private void setStatus(OrderStatus newStatus) {

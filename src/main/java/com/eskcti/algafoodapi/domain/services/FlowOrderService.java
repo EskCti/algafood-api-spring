@@ -30,5 +30,7 @@ public class FlowOrderService {
     public void cancel(String orderCode) {
         Order order = issuanceOrderService.findByCode(orderCode);
         order.cancel();
+
+        orderRepository.save(order);
     }
 }

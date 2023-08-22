@@ -6,12 +6,14 @@ import com.eskcti.algafoodapi.domain.services.SendEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class NotificationCustomerOrderConfirmedListener {
     @Autowired
     private SendEmailService sendEmailService;
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void whenConfirmingOrder(OrderConfirmedEvent event) {
         Order order = event.getOrder();
 

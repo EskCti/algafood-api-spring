@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.domain.models;
 
+import com.eskcti.algafoodapi.domain.events.OrderCanceledEvent;
 import com.eskcti.algafoodapi.domain.events.OrderConfirmedEvent;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import jakarta.persistence.*;
@@ -97,6 +98,7 @@ public class Order extends AbstractAggregateRoot<Order> {
         setOrderStatus(OrderStatus.CANCELED);
         setCancellationDate(OffsetDateTime.now());
         calculateValueTotal();
+        registerEvent(new OrderCanceledEvent(this));
     }
 
     private void setStatus(OrderStatus newStatus) {

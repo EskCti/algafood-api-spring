@@ -1,10 +1,13 @@
 package com.eskcti.algafoodapi.domain.models;
 
+import com.eskcti.algafoodapi.domain.events.OrderCanceledEvent;
+import com.eskcti.algafoodapi.domain.events.OrderConfirmedEvent;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -15,8 +18,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "tab_orders")
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Order {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+public class Order extends AbstractAggregateRoot<Order> {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,16 +84,21 @@ public class Order {
     public void confirm() {
         setOrderStatus(OrderStatus.CONFIRMED);
         setConfirmationDate(OffsetDateTime.now());
+        calculateValueTotal();
+        registerEvent(new OrderConfirmedEvent(this));
     }
 
     public void delivery() {
         setOrderStatus(OrderStatus.DELIVERED);
         setDeliveryDate(OffsetDateTime.now());
+        calculateValueTotal();
     }
 
     public void cancel() {
         setOrderStatus(OrderStatus.CANCELED);
         setCancellationDate(OffsetDateTime.now());
+        calculateValueTotal();
+        registerEvent(new OrderCanceledEvent(this));
     }
 
     private void setStatus(OrderStatus newStatus) {

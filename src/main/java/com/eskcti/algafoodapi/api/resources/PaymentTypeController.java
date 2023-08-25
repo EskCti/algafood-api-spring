@@ -13,7 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +33,21 @@ public class PaymentTypeController {
     private PaymentTypeInputDisassembler inputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<PaymentTypeModel>> list() {
+    public ResponseEntity<List<PaymentTypeModel>> list(ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        OffsetDateTime updatedAt = paymentTypeService.getUpdatedAt();
+
+        if (updatedAt != null) {
+            eTag = String.valueOf(updatedAt.toEpochSecond());
+        }
+
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+
         List<PaymentType> paymentTypeList = paymentTypeService.list();
 
         List<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
@@ -41,6 +58,7 @@ public class PaymentTypeController {
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
 //                .cacheControl(CacheControl.noCache())
 //                .cacheControl(CacheControl.noStore())
+                .eTag(eTag)
                 .body(paymentTypeModels);
     }
 

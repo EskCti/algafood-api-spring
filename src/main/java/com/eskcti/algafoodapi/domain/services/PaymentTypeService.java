@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -17,6 +18,10 @@ public class PaymentTypeService {
     public static final String PAYMENT_TYPE_NOT_REMOVED_IN_USE = "Payment type with id %d not removed in use ";
     @Autowired
     private PaymentTypeRepository paymentTypeRepository;
+
+    public OffsetDateTime getUpdatedAt() {
+        return paymentTypeRepository.getUpdatedAt();
+    }
 
     @Transactional
     public PaymentType save(PaymentType paymentType) {

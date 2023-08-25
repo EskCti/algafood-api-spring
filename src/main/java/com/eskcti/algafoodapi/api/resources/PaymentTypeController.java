@@ -8,11 +8,14 @@ import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.services.PaymentTypeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value="/payment_types", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -27,8 +30,14 @@ public class PaymentTypeController {
     private PaymentTypeInputDisassembler inputDisassembler;
 
     @GetMapping
-    public List<PaymentType> list() {
-        return paymentTypeService.list();
+    public ResponseEntity<List<PaymentTypeModel>> list() {
+        List<PaymentType> paymentTypeList = paymentTypeService.list();
+
+        List<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .body(paymentTypeModels);
     }
 
     @GetMapping("/{id}")

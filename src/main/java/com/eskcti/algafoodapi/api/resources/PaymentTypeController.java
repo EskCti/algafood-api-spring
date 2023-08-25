@@ -8,11 +8,17 @@ import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.services.PaymentTypeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value="/payment_types", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -27,13 +33,53 @@ public class PaymentTypeController {
     private PaymentTypeInputDisassembler inputDisassembler;
 
     @GetMapping
-    public List<PaymentType> list() {
-        return paymentTypeService.list();
+    public ResponseEntity<List<PaymentTypeModel>> list(ServletWebRequest request) {
+        String eTag = getEtag(request);
+        if (eTag == null) return null;
+
+        List<PaymentType> paymentTypeList = paymentTypeService.list();
+
+        List<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
+
+        return ResponseEntity.ok()
+//                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+//                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePrivate())
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
+//                .cacheControl(CacheControl.noCache())
+//                .cacheControl(CacheControl.noStore())
+                .eTag(eTag)
+                .body(paymentTypeModels);
+    }
+
+    private String getEtag(ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        OffsetDateTime updatedAt = paymentTypeService.getUpdatedAt();
+
+        if (updatedAt != null) {
+            eTag = String.valueOf(updatedAt.toEpochSecond());
+        }
+
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+        return eTag;
     }
 
     @GetMapping("/{id}")
-    public PaymentTypeModel find(@PathVariable Long id) {
-        return modelAssemblier.toModel(paymentTypeService.find(id));
+    public ResponseEntity<PaymentTypeModel> find(ServletWebRequest request, @PathVariable Long id) {
+        String eTag = getEtag(request);
+        if (eTag == null) return null;
+
+        PaymentType paymentType = paymentTypeService.find(id);
+        PaymentTypeModel paymentTypeModel = modelAssemblier.toModel(paymentType);
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .eTag(eTag)
+                .body(paymentTypeModel);
     }
 
     @PostMapping

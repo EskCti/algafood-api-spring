@@ -46,9 +46,9 @@ INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, 
 INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at, active, open) VALUES ("Restaurant 3", 0, 3, utc_timestamp, utc_timestamp, true, false);
 INSERT IGNORE INTO tab_restaurants (name, shipping_fee, kitchen_id, created_at, updated_at, active, open) VALUES ("Restaurant 4", 0, 3, utc_timestamp, utc_timestamp, true, false);
 
-INSERT IGNORE INTO tab_payments_type (id, description) VALUES (1, "Cartão de crédito");
-INSERT IGNORE INTO tab_payments_type (id, description) VALUES (2, "Cartão de débito");
-INSERT IGNORE INTO tab_payments_type (id, description) VALUES (3, "Dinheiro");
+INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (1, "Cartão de crédito", utc_timestamp);
+INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (2, "Cartão de débito", utc_timestamp);
+INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (3, "Dinheiro", utc_timestamp);
 
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (1, "LIST_KITCHEN", "Permit list kitchen");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHEN", "Permit edit kitchen");

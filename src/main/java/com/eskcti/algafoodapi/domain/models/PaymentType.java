@@ -3,6 +3,9 @@ package com.eskcti.algafoodapi.domain.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.OffsetDateTime;
 
 @Data
 @Entity
@@ -15,4 +18,9 @@ public class PaymentType {
     private Long id;
     @Column(nullable = false)
     private String description;
+
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime")
+    @UpdateTimestamp
+    private OffsetDateTime updatedAt;
+
 }

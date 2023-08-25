@@ -36,7 +36,11 @@ public class PaymentTypeController {
         List<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
 
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+//                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+//                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePrivate())
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
+//                .cacheControl(CacheControl.noCache())
+//                .cacheControl(CacheControl.noStore())
                 .body(paymentTypeModels);
     }
 

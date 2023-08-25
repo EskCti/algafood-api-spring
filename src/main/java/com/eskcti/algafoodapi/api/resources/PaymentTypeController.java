@@ -41,8 +41,13 @@ public class PaymentTypeController {
     }
 
     @GetMapping("/{id}")
-    public PaymentTypeModel find(@PathVariable Long id) {
-        return modelAssemblier.toModel(paymentTypeService.find(id));
+    public ResponseEntity<PaymentTypeModel> find(@PathVariable Long id) {
+        PaymentType paymentType = paymentTypeService.find(id);
+        PaymentTypeModel paymentTypeModel = modelAssemblier.toModel(paymentType);
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .body(paymentTypeModel);
     }
 
     @PostMapping

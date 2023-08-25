@@ -34,19 +34,8 @@ public class PaymentTypeController {
 
     @GetMapping
     public ResponseEntity<List<PaymentTypeModel>> list(ServletWebRequest request) {
-        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
-
-        String eTag = "0";
-
-        OffsetDateTime updatedAt = paymentTypeService.getUpdatedAt();
-
-        if (updatedAt != null) {
-            eTag = String.valueOf(updatedAt.toEpochSecond());
-        }
-
-        if (request.checkNotModified(eTag)) {
-            return null;
-        }
+        String eTag = getEtag(request);
+        if (eTag == null) return null;
 
         List<PaymentType> paymentTypeList = paymentTypeService.list();
 
@@ -62,13 +51,34 @@ public class PaymentTypeController {
                 .body(paymentTypeModels);
     }
 
+    private String getEtag(ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        OffsetDateTime updatedAt = paymentTypeService.getUpdatedAt();
+
+        if (updatedAt != null) {
+            eTag = String.valueOf(updatedAt.toEpochSecond());
+        }
+
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+        return eTag;
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentTypeModel> find(@PathVariable Long id) {
+    public ResponseEntity<PaymentTypeModel> find(ServletWebRequest request, @PathVariable Long id) {
+        String eTag = getEtag(request);
+        if (eTag == null) return null;
+
         PaymentType paymentType = paymentTypeService.find(id);
         PaymentTypeModel paymentTypeModel = modelAssemblier.toModel(paymentType);
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .eTag(eTag)
                 .body(paymentTypeModel);
     }
 

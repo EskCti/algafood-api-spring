@@ -8,8 +8,8 @@ import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.services.CityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Cidades", description = "Gerencia as cidades")
 @RestController
 @RequestMapping(value = "/cities", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 public class CityController {

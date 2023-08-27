@@ -9,6 +9,7 @@ import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.services.CityService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +40,20 @@ public class CityController {
 
     @Operation(summary = "Buscar uma cidade por ID")
     @GetMapping("/{id}")
-    public CityModel find(@PathVariable Long id) {
+    public CityModel find(
+            @Parameter(description = "ID da cidade a ser obtido")
+            @PathVariable Long id
+    ) {
 
         return modelAssemblier.toModel(cityService.find(id));
     }
 
     @Operation(summary = "Adicionar nova cidade")
     @PostMapping
-    public CityModel insert(@RequestBody @Valid CityInput cityInput) {
+    public CityModel insert(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma nova cidade")
+            @RequestBody @Valid CityInput cityInput
+    ) {
         try {
             City city = inputDisassembler.toDomainObject(cityInput);
             return modelAssemblier.toModel(cityService.save(city));
@@ -57,7 +64,12 @@ public class CityController {
 
     @Operation(summary = "Atualizar a cidade por ID")
     @PutMapping("/{id}")
-    public CityModel update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput) {
+    public CityModel update(
+            @Parameter(description = "ID da cidade a ser atualizada")
+            @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma cidade a ser atualizada")
+            @RequestBody @Valid CityInput cityInput
+    ) {
         try {
             City cityUpdate = cityService.find(id);
 //            BeanUtils.copyProperties(city, cityUpdate, "id");
@@ -71,7 +83,10 @@ public class CityController {
     @Operation(summary = "Excluir a cidade por ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(
+            @Parameter(description = "ID da cidade a ser excluida")
+            @PathVariable Long id
+    ) {
         cityService.remove(id);
     }
 }

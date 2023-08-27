@@ -8,6 +8,7 @@ import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.services.CityService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +31,20 @@ public class CityController {
     @Autowired
     private CityInputDisassembler inputDisassembler;
 
+    @Operation(summary = "Listar as cidades")
     @GetMapping
     public List<City> list() {
         return cityService.list();
     }
 
+    @Operation(summary = "Buscar uma cidade por ID")
     @GetMapping("/{id}")
     public CityModel find(@PathVariable Long id) {
 
         return modelAssemblier.toModel(cityService.find(id));
     }
 
+    @Operation(summary = "Adicionar nova cidade")
     @PostMapping
     public CityModel insert(@RequestBody @Valid CityInput cityInput) {
         try {
@@ -51,6 +55,7 @@ public class CityController {
         }
     }
 
+    @Operation(summary = "Atualizar a cidade por ID")
     @PutMapping("/{id}")
     public CityModel update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput) {
         try {
@@ -63,6 +68,7 @@ public class CityController {
         }
     }
 
+    @Operation(summary = "Excluir a cidade por ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

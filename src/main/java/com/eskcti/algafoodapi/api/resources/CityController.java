@@ -10,11 +10,14 @@ import com.eskcti.algafoodapi.domain.models.City;
 import com.eskcti.algafoodapi.domain.services.CityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +37,18 @@ public class CityController {
 
     @Operation(summary = "Listar as cidades")
     @GetMapping
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "Sucesso - Retorna lista de cidades")
+    )
     public List<City> list() {
         return cityService.list();
     }
 
     @Operation(summary = "Buscar uma cidade por ID")
     @GetMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Sucesso - Retorna a cidade")
+    })
     public CityModel find(
             @Parameter(description = "ID da cidade a ser obtido")
             @PathVariable Long id

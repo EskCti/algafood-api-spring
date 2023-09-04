@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.ResourceUriHelper;
 import com.eskcti.algafoodapi.api.assembliers.CityInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.CityModelAssemblier;
 import com.eskcti.algafoodapi.api.model.CityModel;
@@ -17,7 +18,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,13 +59,18 @@ public class CityController {
 
     @Operation(summary = "Adicionar nova cidade")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CityModel insert(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma nova cidade")
             @RequestBody @Valid CityInput cityInput
     ) {
         try {
             City city = inputDisassembler.toDomainObject(cityInput);
-            return modelAssemblier.toModel(cityService.save(city));
+            CityModel cityModel = modelAssemblier.toModel(cityService.save(city));
+
+            ResourceUriHelper.addUriInResponseHeader(cityModel.getId());
+
+            return cityModel;
         } catch (StateNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }

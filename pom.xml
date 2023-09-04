@@ -18,6 +18,7 @@
 		<modelmapper.version>3.0.0</modelmapper.version>
 <!--		<aws-java-sdk-s3.version>1.11.671</aws-java-sdk-s3.version>-->
 		<aws-java-sdk-s3.version>1.12.528</aws-java-sdk-s3.version>
+		<springfox.version>3.0.0</springfox.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -124,7 +125,16 @@
 			<version>2.3.32</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-common</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

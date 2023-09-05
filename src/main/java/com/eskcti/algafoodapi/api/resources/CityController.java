@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,15 @@ public class CityController {
             @PathVariable Long id
     ) {
 
-        return modelAssemblier.toModel(cityService.find(id));
+        CityModel cityModel = modelAssemblier.toModel(cityService.find(id));
+
+        cityModel.add(Link.of("http://localhost:8080/cities/" + cityModel.getId()).withSelfRel());
+        cityModel.add(Link.of("http://localhost:8080/cities", "cities"));
+
+        cityModel.getState().add(Link.of("http://localhost:8080/states/" + cityModel.getState().getId()).withSelfRel());
+        cityModel.getState().add(Link.of("http://localhost:8080/states", "states"));
+
+        return cityModel;
     }
 
     @Operation(summary = "Adicionar nova cidade")

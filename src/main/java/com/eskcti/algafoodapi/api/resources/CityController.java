@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,8 +45,25 @@ public class CityController {
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "Sucesso - Retorna lista de cidades")
     )
-    public List<City> list() {
-        return cityService.list();
+    public CollectionModel<CityModel> list() {
+        List<City> cityList = cityService.list();
+        List<CityModel> cityModels = modelAssemblier.toCollectionModel(cityList);
+
+        cityModels.forEach(cityModel -> {
+            cityModel.add(linkTo(methodOn(CityController.class)
+                    .find(cityModel.getId())).withSelfRel());
+            cityModel.add(linkTo(methodOn(CityController.class).list())
+                    .withRel("cities"));
+
+            cityModel.getState().add(linkTo(methodOn(StateController.class)
+                    .find(cityModel.getState().getId())).withSelfRel());
+            cityModel.getState().add(linkTo(methodOn(StateController.class).list())
+                    .withRel("states"));
+        });
+
+        CollectionModel<CityModel> collectionModel = CollectionModel.of(cityModels);
+        collectionModel.add(linkTo(CityController.class).withSelfRel());
+        return collectionModel;
     }
 
     @Operation(summary = "Buscar uma cidade por ID")

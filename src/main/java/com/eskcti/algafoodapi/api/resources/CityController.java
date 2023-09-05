@@ -16,12 +16,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Tag(name = "Cidades", description = "Gerencia as cidades")
 @RestController
@@ -57,11 +58,15 @@ public class CityController {
 
         CityModel cityModel = modelAssemblier.toModel(cityService.find(id));
 
-        cityModel.add(Link.of("http://localhost:8080/cities/" + cityModel.getId()).withSelfRel());
-        cityModel.add(Link.of("http://localhost:8080/cities", "cities"));
+        cityModel.add(linkTo(CityController.class)
+                .slash(cityModel.getId()).withSelfRel());
+        cityModel.add(linkTo(CityController.class)
+                .withRel("cities"));
 
-        cityModel.getState().add(Link.of("http://localhost:8080/states/" + cityModel.getState().getId()).withSelfRel());
-        cityModel.getState().add(Link.of("http://localhost:8080/states", "states"));
+        cityModel.getState().add(linkTo(StateController.class)
+                .slash(cityModel.getState().getId()).withSelfRel());
+        cityModel.getState().add(linkTo(StateController.class)
+                .withRel("states"));
 
         return cityModel;
     }

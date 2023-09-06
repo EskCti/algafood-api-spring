@@ -8,11 +8,10 @@ import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/groups", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -27,7 +26,7 @@ public class GroupController {
     GroupInputDisassembler inputDisassembler;
 
     @GetMapping
-    public List<GroupModel> list() {
+    public CollectionModel<GroupModel> list() {
         return modelAssemblier.toCollectionModel(groupService.list());
     }
 

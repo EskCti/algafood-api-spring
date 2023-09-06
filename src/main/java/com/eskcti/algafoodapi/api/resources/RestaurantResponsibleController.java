@@ -5,10 +5,9 @@ import com.eskcti.algafoodapi.api.model.UserModel;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/responsible")
@@ -20,7 +19,7 @@ public class RestaurantResponsibleController {
     private UserModelAssemblier modelAssemblier;
 
     @GetMapping
-    public List<UserModel> list(@PathVariable Long restaurantId) {
+    public CollectionModel<UserModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
         return modelAssemblier.toCollectionModel(restaurant.getResponsible());
     }

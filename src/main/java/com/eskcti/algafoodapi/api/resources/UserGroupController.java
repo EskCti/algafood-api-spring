@@ -6,10 +6,9 @@ import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import com.eskcti.algafoodapi.domain.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users/{userId}/groups")
@@ -24,7 +23,7 @@ public class UserGroupController {
     private GroupModelAssemblier modelAssemblier;
 
     @GetMapping
-    public List<GroupModel> list(@PathVariable Long userId) {
+    public CollectionModel<GroupModel> list(@PathVariable Long userId) {
         User user = userService.find(userId);
         return modelAssemblier.toCollectionModel(user.getGroups());
     }

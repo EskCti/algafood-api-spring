@@ -10,10 +10,9 @@ import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -26,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<UserModel> list() {
+    public CollectionModel<UserModel> list() {
         return modelAssemblier.toCollectionModel(userService.list());
     }
 

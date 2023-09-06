@@ -4,16 +4,13 @@ import com.eskcti.algafoodapi.api.assembliers.StateInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.StateModelAssemblier;
 import com.eskcti.algafoodapi.api.model.StateModel;
 import com.eskcti.algafoodapi.api.model.input.StateInput;
-import com.eskcti.algafoodapi.domain.exceptions.EntityInUseException;
-import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.State;
 import com.eskcti.algafoodapi.domain.services.StateService;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +28,9 @@ public class StateController {
     private StateInputDisassembler inputDisassembler;
 
     @GetMapping
-    public List<State> list() {
-        return stateService.list();
+    public CollectionModel<StateModel> list() {
+        List<State> stateList = stateService.list();
+        return modelAssemblier.toCollectionModel(stateList);
     }
 
     @GetMapping("/{id}")

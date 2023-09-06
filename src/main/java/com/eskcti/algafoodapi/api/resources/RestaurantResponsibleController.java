@@ -9,6 +9,9 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/responsible")
 public class RestaurantResponsibleController {
@@ -21,7 +24,9 @@ public class RestaurantResponsibleController {
     @GetMapping
     public CollectionModel<UserModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
-        return modelAssemblier.toCollectionModel(restaurant.getResponsible());
+        return modelAssemblier.toCollectionModel(restaurant.getResponsible())
+                .removeLinks()
+                .add(linkTo(methodOn(RestaurantResponsibleController.class).list(restaurantId)).withSelfRel());
     }
 
     @PutMapping("/{userId}")

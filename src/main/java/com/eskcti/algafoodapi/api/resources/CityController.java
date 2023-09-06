@@ -47,23 +47,7 @@ public class CityController {
     )
     public CollectionModel<CityModel> list() {
         List<City> cityList = cityService.list();
-        List<CityModel> cityModels = modelAssemblier.toCollectionModel(cityList);
-
-        cityModels.forEach(cityModel -> {
-            cityModel.add(linkTo(methodOn(CityController.class)
-                    .find(cityModel.getId())).withSelfRel());
-            cityModel.add(linkTo(methodOn(CityController.class).list())
-                    .withRel("cities"));
-
-            cityModel.getState().add(linkTo(methodOn(StateController.class)
-                    .find(cityModel.getState().getId())).withSelfRel());
-            cityModel.getState().add(linkTo(methodOn(StateController.class).list())
-                    .withRel("states"));
-        });
-
-        CollectionModel<CityModel> collectionModel = CollectionModel.of(cityModels);
-        collectionModel.add(linkTo(CityController.class).withSelfRel());
-        return collectionModel;
+        return modelAssemblier.toCollectionModel(cityList);
     }
 
     @Operation(summary = "Buscar uma cidade por ID")
@@ -75,20 +59,7 @@ public class CityController {
             @Parameter(description = "ID da cidade a ser obtido")
             @PathVariable Long id
     ) {
-
-        CityModel cityModel = modelAssemblier.toModel(cityService.find(id));
-
-        cityModel.add(linkTo(methodOn(CityController.class)
-                .find(cityModel.getId())).withSelfRel());
-        cityModel.add(linkTo(methodOn(CityController.class).list())
-                .withRel("cities"));
-
-        cityModel.getState().add(linkTo(methodOn(StateController.class)
-                .find(cityModel.getState().getId())).withSelfRel());
-        cityModel.getState().add(linkTo(methodOn(StateController.class).list())
-                .withRel("states"));
-
-        return cityModel;
+        return modelAssemblier.toModel(cityService.find(id));
     }
 
     @Operation(summary = "Adicionar nova cidade")

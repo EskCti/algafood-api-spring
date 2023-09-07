@@ -8,10 +8,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 @Getter
 @Setter
-public class AddressModel {
+public class AddressModel extends RepresentationModel<AddressModel> {
     private String zipCode;
     private String publicPlace;
     private String number;

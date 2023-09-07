@@ -1,29 +1,43 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
 import com.eskcti.algafoodapi.api.model.KitchenModel;
-import com.eskcti.algafoodapi.api.model.RestaurantModel;
-import com.eskcti.algafoodapi.api.model.input.KitchenInput;
-import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
+import com.eskcti.algafoodapi.api.resources.KitchenController;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
-import com.eskcti.algafoodapi.domain.models.Restaurant;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class KitchenModelAssemblier {
+public class KitchenModelAssemblier extends RepresentationModelAssemblerSupport<Kitchen, KitchenModel> {
+    @Autowired
+    private ModelMapper modelMapper;
+    public KitchenModelAssemblier() {
+        super(KitchenController.class, KitchenModel.class);
+    }
     public KitchenModel toModel(Kitchen kitchen) {
-        KitchenModel kitchenModel = new KitchenModel();
-        kitchenModel.setId(kitchen.getId());
-        kitchenModel.setName(kitchen.getName());
+        KitchenModel kitchenModel = createModelWithId(kitchen.getId(), kitchen);
+        modelMapper.map(kitchen, kitchenModel);
+
+        kitchenModel.add(linkTo(KitchenController.class)
+                .withRel("kitchens"));
 
         return kitchenModel;
     }
 
-    public List<KitchenModel> toCollectionModel(List<Kitchen> kitchens) {
-        return kitchens.stream()
-                .map(kitchen -> toModel(kitchen))
-                .collect(Collectors.toList());
+    @Override
+    public CollectionModel<KitchenModel> toCollectionModel(Iterable<? extends Kitchen> entities) {
+        return super.toCollectionModel(entities)
+                .add(linkTo(KitchenController.class).withSelfRel());
     }
+
+//    public List<KitchenModel> toCollectionModel(List<Kitchen> kitchens) {
+//        return kitchens.stream()
+//                .map(kitchen -> toModel(kitchen))
+//                .collect(Collectors.toList());
+//    }
 }

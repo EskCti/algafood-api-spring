@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -32,14 +34,17 @@ public class KitchenController {
     @Autowired
     private KitchenInputDisassembler inputDisassembler;
 
+    @Autowired
+    private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
+
     @GetMapping
-    public Page<KitchenModel> list(@PageableDefault(size = 24) Pageable pageable) {
+    public PagedModel<KitchenModel> list(@PageableDefault(size = 24) Pageable pageable) {
         Page<Kitchen> kitchensPage = kitchenService.list(pageable);
-        List<KitchenModel> kitchenModels = modelAssemblier.toCollectionModel(kitchensPage.getContent());
-        Page<KitchenModel> kitchensModelPage = new PageImpl<>(
-                kitchenModels, pageable, kitchensPage.getTotalElements()
-        );
-        return kitchensModelPage;
+
+        PagedModel<KitchenModel> kitchenModelPagedModel = pagedResourcesAssembler
+                .toModel(kitchensPage, modelAssemblier);
+
+        return kitchenModelPagedModel;
     }
 
     @GetMapping("/{id}")

@@ -1,14 +1,14 @@
 package com.eskcti.algafoodapi.api.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class OrderItemModel {
+public class OrderItemModel extends RepresentationModel<OrderItemModel> {
 
     private Long id;
     private Long productId;

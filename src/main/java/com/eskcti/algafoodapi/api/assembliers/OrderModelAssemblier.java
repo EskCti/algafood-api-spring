@@ -32,10 +32,20 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
                 new TemplateVariable("sort", REQUEST_PARAM)
         );
 
+        TemplateVariables filterVariables = new TemplateVariables(
+                new TemplateVariable("code", REQUEST_PARAM),
+                new TemplateVariable("restaurant.id", REQUEST_PARAM),
+                new TemplateVariable("nameRestaurant", REQUEST_PARAM),
+                new TemplateVariable("nameCustomer", REQUEST_PARAM),
+                new TemplateVariable("subtotal", REQUEST_PARAM),
+                new TemplateVariable("shippingFee", REQUEST_PARAM),
+                new TemplateVariable("valueTotal", REQUEST_PARAM)
+        );
+
         String orderUri = linkTo(OrderController.class).toUri().toString();
 
         orderModel.add(
-                Link.of(UriTemplate.of(orderUri, pageVariables), LinkRelation.of("orders"))
+                Link.of(UriTemplate.of(orderUri, pageVariables.concat(filterVariables)), LinkRelation.of("orders"))
         );
 
 

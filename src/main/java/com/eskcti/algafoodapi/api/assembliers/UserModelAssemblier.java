@@ -1,8 +1,8 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.model.UserModel;
 import com.eskcti.algafoodapi.api.resources.UserController;
-import com.eskcti.algafoodapi.api.resources.UserGroupController;
 import com.eskcti.algafoodapi.domain.models.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +11,20 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class UserModelAssemblier extends RepresentationModelAssemblerSupport<User, UserModel> {
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AlgaLinks algaLinks;
     public UserModel toModel(User user) {
         UserModel userModel = createModelWithId(user.getId(), user);
         modelMapper.map(user, userModel);
 
-        userModel.add(linkTo(methodOn(UserController.class).list())
-                .withRel("users"));
-        userModel.add(linkTo(methodOn(UserGroupController.class).list(user.getId()))
-                .withRel("groups-user"));
+        userModel.add(algaLinks.linkToUsers());
+        userModel.add(algaLinks.linkToGroupUsers(user.getId()));
 
         return userModel;
     }

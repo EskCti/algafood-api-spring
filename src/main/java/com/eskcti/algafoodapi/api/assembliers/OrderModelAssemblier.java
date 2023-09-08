@@ -2,7 +2,7 @@ package com.eskcti.algafoodapi.api.assembliers;
 
 import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.model.OrderModel;
-import com.eskcti.algafoodapi.api.resources.*;
+import com.eskcti.algafoodapi.api.resources.OrderController;
 import com.eskcti.algafoodapi.domain.models.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Order, OrderModel> {
@@ -32,19 +31,13 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
 
         orderModel.add(algaLinks.linkToOrders());
 
-        orderModel.getRestaurant().add(linkTo(methodOn(RestaurantController.class)
-                .find(order.getRestaurant().getId())).withSelfRel());
-        orderModel.getCustomer().add(linkTo(methodOn(UserController.class)
-                .find(order.getCustomer().getId())).withSelfRel());
-        orderModel.getPaymentType().add(linkTo(methodOn(PaymentTypeController.class)
-                .find(null, order.getPaymentType().getId())).withSelfRel());
-        orderModel.getAddressDelivery().getCity().add(linkTo(methodOn(CityController.class)
-                .find(order.getAddressDelivery().getCity().getId())).withSelfRel());
+        orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
+        orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));
+        orderModel.getPaymentType().add(algaLinks.linkToPaymentType(order.getPaymentType().getId()));
+        orderModel.getAddressDelivery().getCity().add(algaLinks.linkToCity(order.getAddressDelivery().getCity().getId()));
 
         orderModel.getItems().forEach(item -> {
-            item.add(linkTo(methodOn(RestaurantProductController.class)
-                    .find(orderModel.getRestaurant().getId(), item.getProductId()))
-                    .withRel("product"));
+            item.add(algaLinks.linkToItemOrder(orderModel.getRestaurant().getId(), item.getProductId()));
         });
 
         return orderModel;

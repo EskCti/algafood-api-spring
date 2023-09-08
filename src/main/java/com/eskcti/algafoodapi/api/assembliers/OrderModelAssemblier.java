@@ -5,10 +5,11 @@ import com.eskcti.algafoodapi.api.resources.*;
 import com.eskcti.algafoodapi.domain.models.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.*;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import static org.springframework.hateoas.TemplateVariable.VariableType.REQUEST_PARAM;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -25,8 +26,19 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
         OrderModel orderModel = createModelWithId(order.getId(), order);
         modelMapper.map(order, orderModel);
 
-        orderModel.add(linkTo(OrderController.class)
-                .withRel("orders"));
+        TemplateVariables pageVariables = new TemplateVariables(
+                new TemplateVariable("size", REQUEST_PARAM),
+                new TemplateVariable("page", REQUEST_PARAM),
+                new TemplateVariable("sort", REQUEST_PARAM)
+        );
+
+        String orderUri = linkTo(OrderController.class).toUri().toString();
+
+        orderModel.add(
+                Link.of(UriTemplate.of(orderUri, pageVariables), LinkRelation.of("orders"))
+        );
+
+
         orderModel.getRestaurant().add(linkTo(methodOn(RestaurantController.class)
                 .find(order.getRestaurant().getId())).withSelfRel());
         orderModel.getCustomer().add(linkTo(methodOn(UserController.class)

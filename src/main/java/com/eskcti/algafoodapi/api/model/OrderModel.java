@@ -1,7 +1,6 @@
 package com.eskcti.algafoodapi.api.model;
 
 import com.eskcti.algafoodapi.domain.models.OrderStatus;
-import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
@@ -12,7 +11,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Relation(collectionRelation = "orders")
-@JsonFilter("orderFilter")
 @Getter
 @Setter
 public class OrderModel extends RepresentationModel<OrderModel> {

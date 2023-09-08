@@ -57,7 +57,7 @@ public class OrderController {
         return modelAssemblier.toModel(orderService.find(orderCode));
     }
 
-    @GetMapping("/filter")
+    @GetMapping("/search/filter")
     public MappingJacksonValue listFilter(@RequestParam(required = false) String fields, Pageable pageable) {
         Page<Order> ordersPage = orderService.list(pageable);
         CollectionModel<OrderModel> orderModels = modelAssemblier.toCollectionModel(ordersPage.getContent());
@@ -65,10 +65,11 @@ public class OrderController {
         MappingJacksonValue ordersWrapper = new MappingJacksonValue(orderModels);
 
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-        filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.serializeAll());
 
         if (StringUtils.hasLength(fields)) {
             filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields.split(",")));
+        } else {
+            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.serializeAll());
         }
 
         ordersWrapper.setFilters(filterProvider);

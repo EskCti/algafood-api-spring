@@ -19,6 +19,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -49,20 +50,20 @@ public class RestaurantController {
     private SmartValidator validator;
 
     @GetMapping
-    public List<RestaurantModel> list() {
+    public CollectionModel<RestaurantModel> list() {
         return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
     @JsonView(RestaurantView.Summary.class)
     @GetMapping(params = "project=summary")
-    public List<RestaurantModel> listSummary() {
+    public CollectionModel<RestaurantModel> listSummary() {
         return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
     @GetMapping(params = "project=wrapper")
     public MappingJacksonValue listMapping() {
         List<Restaurant> restaurants = restaurantService.list();
-        List<RestaurantModel> restaurantModels = modelAssemblier.toCollectionModel(restaurants);
+        CollectionModel<RestaurantModel> restaurantModels = modelAssemblier.toCollectionModel(restaurants);
 
         MappingJacksonValue restaurantsWrappers = new MappingJacksonValue(restaurantModels);
 

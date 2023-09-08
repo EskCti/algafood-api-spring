@@ -1,41 +1,48 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
-import com.eskcti.algafoodapi.api.model.KitchenModel;
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.model.RestaurantModel;
-import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
-import com.eskcti.algafoodapi.core.validation.ValidationException;
-import com.eskcti.algafoodapi.domain.models.Kitchen;
+import com.eskcti.algafoodapi.api.resources.RestaurantController;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.SmartValidator;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
-public class RestaurantModelAssemblier {
+public class RestaurantModelAssemblier  extends RepresentationModelAssemblerSupport<Restaurant, RestaurantModel> {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AlgaLinks algaLinks;
+
+    public RestaurantModelAssemblier() {
+        super(RestaurantController.class, RestaurantModel.class);
+    }
     public RestaurantModel toModel(Restaurant restaurant) {
-        return modelMapper.map(restaurant, RestaurantModel.class);
+        RestaurantModel restaurantModel = createModelWithId(restaurant.getId(), restaurant);
+        modelMapper.map(restaurant, restaurantModel);
+
+        restaurantModel.add(algaLinks.linkToRestaurants());
+
+        return restaurantModel;
     }
 
-    public List<RestaurantModel> toCollectionModel(List<Restaurant> restaurants) {
-        return restaurants.stream()
-                .map(restaurant -> toModel(restaurant))
-                .collect(Collectors.toList());
+    @Override
+    public CollectionModel<RestaurantModel> toCollectionModel(Iterable<? extends Restaurant> entities) {
+        return super.toCollectionModel(entities)
+                .add(linkTo(RestaurantController.class).withSelfRel());
     }
+
+
+//    public List<RestaurantModel> toCollectionModel(List<Restaurant> restaurants) {
+//        return restaurants.stream()
+//                .map(restaurant -> toModel(restaurant))
+//                .collect(Collectors.toList());
+//    }
 }

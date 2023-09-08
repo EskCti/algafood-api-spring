@@ -8,6 +8,7 @@ import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.services.PaymentTypeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,13 +34,13 @@ public class PaymentTypeController {
     private PaymentTypeInputDisassembler inputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<PaymentTypeModel>> list(ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<PaymentTypeModel>> list(ServletWebRequest request) {
         String eTag = getEtag(request);
         if (eTag == null) return null;
 
         List<PaymentType> paymentTypeList = paymentTypeService.list();
 
-        List<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
+        CollectionModel<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
 
         return ResponseEntity.ok()
 //                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))

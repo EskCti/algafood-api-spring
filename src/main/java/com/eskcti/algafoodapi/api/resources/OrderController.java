@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.api.assembliers.OrderSummaryModelAssemblier;
 import com.eskcti.algafoodapi.api.model.OrderModel;
 import com.eskcti.algafoodapi.api.model.OrderSummaryModel;
 import com.eskcti.algafoodapi.api.model.input.OrderInput;
+import com.eskcti.algafoodapi.core.data.PageWrapper;
 import com.eskcti.algafoodapi.core.data.PageableTranslate;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -76,8 +77,10 @@ public class OrderController {
 
     @GetMapping
     public PagedModel<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {
-        pageable = translatePageable(pageable);
-        Page<Order> orderPage = orderService.list(orderFilter, pageable);
+        Pageable pageableTranslate = translatePageable(pageable);
+        Page<Order> orderPage = orderService.list(orderFilter, pageableTranslate);
+
+        orderPage = new PageWrapper<>(orderPage, pageable);
 
         return pagedResourcesAssembler.toModel(orderPage, modelSummaryAssemblier);
     }
@@ -102,7 +105,7 @@ public class OrderController {
         var mapping = Map.of(
                 "code", "code",
                 "restaurant.id", "restaurant.id",
-                "restaurant.name", "restaurant.name",
+                "nameRestaurant", "restaurant.name",
                 "nameCustomer", "customer.name",
                 "subtotal", "subtotal",
                 "shippingFee", "shippingFee",

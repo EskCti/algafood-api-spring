@@ -1,15 +1,15 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.model.OrderModel;
 import com.eskcti.algafoodapi.api.resources.*;
 import com.eskcti.algafoodapi.domain.models.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.*;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.TemplateVariable.VariableType.REQUEST_PARAM;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -19,6 +19,10 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private AlgaLinks algaLinks;
+
+
     public OrderModelAssemblier() {
         super(OrderController.class, OrderModel.class);
     }
@@ -26,28 +30,7 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
         OrderModel orderModel = createModelWithId(order.getId(), order);
         modelMapper.map(order, orderModel);
 
-        TemplateVariables pageVariables = new TemplateVariables(
-                new TemplateVariable("size", REQUEST_PARAM),
-                new TemplateVariable("page", REQUEST_PARAM),
-                new TemplateVariable("sort", REQUEST_PARAM)
-        );
-
-        TemplateVariables filterVariables = new TemplateVariables(
-                new TemplateVariable("code", REQUEST_PARAM),
-                new TemplateVariable("restaurant.id", REQUEST_PARAM),
-                new TemplateVariable("nameRestaurant", REQUEST_PARAM),
-                new TemplateVariable("nameCustomer", REQUEST_PARAM),
-                new TemplateVariable("subtotal", REQUEST_PARAM),
-                new TemplateVariable("shippingFee", REQUEST_PARAM),
-                new TemplateVariable("valueTotal", REQUEST_PARAM)
-        );
-
-        String orderUri = linkTo(OrderController.class).toUri().toString();
-
-        orderModel.add(
-                Link.of(UriTemplate.of(orderUri, pageVariables.concat(filterVariables)), LinkRelation.of("orders"))
-        );
-
+        orderModel.add(algaLinks.linkToOrders());
 
         orderModel.getRestaurant().add(linkTo(methodOn(RestaurantController.class)
                 .find(order.getRestaurant().getId())).withSelfRel());

@@ -29,6 +29,14 @@ public class RestaurantModelAssemblier  extends RepresentationModelAssemblerSupp
         modelMapper.map(restaurant, restaurantModel);
 
         restaurantModel.add(algaLinks.linkToRestaurants());
+        restaurantModel.add(algaLinks.linkToPaymentTypesByRestaurant(restaurant.getId(), "payment-types"));
+        restaurantModel.add(algaLinks.linkToResponsibleByRestaurant(restaurant.getId(), "responsible"));
+
+        restaurantModel.getKitchen().add(algaLinks.linkToKitchen(restaurantModel.getKitchen().getId()));
+
+        if (restaurantModel.getAddress() != null) {
+            restaurantModel.getAddress().getCity().add(algaLinks.linkToCity(restaurantModel.getAddress().getCity().getId()));
+        }
 
         return restaurantModel;
     }

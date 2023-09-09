@@ -32,6 +32,22 @@ public class RestaurantModelAssemblier  extends RepresentationModelAssemblerSupp
         restaurantModel.add(algaLinks.linkToPaymentTypesByRestaurant(restaurant.getId(), "payment-types"));
         restaurantModel.add(algaLinks.linkToResponsibleByRestaurant(restaurant.getId(), "responsible"));
 
+        if (!restaurant.getActive()) {
+            restaurantModel.add(algaLinks.linkToActivateByRestaurant(restaurant.getId(), "active"));
+        }
+
+        if (restaurant.getActive()) {
+            restaurantModel.add(algaLinks.linkToDeactivateByRestaurant(restaurant.getId(), "deactivate"));
+        }
+
+        if (!restaurant.getOpen()) {
+            restaurantModel.add(algaLinks.linkToOpeningByRestaurant(restaurant.getId(), "open"));
+        }
+
+        if (restaurant.getOpen()) {
+            restaurantModel.add(algaLinks.linkToClosingByRestaurant(restaurant.getId(), "close"));
+        }
+
         restaurantModel.getKitchen().add(algaLinks.linkToKitchen(restaurantModel.getKitchen().getId()));
 
         if (restaurantModel.getAddress() != null) {

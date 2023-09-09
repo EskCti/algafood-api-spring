@@ -71,6 +71,22 @@ public class AlgaLinks {
         return linkTo(methodOn(RestaurantResponsibleController.class).list(restaurantId)).withRel(rel);
     }
 
+    public Link linkToActivateByRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).activate(restaurantId)).withRel(rel);
+    }
+
+    public Link linkToDeactivateByRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).deactivate(restaurantId)).withRel(rel);
+    }
+
+    public Link linkToOpeningByRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).opening(restaurantId)).withRel(rel);
+    }
+
+    public Link linkToClosingByRestaurant(Long restaurantId, String rel) {
+        return linkTo(methodOn(RestaurantController.class).closing(restaurantId)).withRel(rel);
+    }
+
     public Link linkToPaymentType(Long paymentoTypeId) {
         return linkTo(methodOn(PaymentTypeController.class)
                 .find(null, paymentoTypeId)).withSelfRel();

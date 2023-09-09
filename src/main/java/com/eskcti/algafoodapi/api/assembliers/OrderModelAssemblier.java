@@ -31,9 +31,17 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
 
         orderModel.add(algaLinks.linkToOrders());
 
-        orderModel.add(algaLinks.linkToOrderConfirm(order.getCode(), "confirm"));
-        orderModel.add(algaLinks.linkToOrderCancel(order.getCode(), "cancel"));
-        orderModel.add(algaLinks.linkToOrderDelivery(order.getCode(), "delivery"));
+        if (order.canBeConfirmed()) {
+            orderModel.add(algaLinks.linkToOrderConfirm(order.getCode(), "confirm"));
+        }
+
+        if (order.canBeCanceled()) {
+            orderModel.add(algaLinks.linkToOrderCancel(order.getCode(), "cancel"));
+        }
+
+        if (order.canBeDelivered()) {
+            orderModel.add(algaLinks.linkToOrderDelivery(order.getCode(), "delivery"));
+        }
 
         orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
         orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));

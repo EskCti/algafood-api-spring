@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -128,14 +129,16 @@ public class RestaurantController {
 
     @PutMapping("/{restaurantId}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void activate (@PathVariable Long restaurantId){
+    public ResponseEntity<Void> activate (@PathVariable Long restaurantId){
         restaurantService.activate(restaurantId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{restaurantId}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deactivate (@PathVariable Long restaurantId){
+    public ResponseEntity<Void> deactivate (@PathVariable Long restaurantId){
         restaurantService.deactivate(restaurantId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/activate-multiples")
@@ -164,11 +167,17 @@ public class RestaurantController {
 
     @PutMapping("/{restaurantId}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void opening (@PathVariable Long restaurantId) { restaurantService.opening(restaurantId); }
+    public ResponseEntity<Void> opening (@PathVariable Long restaurantId) {
+        restaurantService.opening(restaurantId);
+        return ResponseEntity.noContent().build();
+    }
 
     @PutMapping("/{restaurantId}/closing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void closing (@PathVariable Long restaurantId) { restaurantService.closing(restaurantId); }
+    public ResponseEntity<Void> closing (@PathVariable Long restaurantId) {
+        restaurantService.closing(restaurantId);
+        return ResponseEntity.noContent().build();
+    }
 
     public void validate(Restaurant restaurant, String objectName) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);

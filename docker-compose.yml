@@ -18,7 +18,7 @@ services:
     image: mysql:8.0
     container_name: mysql-db-algafoodapi
     ports:
-      - '3350:3306'
+      - '3361:3306'
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}

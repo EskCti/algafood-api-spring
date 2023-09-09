@@ -17,6 +17,18 @@ public class AlgaLinks {
             new TemplateVariable("sort", REQUEST_PARAM)
     );
 
+    public Link linkToOrderConfirm(String orderCode, String rel) {
+        return linkTo(methodOn(FlowOrderController.class).confirm(orderCode)).withRel(rel);
+    }
+
+    public Link linkToOrderCancel(String orderCode, String rel) {
+        return linkTo(methodOn(FlowOrderController.class).cancel(orderCode)).withRel(rel);
+    }
+
+    public Link linkToOrderDelivery(String orderCode, String rel) {
+        return linkTo(methodOn(FlowOrderController.class).delivery(orderCode)).withRel(rel);
+    }
+
     public Link linkToOrders() {
 
         TemplateVariables filterVariables = new TemplateVariables(

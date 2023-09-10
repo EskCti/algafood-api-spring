@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.assembliers.PaymentTypeModelAssemblier;
 import com.eskcti.algafoodapi.api.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
@@ -18,12 +19,16 @@ public class RestaurantPaymentTypeController {
 
     @Autowired
     private PaymentTypeModelAssemblier modelAssemblier;
+    @Autowired
+    private AlgaLinks algaLinks;
 
     @GetMapping
     public CollectionModel<PaymentTypeModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
 
-        return modelAssemblier.toCollectionModel(restaurant.getPaymentTypes());
+        return modelAssemblier.toCollectionModel(restaurant.getPaymentTypes())
+                .removeLinks()
+                .add(algaLinks.linkToPaymentTypesByRestaurant(restaurantId));
     }
 
     @DeleteMapping("/{paymentTypeId}")

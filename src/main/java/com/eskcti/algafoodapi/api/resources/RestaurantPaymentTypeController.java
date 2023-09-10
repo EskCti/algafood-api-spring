@@ -29,10 +29,15 @@ public class RestaurantPaymentTypeController {
 
         CollectionModel<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(restaurant.getPaymentTypes())
                 .removeLinks()
-                .add(algaLinks.linkToPaymentTypesByRestaurant(restaurantId));
+                .add(algaLinks.linkToPaymentTypesByRestaurant(restaurantId))
+                .add(
+                        algaLinks.linkToPaymentTypeAssociateByRestaurant(restaurantId, "associate")
+                );
 
         paymentTypeModels.getContent().forEach(paymentTypeModel -> {
-            paymentTypeModel.add(algaLinks.linkToPaymentTypeDisassociateByRestaurant(restaurantId, paymentTypeModel.getId(), "disassociate"));
+            paymentTypeModel.add(
+                    algaLinks.linkToPaymentTypeDisassociateByRestaurant(restaurantId, paymentTypeModel.getId(), "disassociate")
+            );
         });
 
         return paymentTypeModels;
@@ -47,7 +52,8 @@ public class RestaurantPaymentTypeController {
 
     @PutMapping("/{paymentTypeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void associate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {
+    public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {
         restaurantService.associatePaymentType(restaurantId, paymentTypeId);
+        return ResponseEntity.noContent().build();
     }
 }

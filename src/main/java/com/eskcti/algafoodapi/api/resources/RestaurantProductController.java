@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.assembliers.ProductInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.ProductModelAssemblier;
 import com.eskcti.algafoodapi.api.model.ProductModel;
@@ -8,14 +9,17 @@ import com.eskcti.algafoodapi.domain.models.Product;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.ProductService;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @RestController
 @RequestMapping(value = "/restaurants/{restaurantId}/products", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 public class RestaurantProductController {
@@ -31,17 +35,30 @@ public class RestaurantProductController {
     @Autowired
     private ProductInputDisassembler inputDisassembler;
 
+    @Autowired
+    private AlgaLinks algaLinks;
+
     @GetMapping
-    public List<ProductModel> list(@PathVariable Long restaurantId, @RequestParam(required = false) boolean includeInactive) {
+    public CollectionModel<ProductModel> list(
+            @PathVariable Long restaurantId,
+            @RequestParam(required = false) Boolean includeInactive
+    ) {
+        log.log(Level.forName("CUSTOM", 350), "Restaurant id " + restaurantId);
         Restaurant restaurant = restaurantService.find(restaurantId);
-        List<Product> products = new ArrayList<>();
+        List<Product> products;
+
+        if (includeInactive == null) {
+            includeInactive = false;
+        }
+
         if (includeInactive) {
             products = productService.findByRestaurant(restaurant);
         } else {
              products = productService.findActivesByRestaurant(restaurant);
         }
 
-        return modelAssemblier.toCollectionModel(products);
+        return modelAssemblier.toCollectionModel(products)
+                .add(algaLinks.linkToProductByRestaurant(restaurantId, "products"));
     }
 
     @GetMapping("/{productId}")
@@ -54,7 +71,6 @@ public class RestaurantProductController {
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long restaurantId, @PathVariable Long productId) {
-        Restaurant restaurant = restaurantService.find(restaurantId);
         productService.findByRestaurantIdAndId(restaurantId, productId);
 
         productService.remove(productId);
@@ -72,7 +88,6 @@ public class RestaurantProductController {
 
     @PutMapping("/{productId}")
     public ProductModel update(@PathVariable Long restaurantId, @PathVariable Long productId, @RequestBody ProductInput productInput) {
-        Restaurant restaurant = restaurantService.find(restaurantId);
         Product productUpdate = productService.findByRestaurantIdAndId(restaurantId, productId);
 
         inputDisassembler.copyToDomainObject(productInput, productUpdate);

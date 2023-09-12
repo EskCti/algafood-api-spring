@@ -109,6 +109,18 @@ public class AlgaLinks {
                 .withRel(rel);
     }
 
+    public Link linkToGroups(String rel) {
+        return linkTo(methodOn(GroupController.class)
+                .list())
+                .withRel(rel);
+    }
+
+    public Link linkToGroup(Long groupId) {
+        return linkTo(methodOn(GroupController.class)
+                .find(groupId))
+                .withSelfRel();
+    }
+
     public Link linkToActivateByRestaurant(Long restaurantId, String rel) {
         return linkTo(methodOn(RestaurantController.class).activate(restaurantId)).withRel(rel);
     }

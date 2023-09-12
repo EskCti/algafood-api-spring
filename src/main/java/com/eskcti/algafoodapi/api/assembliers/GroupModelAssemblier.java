@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.model.GroupModel;
 import com.eskcti.algafoodapi.api.resources.GroupController;
 import com.eskcti.algafoodapi.domain.models.Group;
@@ -16,12 +17,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class GroupModelAssemblier extends RepresentationModelAssemblerSupport<Group, GroupModel> {
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AlgaLinks algaLinks;
     public GroupModel toModel(Group group) {
         GroupModel groupModel = createModelWithId(group.getId(), group);
         modelMapper.map(group, groupModel);
 
-        groupModel.add(linkTo(methodOn(GroupController.class).list())
-                .withRel("groups"));
+        groupModel.add(algaLinks.linkToGroups("groups"));
 
         return groupModel;
     }

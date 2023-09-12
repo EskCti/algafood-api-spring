@@ -58,7 +58,7 @@ public class RestaurantProductController {
         }
 
         return modelAssemblier.toCollectionModel(products)
-                .add(algaLinks.linkToProductByRestaurant(restaurantId, "products"));
+                .add(algaLinks.linkToProductsByRestaurant(restaurantId, "products"));
     }
 
     @GetMapping("/{productId}")

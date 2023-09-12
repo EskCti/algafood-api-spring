@@ -121,6 +121,24 @@ public class AlgaLinks {
                 .withSelfRel();
     }
 
+    public Link linkToPermissionsByGrupo(Long groupId, String rel) {
+        return linkTo(methodOn(GroupPermissionController.class)
+                .list(groupId))
+                .withRel(rel);
+    }
+
+    public Link linkToPermissionDisassociateByGroup(Long groupId, Long permissionId, String rel) {
+        return linkTo(methodOn(GroupPermissionController.class)
+                .disassociate(groupId, permissionId))
+                .withRel(rel);
+    }
+
+    public Link linkToPermissionAssociateByGroup(Long groupId, String rel) {
+        return linkTo(methodOn(GroupPermissionController.class)
+                .associate(groupId, null))
+                .withRel(rel);
+    }
+
     public Link linkToActivateByRestaurant(Long restaurantId, String rel) {
         return linkTo(methodOn(RestaurantController.class).activate(restaurantId)).withRel(rel);
     }

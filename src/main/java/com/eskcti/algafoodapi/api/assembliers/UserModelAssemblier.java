@@ -24,7 +24,7 @@ public class UserModelAssemblier extends RepresentationModelAssemblerSupport<Use
         modelMapper.map(user, userModel);
 
         userModel.add(algaLinks.linkToUsers());
-        userModel.add(algaLinks.linkToGroupUsers(user.getId()));
+        userModel.add(algaLinks.linkToGroupsByUser(user.getId()));
 
         return userModel;
     }

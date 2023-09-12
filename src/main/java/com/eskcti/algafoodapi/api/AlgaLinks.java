@@ -139,6 +139,23 @@ public class AlgaLinks {
                 .withRel(rel);
     }
 
+    public Link linkToGroupsByUser(Long userId) {
+        return linkTo(methodOn(UserGroupController.class).list(userId))
+                .withRel("groups-user");
+    }
+
+    public Link linkToGroupDisassociateByUser(Long userId, Long groupId, String rel) {
+        return linkTo(methodOn(UserGroupController.class)
+                .disassociate(userId, groupId))
+                .withRel(rel);
+    }
+
+    public Link linkToGroupAssociateByUser(Long userId, String rel) {
+        return linkTo(methodOn(UserGroupController.class)
+                .associate(userId, null))
+                .withRel(rel);
+    }
+
     public Link linkToActivateByRestaurant(Long restaurantId, String rel) {
         return linkTo(methodOn(RestaurantController.class).activate(restaurantId)).withRel(rel);
     }
@@ -203,10 +220,5 @@ public class AlgaLinks {
     public Link linkToUsers() {
         return linkTo(methodOn(UserController.class).list())
                 .withRel("users");
-    }
-
-    public Link linkToGroupUsers(Long userId) {
-        return linkTo(methodOn(UserGroupController.class).list(userId))
-                .withRel("groups-user");
     }
 }

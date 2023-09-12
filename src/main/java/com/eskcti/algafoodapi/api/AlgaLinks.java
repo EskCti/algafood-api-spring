@@ -91,9 +91,21 @@ public class AlgaLinks {
         return linkTo(methodOn(RestaurantResponsibleController.class).associate(restaurantId, null)).withRel(rel);
     }
 
-    public Link linkToProductByRestaurant(Long restaurantId, String rel) {
+    public Link linkToProductsByRestaurant(Long restaurantId, String rel) {
         return linkTo(methodOn(RestaurantProductController.class)
                 .list(restaurantId, null))
+                .withRel(rel);
+    }
+
+    public Link linkToProductByRestaurant(Long restaurantId, Long productId, String rel) {
+        return linkTo(methodOn(RestaurantProductController.class)
+                .find(restaurantId, productId))
+                .withRel(rel);
+    }
+
+    public Link linkToPhotoOfProductByRestaurant(Long restaurantId, Long productId, String rel) {
+        return linkTo(methodOn(RestaurantProductPhotoController.class)
+                .findPhoto(restaurantId, productId))
                 .withRel(rel);
     }
 

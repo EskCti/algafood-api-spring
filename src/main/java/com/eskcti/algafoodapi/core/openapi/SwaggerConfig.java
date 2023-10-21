@@ -43,9 +43,10 @@ public class SwaggerConfig {
         Map<String, MediaType> content = new HashMap<>();
         content.put("application/json", new MediaType().schema(new Schema()));
 
-        operation.getResponses().addApiResponse("500", new ApiResponse()
+        operation.getResponses()
+                .addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
                         .description("Erro interno do servidor"))
-                .addApiResponse("406", new ApiResponse()
+                .addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse()
                         .description("Recurso não possui representação que poderia ser aceita pelo consumidor"));
     }
     private Info info() {

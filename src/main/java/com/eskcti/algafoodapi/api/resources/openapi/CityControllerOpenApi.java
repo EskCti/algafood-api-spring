@@ -28,7 +28,7 @@ public interface CityControllerOpenApi {
             Long id
     );
 
-    @Operation(summary = "Adicionar nova cidade")
+    @Operation(summary = "Adicionar nova cidade", description = "Cadastro de uma cidade, necessita de um estado e um nome válido")
     CityModel insert(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma nova cidade")
             CityInput cityInput

@@ -24,27 +24,27 @@ public interface CityControllerOpenApi {
             @ApiResponse(responseCode = "200", description = "Sucesso - Retorna a cidade"),
     })
     CityModel find(
-            @Parameter(description = "ID da cidade a ser obtido", example = "1")
+            @Parameter(description = "ID da cidade a ser obtido", example = "1", required = true)
             Long id
     );
 
     @Operation(summary = "Adicionar nova cidade", description = "Cadastro de uma cidade, necessita de um estado e um nome válido")
     CityModel insert(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma nova cidade")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma nova cidade", required = true)
             CityInput cityInput
     );
 
     @Operation(summary = "Atualizar a cidade por ID")
     CityModel update(
-            @Parameter(description = "ID da cidade a ser atualizada")
+            @Parameter(description = "ID da cidade a ser atualizada", example = "1", required = true)
             Long id,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma cidade a ser atualizada")
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Representação de uma cidade a ser atualizada", required = true)
             CityInput cityInput
     );
 
     @Operation(summary = "Excluir a cidade por ID")
     void delete(
-            @Parameter(description = "ID da cidade a ser excluida")
+            @Parameter(description = "ID da cidade a ser excluida", example = "1", required = true)
             Long id
     );
 }

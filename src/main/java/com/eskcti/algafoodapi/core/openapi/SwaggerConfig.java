@@ -47,7 +47,9 @@ public class SwaggerConfig {
                 .addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
                         .description("Erro interno do servidor"))
                 .addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse()
-                        .description("Recurso não possui representação que poderia ser aceita pelo consumidor"));
+                        .description("Recurso não possui representação que poderia ser aceita pelo consumidor"))
+                .addApiResponse(String.valueOf(HttpStatus.NOT_FOUND.value()), new ApiResponse()
+                        .description("Recurso Não encontrado"));
     }
     private Info info() {
         return new Info()

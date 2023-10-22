@@ -221,4 +221,21 @@ public class AlgaLinks {
         return linkTo(methodOn(UserController.class).list())
                 .withRel("users");
     }
+
+    public Link linkToStatistics(String rel) {
+        return linkTo(StatisticsController.class).withRel(rel);
+    }
+
+    public Link linkToStatisticsDailySales(String rel) {
+        TemplateVariables filterVariables = new TemplateVariables(
+                new TemplateVariable("restaurantId", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("dateFrom", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("dateTo", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("timeOffset", TemplateVariable.VariableType.REQUEST_PARAM));
+
+        String ordersUrl = linkTo(methodOn(StatisticsController.class)
+                .DailySalesQuery(null, null)).toUri().toString();
+
+        return Link.of(UriTemplate.of(ordersUrl, filterVariables), rel);
+    }
 }

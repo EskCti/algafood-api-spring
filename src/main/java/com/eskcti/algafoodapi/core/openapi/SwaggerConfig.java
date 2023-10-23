@@ -11,10 +11,12 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.method.HandlerMethod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,14 +34,60 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public OpenApiCustomizer openApiCustomizer() {
+        return openApi -> {
+            openApi.getPaths()
+                    .values()
+                    .forEach(pathItem -> pathItem.readOperationsMap()
+                            .forEach((httpMethod, operation) -> {
+                                ApiResponses responses = operation.getResponses();
+                                switch (httpMethod) {
+                                    case GET:
+                                        responses.addApiResponse(String.valueOf(HttpStatus.NOT_FOUND.value()), new ApiResponse()
+                                                .description("Recurso Não encontrado"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse()
+                                                    .description("Recurso não possui representação que poderia ser aceita pelo consumidor"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
+                                                .description("Erro interno do servidor"));
+                                        break;
+                                    case POST:
+                                        responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse()
+                                                .description("Requisição inválida"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
+                                                .description("Erro interno do servidor"));
+                                        break;
+                                    case PUT:
+                                        responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse()
+                                                .description("Requisição inválida"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.NOT_FOUND.value()), new ApiResponse()
+                                                .description("Recurso Não encontrado"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
+                                                .description("Erro interno do servidor"));
+                                        break;
+                                    case DELETE:
+                                        responses.addApiResponse(String.valueOf(HttpStatus.NOT_FOUND.value()), new ApiResponse()
+                                                .description("Recurso Não encontrado"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
+                                                .description("Erro interno do servidor"));
+                                        break;
+                                    default:
+                                        responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
+                                                .description("Erro interno do servidor"));
+                                        break;
+                                }
+                            }));
+        };
+    }
+
+//    @Bean
     public OperationCustomizer customOperationCustomizer() {
         return (operation, handlerMethod) -> {
-            addGlobalResponses(operation);
+            addGlobalResponses(operation, handlerMethod);
             return operation;
         };
     }
 
-    private void addGlobalResponses(Operation operation) {
+    private void addGlobalResponses(Operation operation, HandlerMethod handlerMethod) {
         Map<String, MediaType> content = new HashMap<>();
         content.put("application/json", new MediaType().schema(new Schema()));
 

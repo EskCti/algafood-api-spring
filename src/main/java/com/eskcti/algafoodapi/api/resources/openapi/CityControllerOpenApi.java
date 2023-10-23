@@ -4,6 +4,8 @@ import com.eskcti.algafoodapi.api.model.CityModel;
 import com.eskcti.algafoodapi.api.model.input.CityInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +24,10 @@ public interface CityControllerOpenApi {
     @Operation(summary = "Buscar uma cidade por ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Sucesso - Retorna a cidade"),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "ID da cidade inválida",
+                    content = @Content(schema = @Schema)),
     })
     CityModel find(
             @Parameter(description = "ID da cidade a ser obtido", example = "1", required = true)

@@ -1,5 +1,7 @@
 package com.eskcti.algafoodapi.core.openapi;
 
+import com.eskcti.algafoodapi.api.exceptionhandler.Problem;
+import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -27,10 +29,14 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .components(new Components())
-                .info(info()).externalDocs(
+                .info(info())
+                .externalDocs(
                         new ExternalDocumentation()
                                 .description("Edson Shideki Kokado")
-                                .url("http://www.seusite.com.br"));
+                                .url("http://www.seusite.com.br"))
+                .components(new Components().schemas(
+                    generateSchemas()
+                ));
     }
 
     @Bean
@@ -118,5 +124,17 @@ public class SwaggerConfig {
         contact.url("https://www.algaworks.com");
         contact.setEmail("contato@algaworks.com");
         return contact;
+    }
+
+    private Map<String, Schema> generateSchemas() {
+        final Map<String, Schema> schemaMap = new HashMap<>();
+        Map<String, Schema> problemSchema =
+                ModelConverters.getInstance().read(Problem.class);
+        Map<String, Schema> problemObjectSchema =
+                ModelConverters.getInstance().read(Problem.Object.class);
+
+        schemaMap.putAll(problemSchema);
+        schemaMap.putAll(problemObjectSchema);
+        return schemaMap;
     }
 }

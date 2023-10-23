@@ -27,7 +27,7 @@ public interface CityControllerOpenApi {
             @ApiResponse(
                     responseCode = "400",
                     description = "ID da cidade inválida",
-                    content = @Content(schema = @Schema)),
+                    content = @Content(schema = @Schema(ref = "Problem"))),
     })
     CityModel find(
             @Parameter(description = "ID da cidade a ser obtido", example = "1", required = true)

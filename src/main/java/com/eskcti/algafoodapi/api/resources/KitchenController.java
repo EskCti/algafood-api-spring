@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.assembliers.KitchenInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.KitchenModelAssemblier;
 import com.eskcti.algafoodapi.api.model.KitchenModel;
 import com.eskcti.algafoodapi.api.model.input.KitchenInput;
+import com.eskcti.algafoodapi.api.resources.openapi.KitchenControllerOpenApi;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
@@ -11,7 +12,6 @@ import com.eskcti.algafoodapi.domain.services.KitchenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -20,11 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/kitchens", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class KitchenController {
+public class KitchenController implements KitchenControllerOpenApi {
     @Autowired
     private KitchenService kitchenService;
 

@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.assembliers.PaymentTypeInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.PaymentTypeModelAssemblier;
 import com.eskcti.algafoodapi.api.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.api.model.input.PaymentTypeInput;
+import com.eskcti.algafoodapi.api.resources.openapi.PaymentTypeControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.services.PaymentTypeService;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value="/payment_types", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class PaymentTypeController {
+public class PaymentTypeController implements PaymentTypeControllerOpenApi {
     @Autowired
     private PaymentTypeService paymentTypeService;
 

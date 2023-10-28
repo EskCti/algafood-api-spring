@@ -9,7 +9,7 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
@@ -18,6 +18,7 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.method.HandlerMethod;
 
 import java.util.HashMap;
@@ -25,6 +26,11 @@ import java.util.Map;
 
 @Configuration
 public class SwaggerConfig {
+
+    private static final String badRequestResponse = "BadRequestResponse";
+    private static final String notFoundResponse = "NotFoundResponse";
+    private static final String notAcceptableResponse = "NotAcceptableResponse";
+    private static final String internalServerErrorResponse = "InternalServerErrorResponse";
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
@@ -34,9 +40,12 @@ public class SwaggerConfig {
                         new ExternalDocumentation()
                                 .description("Edson Shideki Kokado")
                                 .url("http://www.seusite.com.br"))
-                .components(new Components().schemas(
-                    generateSchemas()
-                ));
+                .components(new Components()
+                        .schemas(
+                            generateSchemas()
+                        )
+                        .responses(generateResponses())
+                );
     }
 
     @Bean
@@ -50,35 +59,35 @@ public class SwaggerConfig {
                                 switch (httpMethod) {
                                     case GET:
                                         responses.addApiResponse(String.valueOf(HttpStatus.NOT_FOUND.value()), new ApiResponse()
-                                                .description("Recurso Não encontrado"));
+                                                .$ref(notFoundResponse));
                                         responses.addApiResponse(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()), new ApiResponse()
-                                                    .description("Recurso não possui representação que poderia ser aceita pelo consumidor"));
+                                                .$ref(notAcceptableResponse));
                                         responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
-                                                .description("Erro interno do servidor"));
+                                                .$ref(internalServerErrorResponse));
                                         break;
                                     case POST:
-                                        responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse()
-                                                .description("Requisição inválida"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                                                new ApiResponse().$ref(badRequestResponse));
                                         responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
-                                                .description("Erro interno do servidor"));
+                                                .$ref(internalServerErrorResponse));
                                         break;
                                     case PUT:
-                                        responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), new ApiResponse()
-                                                .description("Requisição inválida"));
+                                        responses.addApiResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                                                new ApiResponse().$ref(badRequestResponse));
                                         responses.addApiResponse(String.valueOf(HttpStatus.NOT_FOUND.value()), new ApiResponse()
-                                                .description("Recurso Não encontrado"));
+                                                .$ref(notFoundResponse));
                                         responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
-                                                .description("Erro interno do servidor"));
+                                                .$ref(internalServerErrorResponse));
                                         break;
                                     case DELETE:
                                         responses.addApiResponse(String.valueOf(HttpStatus.NOT_FOUND.value()), new ApiResponse()
-                                                .description("Recurso Não encontrado"));
+                                                .$ref(notFoundResponse));
                                         responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
-                                                .description("Erro interno do servidor"));
+                                                .$ref(internalServerErrorResponse));
                                         break;
                                     default:
                                         responses.addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
-                                                .description("Erro interno do servidor"));
+                                                .$ref(internalServerErrorResponse));
                                         break;
                                 }
                             }));
@@ -95,7 +104,7 @@ public class SwaggerConfig {
 
     private void addGlobalResponses(Operation operation, HandlerMethod handlerMethod) {
         Map<String, MediaType> content = new HashMap<>();
-        content.put("application/json", new MediaType().schema(new Schema()));
+//        content.put("application/json", new MediaType().schema(new Schema()));
 
         operation.getResponses()
                 .addApiResponse(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), new ApiResponse()
@@ -137,4 +146,38 @@ public class SwaggerConfig {
         schemaMap.putAll(problemObjectSchema);
         return schemaMap;
     }
+
+    private Map<String, ApiResponse> generateResponses() {
+        final Map<String, ApiResponse> apiResponseMap = new HashMap<>();
+
+        Content content = new Content()
+                .addMediaType(
+                        MediaType.APPLICATION_JSON_VALUE,
+                        new io.swagger.v3.oas.models.media.MediaType()
+                                .schema(new Schema<Problem>().$ref("Problem"))
+                );
+
+        apiResponseMap.put(badRequestResponse, new ApiResponse()
+                .description("Requisição inválida")
+                .content(content));
+
+        apiResponseMap.put(notFoundResponse, new ApiResponse()
+                .description("Recurso Não encontrado")
+                .content(content));
+
+        apiResponseMap.put(notAcceptableResponse, new ApiResponse()
+                .description("Recurso não possui representação que poderia ser aceita pelo consumidor")
+                .content(content));
+
+        apiResponseMap.put(notAcceptableResponse, new ApiResponse()
+                .description("Recurso não possui representação que poderia ser aceita pelo consumidor")
+                .content(content));
+
+        apiResponseMap.put(internalServerErrorResponse, new ApiResponse()
+                .description("Erro interno do servidor")
+                .content(content));
+
+        return apiResponseMap;
+    }
+
 }

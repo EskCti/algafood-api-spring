@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.api.assembliers.OrderSummaryModelAssemblier;
 import com.eskcti.algafoodapi.api.model.OrderModel;
 import com.eskcti.algafoodapi.api.model.OrderSummaryModel;
 import com.eskcti.algafoodapi.api.model.input.OrderInput;
+import com.eskcti.algafoodapi.api.resources.openapi.OrderControllerOpenApi;
 import com.eskcti.algafoodapi.core.data.PageWrapper;
 import com.eskcti.algafoodapi.core.data.PageableTranslate;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
-public class OrderController {
+public class OrderController implements OrderControllerOpenApi {
 
     @Autowired
     private OrderService orderService;
@@ -57,24 +58,24 @@ public class OrderController {
         return modelAssemblier.toModel(orderService.find(orderCode));
     }
 
-    @GetMapping("/search/filter")
-    public MappingJacksonValue listFilter(@RequestParam(required = false) String fields, Pageable pageable) {
-        Page<Order> ordersPage = orderService.list(pageable);
-        CollectionModel<OrderModel> orderModels = modelAssemblier.toCollectionModel(ordersPage.getContent());
-
-        MappingJacksonValue ordersWrapper = new MappingJacksonValue(orderModels);
-
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-
-        if (StringUtils.hasLength(fields)) {
-            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields.split(",")));
-        } else {
-            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.serializeAll());
-        }
-
-        ordersWrapper.setFilters(filterProvider);
-        return ordersWrapper;
-    }
+//    @GetMapping("/search/filter")
+//    public MappingJacksonValue listFilter(@RequestParam(required = false) String fields, Pageable pageable) {
+//        Page<Order> ordersPage = orderService.list(pageable);
+//        CollectionModel<OrderModel> orderModels = modelAssemblier.toCollectionModel(ordersPage.getContent());
+//
+//        MappingJacksonValue ordersWrapper = new MappingJacksonValue(orderModels);
+//
+//        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+//
+//        if (StringUtils.hasLength(fields)) {
+//            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields.split(",")));
+//        } else {
+//            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.serializeAll());
+//        }
+//
+//        ordersWrapper.setFilters(filterProvider);
+//        return ordersWrapper;
+//    }
 
     @GetMapping
     public PagedModel<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {

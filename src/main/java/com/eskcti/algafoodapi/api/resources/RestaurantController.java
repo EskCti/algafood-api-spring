@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.assembliers.RestaurantModelAssemblier;
 import com.eskcti.algafoodapi.api.model.RestaurantModel;
 import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
 import com.eskcti.algafoodapi.api.model.view.RestaurantView;
+import com.eskcti.algafoodapi.api.resources.openapi.RestaurantControllerOpenApi;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/restaurants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class RestaurantController {
+public class RestaurantController implements RestaurantControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;
 

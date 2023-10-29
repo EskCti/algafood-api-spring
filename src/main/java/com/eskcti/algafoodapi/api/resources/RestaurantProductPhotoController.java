@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.resources;
 import com.eskcti.algafoodapi.api.assembliers.ProductPhotoModelAssemblier;
 import com.eskcti.algafoodapi.api.model.ProductPhotoModel;
 import com.eskcti.algafoodapi.api.model.input.ProductPhotoInput;
+import com.eskcti.algafoodapi.api.resources.openapi.RestaurantProductPhotoControllerOpenApi;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Product;
 import com.eskcti.algafoodapi.domain.models.ProductPhoto;
@@ -25,7 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/products/{productId}/photo")
-public class RestaurantProductPhotoController {
+public class RestaurantProductPhotoController implements RestaurantProductPhotoControllerOpenApi {
     @Autowired
     private ProductService productService;
     @Autowired

@@ -10,6 +10,7 @@ import com.eskcti.algafoodapi.domain.services.CatalogPhotoProductService;
 import com.eskcti.algafoodapi.domain.services.PhotoStorageService;
 import com.eskcti.algafoodapi.domain.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,9 +31,13 @@ import java.util.List;
 
 @Tag(name = "Restaurante Product Foto", description = "Gerencia as fotos dos produtos de restaurante")
 public interface RestaurantProductPhotoControllerOpenApi {
+    @Operation(summary = "Atualiza a foto do produto de um restaurant")
     ProductPhotoModel updatePhoto(
+            @Parameter(description = "Id do restaurant", example = "1", required = true)
             @PathVariable Long restaurantId,
+            @Parameter(description = "Id do produto", example = "1", required = true)
             @PathVariable Long productId,
+            @RequestBody(required = true)
             @Valid ProductPhotoInput productPhotoInput
     ) throws IOException;
 

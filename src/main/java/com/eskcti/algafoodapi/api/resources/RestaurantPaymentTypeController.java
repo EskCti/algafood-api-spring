@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.resources;
 import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.assembliers.PaymentTypeModelAssemblier;
 import com.eskcti.algafoodapi.api.model.PaymentTypeModel;
+import com.eskcti.algafoodapi.api.resources.openapi.RestaurantPaymentTypeControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/restaurants/{restaurantId}/payment_types", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class RestaurantPaymentTypeController {
+public class RestaurantPaymentTypeController implements RestaurantPaymentTypeControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;
 

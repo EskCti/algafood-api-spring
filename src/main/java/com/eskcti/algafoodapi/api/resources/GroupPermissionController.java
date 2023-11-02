@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.resources;
 import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.assembliers.PermissionModelAssemblier;
 import com.eskcti.algafoodapi.api.model.PermissionModel;
+import com.eskcti.algafoodapi.api.resources.openapi.GroupPermissionControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import com.eskcti.algafoodapi.domain.services.PermissionService;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/groups/{groupId}/permissions")
-public class GroupPermissionController {
+public class GroupPermissionController implements GroupPermissionControllerOpenApi {
 
     @Autowired
     private GroupService groupService;

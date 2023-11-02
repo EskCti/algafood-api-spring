@@ -48,14 +48,26 @@ public interface RestaurantProductPhotoControllerOpenApi {
                     @Content(mediaType = "image/png", schema = @Schema(type = "string", format = "binary")),
             })
     })
-    ProductPhotoModel findPhoto(@PathVariable Long restaurantId, @PathVariable Long productId);
+    ProductPhotoModel findPhoto(
+            @Parameter(description = "Id do restaurant", example = "1", required = true)
+            Long restaurantId,
+            @Parameter(description = "Id do produto", example = "1", required = true)
+            Long productId
+    );
 
     @Operation(hidden = true)
     ResponseEntity<?> servePhoto(
-            @PathVariable Long restaurantId,
-            @PathVariable Long productId,
+            @Parameter(description = "Id do restaurant", example = "1", required = true)
+            Long restaurantId,
+            @Parameter(description = "Id do produto", example = "1", required = true)
+            Long productId,
             @RequestHeader(name = "Accept") String acceptHeader
     ) throws HttpMediaTypeNotAcceptableException;
 
-    ResponseEntity deletePhoto(@PathVariable Long restaurantId, @PathVariable Long productId);
+    ResponseEntity deletePhoto(
+            @Parameter(description = "Id do restaurant", example = "1", required = true)
+            Long restaurantId,
+            @Parameter(description = "Id do produto", example = "1", required = true)
+            Long productId
+    );
 }

@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.api.AlgaLinks;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ public class RootEntryPointController {
     private AlgaLinks algaLinks;
 
     @GetMapping
+    @Operation(hidden = true)
     public RootEntryPointModel root() {
         var rootEntryPointModel = new RootEntryPointModel();
 

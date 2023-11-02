@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.resources;
 import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.assembliers.UserModelAssemblier;
 import com.eskcti.algafoodapi.api.model.UserModel;
+import com.eskcti.algafoodapi.api.resources.openapi.RestaurantResponsibleControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/responsible")
-public class RestaurantResponsibleController {
+public class RestaurantResponsibleController implements RestaurantResponsibleControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;
 

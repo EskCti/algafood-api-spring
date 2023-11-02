@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.assembliers.StateInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.StateModelAssemblier;
 import com.eskcti.algafoodapi.api.model.StateModel;
 import com.eskcti.algafoodapi.api.model.input.StateInput;
+import com.eskcti.algafoodapi.api.resources.openapi.StateControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.State;
 import com.eskcti.algafoodapi.domain.services.StateService;
 import jakarta.validation.Valid;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/states", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class StateController {
+public class StateController implements StateControllerOpenApi {
     @Autowired
     private StateService stateService;
 
@@ -56,7 +57,7 @@ public class StateController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void remove(@PathVariable Long id) {
         stateService.remove(id);
     }
 }

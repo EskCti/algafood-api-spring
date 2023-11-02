@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.resources;
 import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.assembliers.GroupModelAssemblier;
 import com.eskcti.algafoodapi.api.model.GroupModel;
+import com.eskcti.algafoodapi.api.resources.openapi.UserGroupControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import com.eskcti.algafoodapi.domain.services.UserService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users/{userId}/groups")
-public class UserGroupController {
+public class UserGroupController implements UserGroupControllerOpenApi {
     @Autowired
     private UserService userService;
 

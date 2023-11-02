@@ -1,6 +1,7 @@
 package com.eskcti.algafoodapi.api.resources;
 
 import com.eskcti.algafoodapi.api.AlgaLinks;
+import com.eskcti.algafoodapi.api.resources.openapi.StatisticsControllerOpenApi;
 import com.eskcti.algafoodapi.domain.filter.DailySalesFilter;
 import com.eskcti.algafoodapi.domain.models.DailySales;
 import com.eskcti.algafoodapi.domain.services.SaleQueryService;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/statistics")
-public class StatisticsController {
+public class StatisticsController implements StatisticsControllerOpenApi {
     @Autowired
     private SaleQueryService saleQueryService;
 

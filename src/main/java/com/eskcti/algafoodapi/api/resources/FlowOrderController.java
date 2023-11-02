@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.resources.openapi.FlowOrderControllerOpenApi;
 import com.eskcti.algafoodapi.domain.services.FlowOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/orders/{orderCode}")
-public class FlowOrderController {
+public class FlowOrderController implements FlowOrderControllerOpenApi {
     @Autowired
     private FlowOrderService flowOrderService;
     @PutMapping("/confirmation")

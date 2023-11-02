@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.api.model.UserModel;
 import com.eskcti.algafoodapi.api.model.input.UserInput;
 import com.eskcti.algafoodapi.api.model.input.UserUpdate;
 import com.eskcti.algafoodapi.api.model.input.UserUpdatePassword;
+import com.eskcti.algafoodapi.api.resources.openapi.UserControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.UserService;
 import jakarta.validation.Valid;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserControllerOpenApi {
     @Autowired
     private UserModelAssemblier modelAssemblier;
     @Autowired

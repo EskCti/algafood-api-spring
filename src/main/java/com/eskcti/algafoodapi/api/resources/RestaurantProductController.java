@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.assembliers.ProductInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.ProductModelAssemblier;
 import com.eskcti.algafoodapi.api.model.ProductModel;
 import com.eskcti.algafoodapi.api.model.input.ProductInput;
+import com.eskcti.algafoodapi.api.resources.openapi.RestaurantProductControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.Product;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.ProductService;
@@ -22,7 +23,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping(value = "/restaurants/{restaurantId}/products", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class RestaurantProductController {
+public class RestaurantProductController implements RestaurantProductControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;
 

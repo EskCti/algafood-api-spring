@@ -88,10 +88,18 @@ public class Order extends AbstractAggregateRoot<Order> {
         registerEvent(new OrderConfirmedEvent(this));
     }
 
+    public boolean canBeConfirmed() {
+        return getOrderStatus().canChangeTo(OrderStatus.CONFIRMED);
+    }
+
     public void delivery() {
         setOrderStatus(OrderStatus.DELIVERED);
         setDeliveryDate(OffsetDateTime.now());
         calculateValueTotal();
+    }
+
+    public boolean canBeDelivered() {
+        return getOrderStatus().canChangeTo(OrderStatus.DELIVERED);
     }
 
     public void cancel() {
@@ -99,6 +107,10 @@ public class Order extends AbstractAggregateRoot<Order> {
         setCancellationDate(OffsetDateTime.now());
         calculateValueTotal();
         registerEvent(new OrderCanceledEvent(this));
+    }
+
+    public boolean canBeCanceled() {
+        return getOrderStatus().canChangeTo(OrderStatus.CANCELED);
     }
 
     private void setStatus(OrderStatus newStatus) {

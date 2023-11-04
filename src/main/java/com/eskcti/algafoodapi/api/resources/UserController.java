@@ -6,18 +6,18 @@ import com.eskcti.algafoodapi.api.model.UserModel;
 import com.eskcti.algafoodapi.api.model.input.UserInput;
 import com.eskcti.algafoodapi.api.model.input.UserUpdate;
 import com.eskcti.algafoodapi.api.model.input.UserUpdatePassword;
+import com.eskcti.algafoodapi.api.resources.openapi.UserControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserControllerOpenApi {
     @Autowired
     private UserModelAssemblier modelAssemblier;
     @Autowired
@@ -26,7 +26,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<UserModel> list() {
+    public CollectionModel<UserModel> list() {
         return modelAssemblier.toCollectionModel(userService.list());
     }
 

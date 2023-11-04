@@ -1,27 +1,35 @@
 package com.eskcti.algafoodapi.api.assembliers;
 
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.model.ProductPhotoModel;
-import com.eskcti.algafoodapi.api.model.StateModel;
+import com.eskcti.algafoodapi.api.resources.RestaurantProductPhotoController;
 import com.eskcti.algafoodapi.domain.models.ProductPhoto;
-import com.eskcti.algafoodapi.domain.models.State;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
-public class ProductPhotoModelAssemblier {
+public class ProductPhotoModelAssemblier extends RepresentationModelAssemblerSupport<ProductPhoto, ProductPhotoModel> {
     @Autowired
     private ModelMapper modelMapper;
-    public ProductPhotoModel toModel(ProductPhoto photo) {
-        return modelMapper.map(photo, ProductPhotoModel.class);
-    }
 
-    public List<ProductPhotoModel> toCollectionModel(List<ProductPhoto> photos) {
-        return photos.stream()
-                .map(photo -> toModel(photo))
-                .collect(Collectors.toList());
+    @Autowired
+    private AlgaLinks algaLinks;
+
+    public ProductPhotoModelAssemblier() {
+        super(RestaurantProductPhotoController.class, ProductPhotoModel.class);
     }
+    public ProductPhotoModel toModel(ProductPhoto photo) {
+        ProductPhotoModel productPhotoModel = modelMapper.map(photo, ProductPhotoModel.class);
+        productPhotoModel.add(algaLinks.linkToPhotoOfProductByRestaurant(photo.getRestaurantId(), photo.getProductId(), "photo"));
+        productPhotoModel.add(algaLinks.linkToProductByRestaurant(photo.getRestaurantId(), photo.getProductId(), "product"));
+
+        return productPhotoModel;
+    }
+//    public List<ProductPhotoModel> toCollectionModel(List<ProductPhoto> photos) {
+//        return photos.stream()
+//                .map(photo -> toModel(photo))
+//                .collect(Collectors.toList());
+//    }
 }

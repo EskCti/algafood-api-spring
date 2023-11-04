@@ -4,10 +4,12 @@ import com.eskcti.algafoodapi.api.assembliers.PaymentTypeInputDisassembler;
 import com.eskcti.algafoodapi.api.assembliers.PaymentTypeModelAssemblier;
 import com.eskcti.algafoodapi.api.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.api.model.input.PaymentTypeInput;
+import com.eskcti.algafoodapi.api.resources.openapi.PaymentTypeControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.services.PaymentTypeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value="/payment_types", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class PaymentTypeController {
+public class PaymentTypeController implements PaymentTypeControllerOpenApi {
     @Autowired
     private PaymentTypeService paymentTypeService;
 
@@ -33,13 +35,13 @@ public class PaymentTypeController {
     private PaymentTypeInputDisassembler inputDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<PaymentTypeModel>> list(ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<PaymentTypeModel>> list(ServletWebRequest request) {
         String eTag = getEtag(request);
         if (eTag == null) return null;
 
         List<PaymentType> paymentTypeList = paymentTypeService.list();
 
-        List<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
+        CollectionModel<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(paymentTypeList);
 
         return ResponseEntity.ok()
 //                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))

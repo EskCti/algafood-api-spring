@@ -1,39 +1,57 @@
 package com.eskcti.algafoodapi.api.resources;
 
+import com.eskcti.algafoodapi.api.AlgaLinks;
 import com.eskcti.algafoodapi.api.assembliers.UserModelAssemblier;
 import com.eskcti.algafoodapi.api.model.UserModel;
+import com.eskcti.algafoodapi.api.resources.openapi.RestaurantResponsibleControllerOpenApi;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/responsible")
-public class RestaurantResponsibleController {
+public class RestaurantResponsibleController implements RestaurantResponsibleControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;
 
     @Autowired
     private UserModelAssemblier modelAssemblier;
 
+    @Autowired
+    private AlgaLinks algaLinks;
+
     @GetMapping
-    public List<UserModel> list(@PathVariable Long restaurantId) {
+    public CollectionModel<UserModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
-        return modelAssemblier.toCollectionModel(restaurant.getResponsible());
+        CollectionModel<UserModel> collectionModel = modelAssemblier.toCollectionModel(restaurant.getResponsible())
+                .removeLinks()
+                .add(algaLinks.linkToResponsibleByRestaurant(restaurantId, "self"))
+                .add(algaLinks.linkToResponsibleAssociateByRestaurant(restaurantId, "associate"));
+
+        collectionModel.getContent().forEach(userModel -> {
+            userModel.add(algaLinks.linkToResponsibleDisassociateByRestaurant(restaurantId, userModel.getId(), "disassociate"));
+        });
+        return collectionModel;
     }
 
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void associate(@PathVariable Long restaurantId, @PathVariable Long userId) {
+    public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long userId) {
         restaurantService.associateResponsible(restaurantId, userId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void disassociate(@PathVariable Long restaurantId, @PathVariable Long userId) {
+    public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long userId) {
         restaurantService.disassociateResponsible(restaurantId, userId);
+        return ResponseEntity.noContent().build();
     }
 }

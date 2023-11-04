@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.assembliers.RestaurantModelAssemblier;
 import com.eskcti.algafoodapi.api.model.RestaurantModel;
 import com.eskcti.algafoodapi.api.model.input.RestaurantInput;
 import com.eskcti.algafoodapi.api.model.view.RestaurantView;
+import com.eskcti.algafoodapi.api.resources.openapi.RestaurantControllerOpenApi;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -19,8 +20,10 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -35,7 +38,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/restaurants", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-public class RestaurantController {
+public class RestaurantController implements RestaurantControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;
 
@@ -49,20 +52,20 @@ public class RestaurantController {
     private SmartValidator validator;
 
     @GetMapping
-    public List<RestaurantModel> list() {
+    public CollectionModel<RestaurantModel> list() {
         return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
     @JsonView(RestaurantView.Summary.class)
     @GetMapping(params = "project=summary")
-    public List<RestaurantModel> listSummary() {
+    public CollectionModel<RestaurantModel> listSummary() {
         return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
     @GetMapping(params = "project=wrapper")
     public MappingJacksonValue listMapping() {
         List<Restaurant> restaurants = restaurantService.list();
-        List<RestaurantModel> restaurantModels = modelAssemblier.toCollectionModel(restaurants);
+        CollectionModel<RestaurantModel> restaurantModels = modelAssemblier.toCollectionModel(restaurants);
 
         MappingJacksonValue restaurantsWrappers = new MappingJacksonValue(restaurantModels);
 
@@ -127,14 +130,16 @@ public class RestaurantController {
 
     @PutMapping("/{restaurantId}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void activate (@PathVariable Long restaurantId){
+    public ResponseEntity<Void> activate (@PathVariable Long restaurantId){
         restaurantService.activate(restaurantId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{restaurantId}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deactivate (@PathVariable Long restaurantId){
+    public ResponseEntity<Void> deactivate (@PathVariable Long restaurantId){
         restaurantService.deactivate(restaurantId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/activate-multiples")
@@ -163,11 +168,17 @@ public class RestaurantController {
 
     @PutMapping("/{restaurantId}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void opening (@PathVariable Long restaurantId) { restaurantService.opening(restaurantId); }
+    public ResponseEntity<Void> opening (@PathVariable Long restaurantId) {
+        restaurantService.opening(restaurantId);
+        return ResponseEntity.noContent().build();
+    }
 
     @PutMapping("/{restaurantId}/closing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void closing (@PathVariable Long restaurantId) { restaurantService.closing(restaurantId); }
+    public ResponseEntity<Void> closing (@PathVariable Long restaurantId) {
+        restaurantService.closing(restaurantId);
+        return ResponseEntity.noContent().build();
+    }
 
     public void validate(Restaurant restaurant, String objectName) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant, objectName);

@@ -6,6 +6,8 @@ import com.eskcti.algafoodapi.api.assembliers.OrderSummaryModelAssemblier;
 import com.eskcti.algafoodapi.api.model.OrderModel;
 import com.eskcti.algafoodapi.api.model.OrderSummaryModel;
 import com.eskcti.algafoodapi.api.model.input.OrderInput;
+import com.eskcti.algafoodapi.api.resources.openapi.OrderControllerOpenApi;
+import com.eskcti.algafoodapi.core.data.PageWrapper;
 import com.eskcti.algafoodapi.core.data.PageableTranslate;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -19,19 +21,20 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
-public class OrderController {
+public class OrderController implements OrderControllerOpenApi {
 
     @Autowired
     private OrderService orderService;
@@ -47,36 +50,41 @@ public class OrderController {
     @Autowired
     private IssuanceOrderService issuanceOrderService;
 
+    @Autowired
+    private PagedResourcesAssembler<Order> pagedResourcesAssembler;
+
     @GetMapping("/{orderCode}")
     public OrderModel find(@PathVariable String orderCode) {
         return modelAssemblier.toModel(orderService.find(orderCode));
     }
 
-    @GetMapping("/filter")
-    public MappingJacksonValue listFilter(@RequestParam(required = false) String fields, Pageable pageable) {
-        Page<Order> ordersPage = orderService.list(pageable);
-        List<OrderModel> orderModels = modelAssemblier.toCollectionModel(ordersPage.getContent());
-
-        MappingJacksonValue ordersWrapper = new MappingJacksonValue(orderModels);
-
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-        filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.serializeAll());
-
-        if (StringUtils.hasLength(fields)) {
-            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields.split(",")));
-        }
-
-        ordersWrapper.setFilters(filterProvider);
-        return ordersWrapper;
-    }
+//    @GetMapping("/search/filter")
+//    public MappingJacksonValue listFilter(@RequestParam(required = false) String fields, Pageable pageable) {
+//        Page<Order> ordersPage = orderService.list(pageable);
+//        CollectionModel<OrderModel> orderModels = modelAssemblier.toCollectionModel(ordersPage.getContent());
+//
+//        MappingJacksonValue ordersWrapper = new MappingJacksonValue(orderModels);
+//
+//        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+//
+//        if (StringUtils.hasLength(fields)) {
+//            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields.split(",")));
+//        } else {
+//            filterProvider.addFilter("orderFilter", SimpleBeanPropertyFilter.serializeAll());
+//        }
+//
+//        ordersWrapper.setFilters(filterProvider);
+//        return ordersWrapper;
+//    }
 
     @GetMapping
-    public Page<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {
-        pageable = translatePageable(pageable);
-        Page<Order> orderPage = orderService.list(orderFilter, pageable);
-        List<OrderSummaryModel> orderSummaryModels = modelSummaryAssemblier.toCollectionModel(orderPage.getContent());
-        Page<OrderSummaryModel> orderSummaryModelPage = new PageImpl<>(orderSummaryModels, pageable, orderPage.getTotalElements());
-        return orderSummaryModelPage;
+    public PagedModel<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {
+        Pageable pageableTranslate = translatePageable(pageable);
+        Page<Order> orderPage = orderService.list(orderFilter, pageableTranslate);
+
+        orderPage = new PageWrapper<>(orderPage, pageable);
+
+        return pagedResourcesAssembler.toModel(orderPage, modelSummaryAssemblier);
     }
 
     @PostMapping
@@ -99,7 +107,7 @@ public class OrderController {
         var mapping = Map.of(
                 "code", "code",
                 "restaurant.id", "restaurant.id",
-                "restaurant.name", "restaurant.name",
+                "nameRestaurant", "restaurant.name",
                 "nameCustomer", "customer.name",
                 "subtotal", "subtotal",
                 "shippingFee", "shippingFee",

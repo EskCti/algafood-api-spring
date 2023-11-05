@@ -1,6 +1,6 @@
-package com.eskcti.algafoodapi.api.v1.resources;
+package com.eskcti.algafoodapi.api.v2.resources;
 
-import com.eskcti.algafoodapi.api.v1.AlgaLinks;
+import com.eskcti.algafoodapi.api.v2.AlgaLinksV2;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.RepresentationModel;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/v1", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RootEntryPointController {
+@RequestMapping(value = "/v2", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RootEntryPointControllerV2 {
     @Autowired
-    private AlgaLinks algaLinks;
+    private AlgaLinksV2 algaLinks;
 
     @GetMapping
     @Operation(hidden = true)
@@ -21,15 +21,7 @@ public class RootEntryPointController {
         var rootEntryPointModel = new RootEntryPointModel();
 
         rootEntryPointModel.add(algaLinks.linkToKitchens());
-        rootEntryPointModel.add(algaLinks.linkToOrders());
-        rootEntryPointModel.add(algaLinks.linkToRestaurants());
-        rootEntryPointModel.add(algaLinks.linkToGroups("groups"));
-        rootEntryPointModel.add(algaLinks.linkToUsers());
-        rootEntryPointModel.add(algaLinks.linkToPaymentTypes());
-        rootEntryPointModel.add(algaLinks.linkToStates());
-        rootEntryPointModel.add(algaLinks.linkToStates());
         rootEntryPointModel.add(algaLinks.linkToCities());
-        rootEntryPointModel.add(algaLinks.linkToStatistics("statistics"));
 
         return rootEntryPointModel;
     }

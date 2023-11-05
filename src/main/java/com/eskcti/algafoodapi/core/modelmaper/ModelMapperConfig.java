@@ -1,9 +1,7 @@
 package com.eskcti.algafoodapi.core.modelmaper;
 
-import com.eskcti.algafoodapi.api.model.AddressModel;
-import com.eskcti.algafoodapi.api.model.RestaurantModel;
+import com.eskcti.algafoodapi.api.v1.model.AddressModel;
 import com.eskcti.algafoodapi.domain.models.Address;
-import com.eskcti.algafoodapi.domain.models.Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -22,7 +22,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping(value = "/restaurants/{restaurantId}/products", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+@RequestMapping(value = "/v1/restaurants/{restaurantId}/products", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 public class RestaurantProductController implements RestaurantProductControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;

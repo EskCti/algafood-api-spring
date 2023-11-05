@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping("/restaurants/{restaurantId}/responsible")
+@RequestMapping("/v1/restaurants/{restaurantId}/responsible")
 public class RestaurantResponsibleController implements RestaurantResponsibleControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;

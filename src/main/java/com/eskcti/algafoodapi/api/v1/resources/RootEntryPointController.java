@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RootEntryPointController {
     @Autowired
     private AlgaLinks algaLinks;

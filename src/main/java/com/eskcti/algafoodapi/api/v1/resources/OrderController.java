@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/v1/orders")
 public class OrderController implements OrderControllerOpenApi {
 
     @Autowired

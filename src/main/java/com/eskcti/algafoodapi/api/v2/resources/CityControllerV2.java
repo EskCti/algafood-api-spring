@@ -6,7 +6,6 @@ import com.eskcti.algafoodapi.api.v2.assembliers.CityModelAssemblierV2;
 import com.eskcti.algafoodapi.api.v2.model.CityModelV2;
 import com.eskcti.algafoodapi.api.v2.model.input.CityInputV2;
 import com.eskcti.algafoodapi.api.v2.openapi.CityControllerOpenApiV2;
-import com.eskcti.algafoodapi.core.web.AlgaMediaTypes;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
@@ -15,12 +14,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/cities", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v2/cities", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CityControllerV2 implements CityControllerOpenApiV2 {
     @Autowired
     private CityService cityService;

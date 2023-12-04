@@ -58,13 +58,13 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        var secretKey = new SecretKeySpec("5MU8/YgrnHELFHEypwoIfstdqvzxUE4KoZe1vpG+6S8=".getBytes(), "HmacSHA256");
-
-        JwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey).build();
-
-        return jwtDecoder;
-    }
+//    @Bean
+//    public JwtDecoder jwtDecoder() {
+//        var secretKey = new SecretKeySpec("5MU8/YgrnHELFHEypwoIfstdqvzxUE4KoZe1vpG+6S8=".getBytes(), "HmacSHA256");
+//
+//        JwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKey).build();
+//
+//        return jwtDecoder;
+//    }
 }
 

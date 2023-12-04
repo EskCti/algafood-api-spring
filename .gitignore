@@ -39,3 +39,5 @@ dbdata-test
 
 application.*
 /.metadata
+
+keystores/

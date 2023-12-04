@@ -70,10 +70,10 @@ INSERT IGNORE INTO tab_groups (name) VALUES ("Administrador"), ("Cadastrador"), 
 
 INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id) VALUES (1, 1), (1, 2), (2, 2), (3, 1), (4, 1);
 
-INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Administrador', 'admin@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Contato', 'contato@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Edson S Kokado', 'edsonskokado@algafood.com.br', '123456', utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('João Silva', 'email.test.joaosilva@gmail.com', '123456', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Administrador', 'admin@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Contato', 'contato@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Edson S Kokado', 'edsonskokado@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('João Silva', 'email.test.joaosilva@gmail.com', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
 
 INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 1), (2, 2), (2, 3), (2, 4), (4, 1);
 

@@ -60,4 +60,8 @@ public class User {
     public Boolean disassociateGroup(Group group) {
         return this.getGroups().remove(group);
     }
+
+    public boolean isNew() {
+        return getId() == null;
+    }
 }

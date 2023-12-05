@@ -102,11 +102,11 @@ INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id)
 SELECT 4, id from tab_permissions WHERE name LIKE "%_RESTAURANTS" OR name LIKE "%_PRODUCTS";
 
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Administrador', 'admin@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Contato', 'contato@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Edson S Kokado', 'edsonskokado@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
-INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('João Silva', 'email.test.joaosilva@gmail.com', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Vendedor', 'vendedor@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Auxiliar', 'auxiliar@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
+INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Cadastrador', 'cadastrador@algafood.com', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
 
-INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 1), (2, 2), (2, 3), (2, 4), (4, 1);
+INSERT IGNORE INTO tab_users_groups (user_id, group_id) VALUES (1, 1), (2, 2), (3, 3), (4, 4);
 
 INSERT IGNORE INTO tab_restaurants_responsible (restaurant_id, user_id) VALUES (1,1), (2,2), (3,3);
 

@@ -50,8 +50,23 @@ INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (1, "C
 INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (2, "Cartão de débito", utc_timestamp);
 INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (3, "Dinheiro", utc_timestamp);
 
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (1, "LIST_KITCHEN", "Permit list kitchen");
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHEN", "Permit edit kitchen");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (1, "CONSULT_KITCHEN", "Permit consult kitchens");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHEN", "Permit edit kitchens");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (3, "CONSULT_PAYMENT_TYPE", "Permit consult type payments");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (4, "EDIT_PAYMENT_TYPE", "Permit edit type payments");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (5, "CONSULT_CITIES", "Permit consult cities");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (6, "EDIT_CITIES", "Permit edit cities");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (7, "CONSULT_STATES", "Permit consult states");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (8, "EDIT_STATES", "Permit edit states");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (9, "CONSULT_USERS", "Permit consult users");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (10, "EDIT_USERS", "Permit edit users");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (11, "CONSULT_RESTAURANTS", "Permit consult restaurants");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (12, "EDIT_RESTAURANTS", "Permit edit restaurants");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (13, "CONSULT_PRODUCTS", "Permit consult products");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (14, "EDIT_PRODUCTS", "Permit edit products");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (15, "CONSULT_ORDERS", "Permit consult orders");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (16, "MANAGER_ORDERS", "Permit manager orders");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (17, "GENERATE_REPORTS", "Permit generate reports");
 
 INSERT IGNORE INTO tab_restaurants_payments_types (restaurant_id, payment_type_id) VALUES (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1), (3, 2), (3, 3), (4, 1), (4, 2), (4, 3);
 
@@ -66,9 +81,25 @@ INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id
 INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.01', 'Description product 01', 15, true, 4);
 INSERT IGNORE INTO tab_products (name, description, price, active, restaurant_id) VALUES ('Product 4.02', 'Description product 02', 10, true, 4);
 
-INSERT IGNORE INTO tab_groups (name) VALUES ("Administrador"), ("Cadastrador"), ("Secretária"), ("Escrituário");
+INSERT IGNORE INTO tab_groups (id, name) VALUES (1, "Gerente"), (2, "Vendedor"), (3, "Secretária"), (4, "Cadastradir");
 
-INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id) VALUES (1, 1), (1, 2), (2, 2), (3, 1), (4, 1);
+# Adiciona todas as permissões no grupo do gerente
+INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id)
+SELECT 1, id from tab_permissions;
+
+# Adiciona todas as permissões no grupo do vendedor
+INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id)
+SELECT 2, id from tab_permissions WHERE name LIKE "CONSULT_%";
+
+INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id) VALUES (2, 14);
+
+# Adiciona todas as permissões no grupo do auxiliar
+INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id)
+SELECT 3, id from tab_permissions WHERE name LIKE "CONSULT_%";
+
+# Adiciona todas as permissões no grupo do cadastrador
+INSERT IGNORE INTO tab_groups_permissions (group_id, permission_id)
+SELECT 4, id from tab_permissions WHERE name LIKE "%_RESTAURANTS" OR name LIKE "%_PRODUCTS";
 
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Administrador', 'admin@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);
 INSERT IGNORE INTO tab_users (name, email, password, created_at, updated_at) VALUES ('Contato', 'contato@algafood.com.br', '$2a$12$GJwKIon9D9kabY/BxFtrv.5WIlLBw6BEkshXH87RvESLuTV75NTWm', utc_timestamp, utc_timestamp);

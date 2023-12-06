@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.core.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
 //    @Bean
@@ -52,11 +54,11 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "/v1/kitchens/**").hasAuthority("EDIT_KITCHENS")
-                        .requestMatchers(HttpMethod.PUT, "/v1/kitchens/**").hasAuthority("EDIT_KITCHENS")
-                        .requestMatchers(HttpMethod.GET, "/v1/kitchens/**").authenticated()
-                        .anyRequest().denyAll())
+//                .authorizeHttpRequests((requests) -> requests
+//                        .requestMatchers(HttpMethod.POST, "/v1/kitchens/**").hasAuthority("EDIT_KITCHENS")
+//                        .requestMatchers(HttpMethod.PUT, "/v1/kitchens/**").hasAuthority("EDIT_KITCHENS")
+//                        .requestMatchers(HttpMethod.GET, "/v1/kitchens/**").authenticated()
+//                        .anyRequest().denyAll())
                 .cors().and()
                 .oauth2ResourceServer()
                 .jwt()

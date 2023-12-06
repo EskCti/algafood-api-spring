@@ -18,6 +18,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +36,7 @@ public class KitchenController implements KitchenControllerOpenApi {
     @Autowired
     private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public PagedModel<KitchenModel> list(@PageableDefault(size = 24) Pageable pageable) {
         Page<Kitchen> kitchensPage = kitchenService.list(pageable);
@@ -45,6 +47,7 @@ public class KitchenController implements KitchenControllerOpenApi {
         return kitchenModelPagedModel;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public KitchenModel find(@PathVariable Long id) {
 
@@ -53,6 +56,7 @@ public class KitchenController implements KitchenControllerOpenApi {
         return modelAssemblier.toModel(kitchen);
     }
 
+    @PreAuthorize("hasAuthority('EDIT_KITCHENS')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public KitchenModel save(@RequestBody @Valid KitchenInput kitchenInput) {
@@ -65,6 +69,7 @@ public class KitchenController implements KitchenControllerOpenApi {
 
     }
 
+    @PreAuthorize("hasAuthority('EDIT_KITCHENS')")
     @PutMapping("/{id}")
     public KitchenModel update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
 //        Kitchen kitchen = modelAssemblier.toDomainObject(kitchenInput);
@@ -75,6 +80,7 @@ public class KitchenController implements KitchenControllerOpenApi {
         return modelAssemblier.toModel(kitchenService.save(kitchenUpdate));
     }
 
+    @PreAuthorize("hasAuthority('EDIT_KITCHENS')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

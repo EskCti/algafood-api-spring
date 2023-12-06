@@ -50,10 +50,10 @@ INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (1, "C
 INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (2, "Cartão de débito", utc_timestamp);
 INSERT IGNORE INTO tab_payments_type (id, description, updated_at) VALUES (3, "Dinheiro", utc_timestamp);
 
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (1, "CONSULT_KITCHEN", "Permit consult kitchens");
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHEN", "Permit edit kitchens");
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (3, "CONSULT_PAYMENT_TYPE", "Permit consult type payments");
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (4, "EDIT_PAYMENT_TYPE", "Permit edit type payments");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (1, "CONSULT_KITCHENS", "Permit consult kitchens");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (2, "EDIT_KITCHENS", "Permit edit kitchens");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (3, "CONSULT_PAYMENTS_TYPE", "Permit consult type payments");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (4, "EDIT_PAYMENTS_TYPE", "Permit edit type payments");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (5, "CONSULT_CITIES", "Permit consult cities");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (6, "EDIT_CITIES", "Permit edit cities");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (7, "CONSULT_STATES", "Permit consult states");

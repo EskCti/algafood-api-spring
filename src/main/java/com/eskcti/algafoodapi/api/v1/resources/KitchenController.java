@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.KitchenModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.KitchenModel;
 import com.eskcti.algafoodapi.api.v1.model.input.KitchenInput;
 import com.eskcti.algafoodapi.api.v1.openapi.KitchenControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
@@ -18,7 +19,6 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,7 +36,7 @@ public class KitchenController implements KitchenControllerOpenApi {
     @Autowired
     private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
 
-    @PreAuthorize("isAuthenticated()")
+    @CheckSecutiry.Kitchens.CanConsult
     @GetMapping
     public PagedModel<KitchenModel> list(@PageableDefault(size = 24) Pageable pageable) {
         Page<Kitchen> kitchensPage = kitchenService.list(pageable);
@@ -47,7 +47,7 @@ public class KitchenController implements KitchenControllerOpenApi {
         return kitchenModelPagedModel;
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @CheckSecutiry.Kitchens.CanConsult
     @GetMapping("/{id}")
     public KitchenModel find(@PathVariable Long id) {
 
@@ -56,7 +56,8 @@ public class KitchenController implements KitchenControllerOpenApi {
         return modelAssemblier.toModel(kitchen);
     }
 
-    @PreAuthorize("hasAuthority('EDIT_KITCHENS')")
+
+    @CheckSecutiry.Kitchens.CanEdit
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public KitchenModel save(@RequestBody @Valid KitchenInput kitchenInput) {
@@ -69,7 +70,7 @@ public class KitchenController implements KitchenControllerOpenApi {
 
     }
 
-    @PreAuthorize("hasAuthority('EDIT_KITCHENS')")
+    @CheckSecutiry.Kitchens.CanEdit
     @PutMapping("/{id}")
     public KitchenModel update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
 //        Kitchen kitchen = modelAssemblier.toDomainObject(kitchenInput);
@@ -80,7 +81,7 @@ public class KitchenController implements KitchenControllerOpenApi {
         return modelAssemblier.toModel(kitchenService.save(kitchenUpdate));
     }
 
-    @PreAuthorize("hasAuthority('EDIT_KITCHENS')")
+    @CheckSecutiry.Kitchens.CanEdit
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

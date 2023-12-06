@@ -13,7 +13,8 @@ public enum ProblemType {
     INCOMPREHENSIBLE_MESSAGE("/incomprehensible-message", "Incomprehensible message"),
     ENTITY_NOT_FOUND("/entity-not-found", "Entity not found"),
     ENTITY_IN_USE("/entity-in-use", "Entity in use"),
-    ERROR_BUSINESS("/error_business", "Error business");
+    ERROR_BUSINESS("/error_business", "Error business"),
+    ACCESS_DENIED("access-denied", "Access denied");
 
     private String title;
     private String uri;

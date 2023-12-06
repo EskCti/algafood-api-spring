@@ -2,13 +2,15 @@ package com.eskcti.algafoodapi.core.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -51,11 +53,32 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.POST, "/v1/kitchens/**").hasAuthority("EDIT_KITCHENS")
+                        .requestMatchers(HttpMethod.PUT, "/v1/kitchens/**").hasAuthority("EDIT_KITCHENS")
+                        .requestMatchers(HttpMethod.GET, "/v1/kitchens/**").authenticated()
+                        .anyRequest().denyAll())
                 .cors().and()
-                .oauth2ResourceServer().jwt();
+                .oauth2ResourceServer()
+                .jwt()
+                .jwtAuthenticationConverter(jwtAuthenticationConverter());
 
         return http.build();
+    }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            var authorities = jwt.getClaimAsStringList("authorities");
+
+            if (authorities == null) {
+                authorities = Collections.emptyList();
+            }
+
+            return authorities.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+        });
+        return jwtAuthenticationConverter;
     }
 
 //    @Bean

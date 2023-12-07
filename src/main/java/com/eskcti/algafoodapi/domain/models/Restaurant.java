@@ -85,7 +85,7 @@ public class Restaurant {
             joinColumns = @JoinColumn(name = "restaurant_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> responsible = new HashSet<>();
+    private Set<User> responsibles = new HashSet<>();
 
 
     public void activate() {
@@ -113,11 +113,11 @@ public class Restaurant {
     }
 
     public Boolean associateResponsible(User responsible) {
-        return this.getResponsible().add(responsible);
+        return this.getResponsibles().add(responsible);
     }
 
     public Boolean disassociateResponsible(User responsible) {
-        return this.getResponsible().remove(responsible);
+        return this.getResponsibles().remove(responsible);
     }
 
     public boolean acceptPaymentType(PaymentType paymentType) {

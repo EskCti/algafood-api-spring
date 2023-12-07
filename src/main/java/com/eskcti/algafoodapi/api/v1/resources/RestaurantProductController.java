@@ -72,7 +72,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
         return modelAssemblier.toModel(product);
     }
 
-    @CheckSecutiry.Restaurants.CanEdit
+    @CheckSecutiry.Restaurants.CanManager
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long restaurantId, @PathVariable Long productId) {
@@ -81,7 +81,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
         productService.remove(productId);
     }
 
-    @CheckSecutiry.Restaurants.CanEdit
+    @CheckSecutiry.Restaurants.CanManager
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ProductModel insert(@PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
@@ -92,7 +92,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
         return modelAssemblier.toModel(productService.save(product));
     }
 
-    @CheckSecutiry.Restaurants.CanEdit
+    @CheckSecutiry.Restaurants.CanManager
     @PutMapping("/{productId}")
     public ProductModel update(@PathVariable Long restaurantId, @PathVariable Long productId, @RequestBody ProductInput productInput) {
         Product productUpdate = productService.findByRestaurantIdAndId(restaurantId, productId);

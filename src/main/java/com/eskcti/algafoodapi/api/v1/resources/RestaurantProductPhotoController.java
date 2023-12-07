@@ -38,7 +38,7 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
     @Autowired
     PhotoStorageService photoStorageService;
 
-    @CheckSecutiry.Restaurants.CanEdit
+    @CheckSecutiry.Restaurants.CanManager
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ProductPhotoModel updatePhoto(
             @PathVariable Long restaurantId,
@@ -103,7 +103,7 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
         }
     }
 
-    @CheckSecutiry.Restaurants.CanEdit
+    @CheckSecutiry.Restaurants.CanManager
     @DeleteMapping
     public ResponseEntity deletePhoto(@PathVariable Long restaurantId, @PathVariable Long productId) {
         ProductPhoto productPhoto = productService.findProductPhoto(restaurantId, productId);

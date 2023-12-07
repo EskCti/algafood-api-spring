@@ -46,7 +46,7 @@ public class RestaurantPaymentTypeController implements RestaurantPaymentTypeCon
         return paymentTypeModels;
     }
 
-    @CheckSecutiry.Restaurants.CanEdit
+    @CheckSecutiry.Restaurants.CanManager
     @DeleteMapping("/{paymentTypeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {
@@ -54,7 +54,7 @@ public class RestaurantPaymentTypeController implements RestaurantPaymentTypeCon
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecutiry.Restaurants.CanEdit
+    @CheckSecutiry.Restaurants.CanManager
     @PutMapping("/{paymentTypeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {

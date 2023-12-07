@@ -9,13 +9,35 @@ import java.lang.annotation.Target;
 
 public @interface CheckSecutiry {
     public @interface Kitchens {
-        @PreAuthorize("hasAuthority('EDIT_KITCHENS')")
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDIT_KITCHENS')")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanEdit {
         }
 
-        @PreAuthorize("isAuthenticated()")
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanConsult {
+        }
+    }
+
+    public @interface Restaurants {
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDIT_RESTAURANTS')")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanEdit {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and " +
+                "(hasAuthority('EDIT_RESTAURANTS') or " +
+                "@algaSecurity.managerRestaurant(#restaurantId))")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanManager {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanConsult {

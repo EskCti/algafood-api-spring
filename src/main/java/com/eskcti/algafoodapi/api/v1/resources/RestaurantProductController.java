@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.ProductModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.ProductModel;
 import com.eskcti.algafoodapi.api.v1.model.input.ProductInput;
 import com.eskcti.algafoodapi.api.v1.openapi.RestaurantProductControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Product;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.ProductService;
@@ -39,6 +40,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
     @Autowired
     private AlgaLinks algaLinks;
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping
     public CollectionModel<ProductModel> list(
             @PathVariable Long restaurantId,
@@ -62,6 +64,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
                 .add(algaLinks.linkToProductsByRestaurant(restaurantId, "products"));
     }
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping("/{productId}")
     public ProductModel find(@PathVariable Long restaurantId, @PathVariable Long productId) {
         Product product = productService.findByRestaurantIdAndId(restaurantId, productId);
@@ -69,6 +72,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
         return modelAssemblier.toModel(product);
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long restaurantId, @PathVariable Long productId) {
@@ -77,6 +81,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
         productService.remove(productId);
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ProductModel insert(@PathVariable Long restaurantId, @RequestBody ProductInput productInput) {
@@ -87,6 +92,7 @@ public class RestaurantProductController implements RestaurantProductControllerO
         return modelAssemblier.toModel(productService.save(product));
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PutMapping("/{productId}")
     public ProductModel update(@PathVariable Long restaurantId, @PathVariable Long productId, @RequestBody ProductInput productInput) {
         Product productUpdate = productService.findByRestaurantIdAndId(restaurantId, productId);

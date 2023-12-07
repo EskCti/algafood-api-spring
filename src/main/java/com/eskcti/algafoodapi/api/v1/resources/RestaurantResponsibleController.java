@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.UserModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.UserModel;
 import com.eskcti.algafoodapi.api.v1.openapi.RestaurantResponsibleControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,11 @@ public class RestaurantResponsibleController implements RestaurantResponsibleCon
     @Autowired
     private AlgaLinks algaLinks;
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping
     public CollectionModel<UserModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
-        CollectionModel<UserModel> collectionModel = modelAssemblier.toCollectionModel(restaurant.getResponsible())
+        CollectionModel<UserModel> collectionModel = modelAssemblier.toCollectionModel(restaurant.getResponsibles())
                 .removeLinks()
                 .add(algaLinks.linkToResponsibleByRestaurant(restaurantId, "self"))
                 .add(algaLinks.linkToResponsibleAssociateByRestaurant(restaurantId, "associate"));
@@ -40,6 +42,7 @@ public class RestaurantResponsibleController implements RestaurantResponsibleCon
         return collectionModel;
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long userId) {
@@ -47,6 +50,7 @@ public class RestaurantResponsibleController implements RestaurantResponsibleCon
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long userId) {

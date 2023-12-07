@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.PaymentTypeModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.api.v1.openapi.RestaurantPaymentTypeControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class RestaurantPaymentTypeController implements RestaurantPaymentTypeCon
     @Autowired
     private AlgaLinks algaLinks;
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping
     public CollectionModel<PaymentTypeModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
@@ -44,6 +46,7 @@ public class RestaurantPaymentTypeController implements RestaurantPaymentTypeCon
         return paymentTypeModels;
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @DeleteMapping("/{paymentTypeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {
@@ -51,6 +54,7 @@ public class RestaurantPaymentTypeController implements RestaurantPaymentTypeCon
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PutMapping("/{paymentTypeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {

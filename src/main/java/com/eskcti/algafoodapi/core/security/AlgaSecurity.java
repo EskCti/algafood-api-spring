@@ -1,5 +1,7 @@
 package com.eskcti.algafoodapi.core.security;
 
+import com.eskcti.algafoodapi.domain.repositories.RestaurantRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -7,6 +9,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AlgaSecurity {
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
     public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
@@ -14,5 +20,11 @@ public class AlgaSecurity {
     public Long getUserId() {
         Jwt jwt = (Jwt) getAuthentication().getPrincipal();
         return jwt.getClaim("user_id");
+    }
+
+    public boolean managerRestaurant(Long restaurantId) {
+        var existsResponsible = restaurantRepository.existsResponsible(restaurantId, getUserId());
+        System.out.println("*************" + existsResponsible + "******************");
+        return existsResponsible;
     }
 }

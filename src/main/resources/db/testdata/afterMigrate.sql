@@ -58,8 +58,8 @@ INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (5, "CONSULT_C
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (6, "EDIT_CITIES", "Permit edit cities");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (7, "CONSULT_STATES", "Permit consult states");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (8, "EDIT_STATES", "Permit edit states");
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (9, "CONSULT_USERS", "Permit consult users");
-INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (10, "EDIT_USERS", "Permit edit users");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (9, "CONSULT_USERS_GROUPS_PERMISSIONS", "Permit consult users, groups and permissions");
+INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (10, "EDIT_USERS_GROUPS_PERMISSIONS", "Permit edit users, groups and permissions");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (11, "CONSULT_RESTAURANTS", "Permit consult restaurants");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (12, "EDIT_RESTAURANTS", "Permit edit restaurants");
 INSERT IGNORE INTO tab_permissions (id, name, description) VALUES (13, "CONSULT_PRODUCTS", "Permit consult products");

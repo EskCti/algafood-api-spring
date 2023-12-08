@@ -23,6 +23,9 @@ public class AlgaSecurity {
     }
 
     public boolean managerRestaurant(Long restaurantId) {
+        if (restaurantId == null) {
+            return false;
+        }
         var existsResponsible = restaurantRepository.existsResponsible(restaurantId, getUserId());
         System.out.println("*************" + existsResponsible + "******************");
         return existsResponsible;

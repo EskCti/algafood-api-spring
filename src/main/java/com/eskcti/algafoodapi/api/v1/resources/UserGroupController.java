@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.GroupModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.GroupModel;
 import com.eskcti.algafoodapi.api.v1.openapi.UserGroupControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import com.eskcti.algafoodapi.domain.services.UserService;
@@ -28,6 +29,7 @@ public class UserGroupController implements UserGroupControllerOpenApi {
     @Autowired
     private AlgaLinks algaLinks;
 
+    @CheckSecutiry.UsersGroupsPermissions.CanConsult
     @GetMapping
     public CollectionModel<GroupModel> list(@PathVariable Long userId) {
         User user = userService.find(userId);
@@ -46,6 +48,7 @@ public class UserGroupController implements UserGroupControllerOpenApi {
         return collectionModel;
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanEdit
     @PutMapping("/{groupId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long userId, @PathVariable Long groupId) {
@@ -53,6 +56,7 @@ public class UserGroupController implements UserGroupControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanEdit
     @DeleteMapping("/{groupId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long userId, @PathVariable Long groupId) {

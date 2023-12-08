@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.GroupModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.GroupModel;
 import com.eskcti.algafoodapi.api.v1.model.input.GroupInput;
 import com.eskcti.algafoodapi.api.v1.openapi.GroupControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import jakarta.validation.Valid;
@@ -26,16 +27,19 @@ public class GroupController implements GroupControllerOpenApi {
     @Autowired
     GroupInputDisassembler inputDisassembler;
 
+    @CheckSecutiry.UsersGroupsPermissions.CanConsult
     @GetMapping
     public CollectionModel<GroupModel> list() {
         return modelAssemblier.toCollectionModel(groupService.list());
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanConsult
     @GetMapping("/{id}")
     public GroupModel find(@PathVariable Long id) {
         return modelAssemblier.toModel(groupService.find(id));
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanEdit
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GroupModel insert(@RequestBody @Valid GroupInput groupInput) {
@@ -43,6 +47,7 @@ public class GroupController implements GroupControllerOpenApi {
         return modelAssemblier.toModel(groupService.save(group));
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanEdit
     @PutMapping("/{id}")
     public GroupModel update(@PathVariable Long id, @RequestBody @Valid GroupInput groupInput) {
         Group groupUpdate = groupService.find(id);
@@ -50,6 +55,7 @@ public class GroupController implements GroupControllerOpenApi {
         return modelAssemblier.toModel(groupService.save(groupUpdate));
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanEdit
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {

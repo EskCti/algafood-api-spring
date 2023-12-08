@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.PermissionModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.PermissionModel;
 import com.eskcti.algafoodapi.api.v1.openapi.GroupPermissionControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
 import com.eskcti.algafoodapi.domain.services.PermissionService;
@@ -29,6 +30,7 @@ public class GroupPermissionController implements GroupPermissionControllerOpenA
     @Autowired
     private AlgaLinks algaLinks;
 
+    @CheckSecutiry.UsersGroupsPermissions.CanConsult
     @GetMapping
     public CollectionModel<PermissionModel> list(@PathVariable Long groupId) {
         Group group = groupService.find(groupId);
@@ -47,6 +49,7 @@ public class GroupPermissionController implements GroupPermissionControllerOpenA
         return collectionModel;
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanEdit
     @PutMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long groupId, @PathVariable Long permissionId) {
@@ -54,6 +57,7 @@ public class GroupPermissionController implements GroupPermissionControllerOpenA
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.UsersGroupsPermissions.CanEdit
     @DeleteMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long groupId, @PathVariable Long permissionId) {

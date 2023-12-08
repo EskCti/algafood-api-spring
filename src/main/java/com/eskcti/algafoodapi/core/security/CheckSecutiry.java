@@ -46,17 +46,22 @@ public @interface CheckSecutiry {
     }
 
     public @interface Orders {
-//        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
-//        @PostAuthorize("hasAuthority('CONSULT_ORDERS') or " +
-//                "@algaSecurity.getUserId() == returnObject.customer.id or " +
-//                "@algaSecurity.managerRestaurant(returnObject.restaurant.id)")
-        @PreAuthorize("hasAuthority('SCOPE_READ') and " +
-                "(hasAuthority('CONSULT_ORDERS') or " +
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PostAuthorize("hasAuthority('CONSULT_ORDERS') or " +
                 "@algaSecurity.getUserId() == returnObject.customer.id or " +
                 "@algaSecurity.managerRestaurant(returnObject.restaurant.id)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanFind {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and " +
+                "(hasAuthority('CONSULT_ORDERS') or " +
+                "@algaSecurity.getUserId() == #orderFilter.customerId or " +
+                "@algaSecurity.managerRestaurant(#orderFilter.restaurantId))")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanList {
         }
     }
 }

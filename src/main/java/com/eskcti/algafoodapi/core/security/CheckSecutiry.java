@@ -63,5 +63,17 @@ public @interface CheckSecutiry {
         @Target(ElementType.METHOD)
         public @interface CanList {
         }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and isAuthenticated()")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanCreate { }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('MANAGER_ORDERS') or "
+                + "@algaSecurity.managerOrder(#orderCode))")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanManager {
+        }
     }
 }

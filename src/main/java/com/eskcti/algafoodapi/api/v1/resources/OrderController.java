@@ -10,6 +10,7 @@ import com.eskcti.algafoodapi.api.v1.openapi.OrderControllerOpenApi;
 import com.eskcti.algafoodapi.core.data.PageWrapper;
 import com.eskcti.algafoodapi.core.data.PageableTranslate;
 import com.eskcti.algafoodapi.core.security.AlgaSecurity;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.filter.OrderFilter;
@@ -52,6 +53,7 @@ public class OrderController implements OrderControllerOpenApi {
     @Autowired
     private AlgaSecurity algaSecurity;
 
+    @CheckSecutiry.Orders.CanFind
     @GetMapping("/{orderCode}")
     public OrderModel find(@PathVariable String orderCode) {
         return modelAssemblier.toModel(orderService.find(orderCode));

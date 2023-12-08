@@ -1,5 +1,6 @@
 package com.eskcti.algafoodapi.core.security;
 
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.lang.annotation.ElementType;
@@ -41,6 +42,21 @@ public @interface CheckSecutiry {
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanConsult {
+        }
+    }
+
+    public @interface Orders {
+//        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+//        @PostAuthorize("hasAuthority('CONSULT_ORDERS') or " +
+//                "@algaSecurity.getUserId() == returnObject.customer.id or " +
+//                "@algaSecurity.managerRestaurant(returnObject.restaurant.id)")
+        @PreAuthorize("hasAuthority('SCOPE_READ') and " +
+                "(hasAuthority('CONSULT_ORDERS') or " +
+                "@algaSecurity.getUserId() == returnObject.customer.id or " +
+                "@algaSecurity.managerRestaurant(returnObject.restaurant.id)")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanFind {
         }
     }
 }

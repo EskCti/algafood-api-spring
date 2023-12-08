@@ -78,6 +78,7 @@ public class OrderController implements OrderControllerOpenApi {
 //        return ordersWrapper;
 //    }
 
+    @CheckSecutiry.Orders.CanList
     @GetMapping
     public PagedModel<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {
         Pageable pageableTranslate = translatePageable(pageable);

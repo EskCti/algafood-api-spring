@@ -89,6 +89,7 @@ public class OrderController implements OrderControllerOpenApi {
         return pagedResourcesAssembler.toModel(orderPage, modelSummaryAssemblier);
     }
 
+    @CheckSecutiry.Orders.CanCreate
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderModel add(@Valid @RequestBody OrderInput orderInput) {

@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.PaymentTypeModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.api.v1.model.input.PaymentTypeInput;
 import com.eskcti.algafoodapi.api.v1.openapi.PaymentTypeControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.PaymentType;
 import com.eskcti.algafoodapi.domain.services.PaymentTypeService;
 import jakarta.validation.Valid;
@@ -34,6 +35,7 @@ public class PaymentTypeController implements PaymentTypeControllerOpenApi {
     @Autowired
     private PaymentTypeInputDisassembler inputDisassembler;
 
+    @CheckSecutiry.PaymentsType.CanConsult
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentTypeModel>> list(ServletWebRequest request) {
         String eTag = getEtag(request);
@@ -70,6 +72,7 @@ public class PaymentTypeController implements PaymentTypeControllerOpenApi {
         return eTag;
     }
 
+    @CheckSecutiry.PaymentsType.CanConsult
     @GetMapping("/{id}")
     public ResponseEntity<PaymentTypeModel> find(ServletWebRequest request, @PathVariable Long id) {
         String eTag = getEtag(request);
@@ -84,6 +87,7 @@ public class PaymentTypeController implements PaymentTypeControllerOpenApi {
                 .body(paymentTypeModel);
     }
 
+    @CheckSecutiry.PaymentsType.CanEdit
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PaymentTypeModel create(@RequestBody @Valid PaymentTypeInput paymentTypeInput) {
@@ -91,6 +95,7 @@ public class PaymentTypeController implements PaymentTypeControllerOpenApi {
         return modelAssemblier.toModel(paymentTypeService.save(paymentType));
     }
 
+    @CheckSecutiry.PaymentsType.CanEdit
     @PutMapping("/{id}")
     public PaymentTypeModel update(@PathVariable Long id, @RequestBody PaymentTypeInput paymentTypeInput) {
         PaymentType paymentTypeUpdate = paymentTypeService.find(id);
@@ -98,6 +103,7 @@ public class PaymentTypeController implements PaymentTypeControllerOpenApi {
         return modelAssemblier.toModel(paymentTypeService.save(paymentTypeUpdate));
     }
 
+    @CheckSecutiry.PaymentsType.CanEdit
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

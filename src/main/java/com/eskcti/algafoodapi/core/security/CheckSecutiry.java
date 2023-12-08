@@ -23,6 +23,20 @@ public @interface CheckSecutiry {
         }
     }
 
+    public @interface PaymentsType {
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDIT_PAYMENTS_TYPE')")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanEdit {
+        }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        public @interface CanConsult {
+        }
+    }
+
     public @interface Restaurants {
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDIT_RESTAURANTS')")
         @Retention(RetentionPolicy.RUNTIME)

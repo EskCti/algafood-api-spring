@@ -33,7 +33,9 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
         OrderModel orderModel = createModelWithId(order.getId(), order);
         modelMapper.map(order, orderModel);
 
-        orderModel.add(algaLinks.linkToOrders());
+        if (algaSecurity.canFindOrders()) {
+            orderModel.add(algaLinks.linkToOrders());
+        }
 
         if (algaSecurity.canManagerOrders(order.getCode())) {
             if (order.canBeConfirmed()) {
@@ -49,14 +51,27 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
             }
         }
 
-        orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
-        orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));
-        orderModel.getPaymentType().add(algaLinks.linkToPaymentType(order.getPaymentType().getId()));
-        orderModel.getAddressDelivery().getCity().add(algaLinks.linkToCity(order.getAddressDelivery().getCity().getId()));
+        if (algaSecurity.canConsultRestaurants()) {
+            orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
+        }
 
-        orderModel.getItems().forEach(item -> {
-            item.add(algaLinks.linkToItemOrder(orderModel.getRestaurant().getId(), item.getProductId()));
-        });
+        if (algaSecurity.canConsultUsersGroupsPermissions()) {
+            orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));
+        }
+
+        if (algaSecurity.canConsultPaymentsType()) {
+            orderModel.getPaymentType().add(algaLinks.linkToPaymentType(order.getPaymentType().getId()));
+        }
+
+        if (algaSecurity.canConsultCities()) {
+            orderModel.getAddressDelivery().getCity().add(algaLinks.linkToCity(order.getAddressDelivery().getCity().getId()));
+        }
+
+        if (algaSecurity.canConsultRestaurants()) {
+            orderModel.getItems().forEach(item -> {
+                item.add(algaLinks.linkToItemOrder(orderModel.getRestaurant().getId(), item.getProductId()));
+            });
+        }
 
         return orderModel;
     }

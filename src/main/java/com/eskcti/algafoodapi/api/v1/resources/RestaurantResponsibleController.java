@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.UserModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.UserModel;
 import com.eskcti.algafoodapi.api.v1.openapi.RestaurantResponsibleControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
@@ -27,18 +28,26 @@ public class RestaurantResponsibleController implements RestaurantResponsibleCon
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     @CheckSecutiry.Restaurants.CanConsult
     @GetMapping
     public CollectionModel<UserModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
         CollectionModel<UserModel> collectionModel = modelAssemblier.toCollectionModel(restaurant.getResponsibles())
-                .removeLinks()
-                .add(algaLinks.linkToResponsibleByRestaurant(restaurantId, "self"))
-                .add(algaLinks.linkToResponsibleAssociateByRestaurant(restaurantId, "associate"));
+                .removeLinks();
+        collectionModel
+                .add(algaLinks.linkToResponsibleByRestaurant(restaurantId, "self"));
 
-        collectionModel.getContent().forEach(userModel -> {
-            userModel.add(algaLinks.linkToResponsibleDisassociateByRestaurant(restaurantId, userModel.getId(), "disassociate"));
-        });
+        if (algaSecurity.canManagerRegisterRestaurants()) {
+            collectionModel
+                    .add(algaLinks.linkToResponsibleAssociateByRestaurant(restaurantId, "associate"));
+            collectionModel.getContent().forEach(userModel -> {
+                userModel.add(algaLinks.linkToResponsibleDisassociateByRestaurant(restaurantId, userModel.getId(), "disassociate"));
+            });
+        }
+
         return collectionModel;
     }
 

@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.OrderSummaryModel;
 import com.eskcti.algafoodapi.api.v1.resources.OrderController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class OrderSummaryModelAssemblier extends RepresentationModelAssemblerSup
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public OrderSummaryModelAssemblier() {
         super(OrderController.class, OrderSummaryModel.class);
     }
@@ -28,11 +32,17 @@ public class OrderSummaryModelAssemblier extends RepresentationModelAssemblerSup
         OrderSummaryModel orderModel = createModelWithId(order.getCode(), order);
         modelMapper.map(order, orderModel);
 
-        orderModel.add(algaLinks.linkToOrders());
+        if (algaSecurity.canFindOrders()) {
+            orderModel.add(algaLinks.linkToOrders());
+        }
 
-        orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
+        if (algaSecurity.canConsultRestaurants()) {
+            orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
+        }
 
-        orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));
+        if (algaSecurity.canConsultUsersGroupsPermissions()) {
+            orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));
+        }
 
         return orderModel;
     }

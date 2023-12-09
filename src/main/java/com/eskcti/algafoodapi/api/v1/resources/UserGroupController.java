@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.GroupModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.GroupModel;
 import com.eskcti.algafoodapi.api.v1.openapi.UserGroupControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.services.GroupService;
@@ -29,21 +30,28 @@ public class UserGroupController implements UserGroupControllerOpenApi {
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     @CheckSecutiry.UsersGroupsPermissions.CanConsult
     @GetMapping
     public CollectionModel<GroupModel> list(@PathVariable Long userId) {
         User user = userService.find(userId);
         CollectionModel<GroupModel> collectionModel = modelAssemblier
                 .toCollectionModel(user.getGroups())
-                .removeLinks()
-                .add(algaLinks.linkToGroupsByUser(userId))
-                .add(algaLinks.linkToGroupAssociateByUser(userId, "associate"));
+                .removeLinks();
 
-        collectionModel.getContent().forEach(groupModel -> {
-            groupModel.add(
-                    algaLinks.linkToGroupDisassociateByUser(userId, groupModel.getId(), "disassociate")
-            );
-        });
+        if (algaSecurity.canEditUsersGroupsPermissions()) {
+            collectionModel
+                    .add(algaLinks.linkToGroupsByUser(userId))
+                    .add(algaLinks.linkToGroupAssociateByUser(userId, "associate"));
+
+            collectionModel.getContent().forEach(groupModel -> {
+                groupModel.add(
+                        algaLinks.linkToGroupDisassociateByUser(userId, groupModel.getId(), "disassociate")
+                );
+            });
+        }
 
         return collectionModel;
     }

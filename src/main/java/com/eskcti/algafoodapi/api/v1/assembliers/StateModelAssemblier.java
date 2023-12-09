@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.StateModel;
 import com.eskcti.algafoodapi.api.v1.resources.StateController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.State;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class StateModelAssemblier extends RepresentationModelAssemblerSupport<St
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public StateModelAssemblier() {
         super(StateController.class, StateModel.class);
     }
@@ -28,15 +32,22 @@ public class StateModelAssemblier extends RepresentationModelAssemblerSupport<St
         StateModel stateModel = createModelWithId(state.getId(), state);
         modelMapper.map(state, stateModel);
 
-        stateModel.add(algaLinks.linkToStates());
+        if (algaSecurity.canConsultStates()) {
+            stateModel.add(algaLinks.linkToStates());
+        }
 
         return stateModel;
     }
 
     @Override
     public CollectionModel<StateModel> toCollectionModel(Iterable<? extends State> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(StateController.class).withSelfRel());
+        CollectionModel<StateModel> collectionModel = super.toCollectionModel(entities);
+
+        if (algaSecurity.canConsultStates()) {
+            collectionModel
+                    .add(linkTo(StateController.class).withSelfRel());
+        }
+        return collectionModel;
     }
 
 //    public List<StateModel> toCollectionModel(List<State> states) {

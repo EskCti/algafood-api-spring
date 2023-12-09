@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.api.v1.resources.PaymentTypeController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.PaymentType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class PaymentTypeModelAssemblier extends RepresentationModelAssemblerSupp
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public PaymentTypeModelAssemblier() {
         super(PaymentTypeController.class, PaymentTypeModel.class);
     }
@@ -26,15 +30,22 @@ public class PaymentTypeModelAssemblier extends RepresentationModelAssemblerSupp
         PaymentTypeModel paymentTypeModel = createModelWithId(paymentType.getId(), paymentType);
         modelMapper.map(paymentType, paymentTypeModel);
 
-        paymentTypeModel.add(algaLinks.linkToPaymentTypes());
+        if (algaSecurity.canConsultPaymentsType()) {
+            paymentTypeModel.add(algaLinks.linkToPaymentTypes());
+        }
 
         return paymentTypeModel;
     }
 
     @Override
     public CollectionModel<PaymentTypeModel> toCollectionModel(Iterable<? extends PaymentType> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(PaymentTypeController.class).withSelfRel());
+        CollectionModel<PaymentTypeModel> collectionModel = super.toCollectionModel(entities);
+
+        if (algaSecurity.canConsultPaymentsType()) {
+            collectionModel
+                    .add(linkTo(PaymentTypeController.class).withSelfRel());
+        }
+        return collectionModel;
     }
 
 //    public List<PaymentTypeModel> toCollectionModel(Collection<PaymentType> paymentTypes) {

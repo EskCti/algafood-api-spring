@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.PermissionModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.PermissionModel;
 import com.eskcti.algafoodapi.api.v1.openapi.GroupPermissionControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.services.GroupService;
@@ -30,21 +31,29 @@ public class GroupPermissionController implements GroupPermissionControllerOpenA
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     @CheckSecutiry.UsersGroupsPermissions.CanConsult
     @GetMapping
     public CollectionModel<PermissionModel> list(@PathVariable Long groupId) {
         Group group = groupService.find(groupId);
         CollectionModel<PermissionModel> collectionModel = modelAssemblier
                 .toCollectionModel(group.getPermissions())
-                .removeLinks()
-                .add(algaLinks.linkToPermissionsByGrupo(groupId, "permissions"))
-                .add(algaLinks.linkToPermissionAssociateByGroup(groupId, "associate"));
+                .removeLinks();
+        collectionModel
+                .add(algaLinks.linkToPermissionsByGrupo(groupId, "permissions"));
 
-        collectionModel.getContent().forEach(permissionModel -> {
-            permissionModel.add(
-                    algaLinks.linkToPermissionDisassociateByGroup(groupId, permissionModel.getId(), "disassociate")
-            );
-        });
+        if (algaSecurity.canEditUsersGroupsPermissions()) {
+            collectionModel
+                    .add(algaLinks.linkToPermissionAssociateByGroup(groupId, "associate"));
+
+            collectionModel.getContent().forEach(permissionModel -> {
+                permissionModel.add(
+                        algaLinks.linkToPermissionDisassociateByGroup(groupId, permissionModel.getId(), "disassociate")
+                );
+            });
+        }
 
         return collectionModel;
     }

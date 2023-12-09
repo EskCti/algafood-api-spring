@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.RestaurantModel;
 import com.eskcti.algafoodapi.api.v1.resources.RestaurantController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class RestaurantModelAssemblier  extends RepresentationModelAssemblerSupp
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public RestaurantModelAssemblier() {
         super(RestaurantController.class, RestaurantModel.class);
     }
@@ -28,32 +32,50 @@ public class RestaurantModelAssemblier  extends RepresentationModelAssemblerSupp
         RestaurantModel restaurantModel = createModelWithId(restaurant.getId(), restaurant);
         modelMapper.map(restaurant, restaurantModel);
 
-        restaurantModel.add(algaLinks.linkToRestaurants());
-        restaurantModel.add(algaLinks.linkToPaymentTypesByRestaurant(restaurant.getId(), "payment-types"));
-        restaurantModel.add(algaLinks.linkToResponsibleByRestaurant(restaurant.getId(), "responsible"));
-
-        restaurantModel.add(algaLinks.linkToProductsByRestaurant(restaurant.getId(), "products"));
-
-        if (!restaurant.getActive()) {
-            restaurantModel.add(algaLinks.linkToActivateByRestaurant(restaurant.getId(), "active"));
+        if (algaSecurity.canConsultRestaurants()) {
+            restaurantModel.add(algaLinks.linkToRestaurants());
         }
 
-        if (restaurant.getActive()) {
-            restaurantModel.add(algaLinks.linkToDeactivateByRestaurant(restaurant.getId(), "deactivate"));
+        if (algaSecurity.canManagerRegisterRestaurants()) {
+            if (!restaurant.getActive()) {
+                restaurantModel.add(algaLinks.linkToActivateByRestaurant(restaurant.getId(), "active"));
+            }
+
+            if (restaurant.getActive()) {
+                restaurantModel.add(algaLinks.linkToDeactivateByRestaurant(restaurant.getId(), "deactivate"));
+            }
         }
 
-        if (!restaurant.getOpen()) {
-            restaurantModel.add(algaLinks.linkToOpeningByRestaurant(restaurant.getId(), "open"));
+        if (algaSecurity.canManageRestaurantOperations(restaurant.getId())) {
+            if (!restaurant.getOpen()) {
+                restaurantModel.add(algaLinks.linkToOpeningByRestaurant(restaurant.getId(), "open"));
+            }
+
+            if (restaurant.getOpen()) {
+                restaurantModel.add(algaLinks.linkToClosingByRestaurant(restaurant.getId(), "close"));
+            }
         }
 
-        if (restaurant.getOpen()) {
-            restaurantModel.add(algaLinks.linkToClosingByRestaurant(restaurant.getId(), "close"));
+        if (algaSecurity.canConsultRestaurants()) {
+            restaurantModel.add(algaLinks.linkToProductsByRestaurant(restaurant.getId(), "products"));
         }
 
-        restaurantModel.getKitchen().add(algaLinks.linkToKitchen(restaurantModel.getKitchen().getId()));
+        if (algaSecurity.canConsultKitchens()) {
+            restaurantModel.getKitchen().add(algaLinks.linkToKitchen(restaurantModel.getKitchen().getId()));
+        }
 
-        if (restaurantModel.getAddress() != null) {
-            restaurantModel.getAddress().getCity().add(algaLinks.linkToCity(restaurantModel.getAddress().getCity().getId()));
+        if (algaSecurity.canConsultCities()) {
+            if (restaurantModel.getAddress() != null) {
+                restaurantModel.getAddress().getCity().add(algaLinks.linkToCity(restaurantModel.getAddress().getCity().getId()));
+            }
+        }
+
+        if (algaSecurity.canConsultRestaurants()) {
+            restaurantModel.add(algaLinks.linkToPaymentTypesByRestaurant(restaurant.getId(), "payment-types"));
+        }
+
+        if (algaSecurity.canManagerRegisterRestaurants()) {
+            restaurantModel.add(algaLinks.linkToResponsibleByRestaurant(restaurant.getId(), "responsible"));
         }
 
         return restaurantModel;
@@ -61,10 +83,16 @@ public class RestaurantModelAssemblier  extends RepresentationModelAssemblerSupp
 
     @Override
     public CollectionModel<RestaurantModel> toCollectionModel(Iterable<? extends Restaurant> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(RestaurantController.class).withSelfRel());
-    }
+        CollectionModel<RestaurantModel> collectionModel =
+                super.toCollectionModel(entities);
 
+        if (algaSecurity.canConsultRestaurants()) {
+            collectionModel
+                    .add(linkTo(RestaurantController.class).withSelfRel());
+        }
+
+        return collectionModel;
+    }
 
 //    public List<RestaurantModel> toCollectionModel(List<Restaurant> restaurants) {
 //        return restaurants.stream()

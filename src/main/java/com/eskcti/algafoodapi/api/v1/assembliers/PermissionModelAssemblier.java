@@ -3,9 +3,11 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.PermissionModel;
 import com.eskcti.algafoodapi.api.v1.resources.GroupPermissionController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Permission;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,9 @@ public class PermissionModelAssemblier extends RepresentationModelAssemblerSuppo
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public PermissionModelAssemblier() {
         super(GroupPermissionController.class, PermissionModel.class);
     }
@@ -27,11 +32,16 @@ public class PermissionModelAssemblier extends RepresentationModelAssemblerSuppo
         return permissionModel;
     }
 
-//    @Override
-//    public CollectionModel<PermissionModel> toCollectionModel(Iterable<? extends Permission> entities) {
-//        return super.toCollectionModel(entities)
-//                .add(linkTo(GroupPermissionController.class).withSelfRel());
-//    }
+    @Override
+    public CollectionModel<PermissionModel> toCollectionModel(Iterable<? extends Permission> entities) {
+        CollectionModel<PermissionModel> collectionModel
+                = super.toCollectionModel(entities);
+        if (algaSecurity.canConsultUsersGroupsPermissions()) {
+            collectionModel
+                    .add(linkTo(GroupPermissionController.class).withSelfRel());
+        }
+        return collectionModel;
+    }
 
 //    public List<PermissionModel> toCollectionModel(Collection<Permission> permissions) {
 //        return permissions.stream()

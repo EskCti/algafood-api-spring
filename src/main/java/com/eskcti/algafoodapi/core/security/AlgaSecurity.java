@@ -43,4 +43,9 @@ public class AlgaSecurity {
         System.out.println("*************" + orderManagerBy + "******************");
         return orderManagerBy;
     }
+
+    public boolean userAuthenticatedEqual(Long userId) {
+        return getUserId() != null && userId != null
+                && getUserId().equals(userId);
+    }
 }

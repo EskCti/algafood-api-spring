@@ -3,13 +3,11 @@ package com.eskcti.algafoodapi.core.security;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public @interface CheckSecutiry {
     public @interface Kitchens {
@@ -94,7 +92,7 @@ public @interface CheckSecutiry {
     public @interface Orders {
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
         @PostAuthorize("hasAuthority('CONSULT_ORDERS') or " +
-                "@algaSecurity.getUserId() == returnObject.customer.id or " +
+                "@algaSecurity.userAuthenticatedEqual(returnObject.customer.id) or " +
                 "@algaSecurity.managerRestaurant(returnObject.restaurant.id)")
         @Retention(RUNTIME)
         @Target(METHOD)
@@ -103,7 +101,7 @@ public @interface CheckSecutiry {
 
         @PreAuthorize("hasAuthority('SCOPE_READ') and " +
                 "(hasAuthority('CONSULT_ORDERS') or " +
-                "@algaSecurity.getUserId() == #orderFilter.customerId or " +
+                "@algaSecurity.userAuthenticatedEqual(#orderFilter.customerId) or " +
                 "@algaSecurity.managerRestaurant(#orderFilter.restaurantId))")
         @Retention(RUNTIME)
         @Target(METHOD)
@@ -126,13 +124,13 @@ public @interface CheckSecutiry {
     public @interface UsersGroupsPermissions {
 
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and "
-                + "@algaSecurity.getUserId() == #id")
+                + "@algaSecurity.userAuthenticatedEqual(#id)")
         @Retention(RUNTIME)
         @Target(METHOD)
         public @interface CanUpdateOwnPassword { }
 
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('EDIT_USERS_GROUPS_PERMISSIONS') or "
-                + "@algaSecurity.getUserId() == #id)")
+                + "@algaSecurity.userAuthenticatedEqual(#id))")
         @Retention(RUNTIME)
         @Target(METHOD)
         public @interface CanUpdateUser { }

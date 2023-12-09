@@ -14,6 +14,7 @@ DELETE FROM tab_states;
 DELETE FROM tab_kitchens;
 DELETE FROM tab_groups;
 DELETE FROM tab_users;
+DELETE FROM oauth_client_details;
 
 ALTER TABLE tab_kitchens AUTO_INCREMENT = 1;
 ALTER TABLE tab_states AUTO_INCREMENT = 1;

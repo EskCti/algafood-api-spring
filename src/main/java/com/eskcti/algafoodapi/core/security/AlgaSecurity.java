@@ -48,4 +48,14 @@ public class AlgaSecurity {
         return getUserId() != null && userId != null
                 && getUserId().equals(userId);
     }
+
+    public boolean hasAuthority(String authorityName) {
+        return getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(authorityName));
+    }
+    public boolean canManagerOrders(String orderCode) {
+        return hasAuthority("SCOPE_WRITE") &&
+                (hasAuthority("MANAGER_ORDERS") ||
+                        managerOrder(orderCode));
+    }
 }

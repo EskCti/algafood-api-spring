@@ -113,8 +113,7 @@ public @interface CheckSecutiry {
         @Target(METHOD)
         public @interface CanCreate { }
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('MANAGER_ORDERS') or "
-                + "@algaSecurity.managerOrder(#orderCode))")
+        @PreAuthorize("@algaSecurity.canManagerOrders(#orderCode)")
         @Retention(RUNTIME)
         @Target(METHOD)
         public @interface CanManager {

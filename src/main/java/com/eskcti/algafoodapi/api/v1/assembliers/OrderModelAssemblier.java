@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.OrderModel;
 import com.eskcti.algafoodapi.api.v1.resources.OrderController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
 
     public OrderModelAssemblier() {
         super(OrderController.class, OrderModel.class);
@@ -31,16 +35,18 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
 
         orderModel.add(algaLinks.linkToOrders());
 
-        if (order.canBeConfirmed()) {
-            orderModel.add(algaLinks.linkToOrderConfirm(order.getCode(), "confirm"));
-        }
+        if (algaSecurity.canManagerOrders(order.getCode())) {
+            if (order.canBeConfirmed()) {
+                orderModel.add(algaLinks.linkToOrderConfirm(order.getCode(), "confirm"));
+            }
 
-        if (order.canBeCanceled()) {
-            orderModel.add(algaLinks.linkToOrderCancel(order.getCode(), "cancel"));
-        }
+            if (order.canBeCanceled()) {
+                orderModel.add(algaLinks.linkToOrderCancel(order.getCode(), "cancel"));
+            }
 
-        if (order.canBeDelivered()) {
-            orderModel.add(algaLinks.linkToOrderDelivery(order.getCode(), "delivery"));
+            if (order.canBeDelivered()) {
+                orderModel.add(algaLinks.linkToOrderDelivery(order.getCode(), "delivery"));
+            }
         }
 
         orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));

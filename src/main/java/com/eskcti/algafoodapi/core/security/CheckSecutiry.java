@@ -148,4 +148,11 @@ public @interface CheckSecutiry {
         @Target(METHOD)
         public @interface CanConsult { }
     }
+
+    public @interface Statistics {
+        @PreAuthorize("hasAuthority('SCOPE_READ') and hasAuthority('GENERATE_REPORTS')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        public @interface CanConsult { }
+    }
 }

@@ -160,3 +160,33 @@ VALUES('Tal y', 40, 40, 1, 2, 3);
 INSERT INTO tab_orders_items
 (observation, price_total, price_unit, quantity, order_id, product_id)
 VALUES('Tal y', 60, 60, 1, 2, 4);
+
+INSERT INTO oauth_client_details (
+    client_id, resource_ids, client_secret,
+    scope, authorized_grant_types, web_server_redirect_uri, authorities,
+    access_token_validity, refresh_token_validity, autoapprove
+) VALUES (
+    'algafood-web', null, '$2a$12$C/FRk0qQl.stPW8VBkeYeuohjJWMCy3UssVOGSeM6cJKRTfbRGifi',
+    'READ,WRITE', 'password', null, null,
+    60 * 60 * 6, 60 * 24 * 60 * 60, null
+);
+
+INSERT INTO oauth_client_details (
+    client_id, resource_ids, client_secret,
+    scope, authorized_grant_types, web_server_redirect_uri, authorities,
+    access_token_validity, refresh_token_validity, autoapprove
+) VALUES (
+    'foodanalytics', null, '$2a$12$x6eufoFvhbzpj.vo8qJCNOusvmGVvVioDJERYB/1SygZma7N1sVp.',
+    'READ,WRITE', 'authorization_code', 'http://www.foodanalytics.local:8082', null,
+    null, null, null
+);
+
+INSERT INTO oauth_client_details (
+    client_id, resource_ids, client_secret,
+    scope, authorized_grant_types, web_server_redirect_uri, authorities,
+    access_token_validity, refresh_token_validity, autoapprove
+) VALUES (
+    'faturamento', null, '$2a$12$fSG1uM9XlfWhdIWpv7P2iO/VuRga2N9l5FTUdgwYOS81hW73ZIz9.',
+    'READ,WRITE', 'client_credentials', null, 'CONSULT_ORDERS,GENERATE_REPORTS',
+    null, null, null
+);

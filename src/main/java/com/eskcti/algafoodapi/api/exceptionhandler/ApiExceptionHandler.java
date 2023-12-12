@@ -50,10 +50,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).headers(headers).build();
     }
 
-    @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+//        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+//    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(

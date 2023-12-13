@@ -21,7 +21,7 @@ public class ResourceServerConfig {
                         .requestMatchers("/v1/states/**").authenticated())
                 .csrf().disable()
                 .cors().and()
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::opaqueToken);
+                .oauth2ResourceServer().jwt();
 
         return http.build();
     }

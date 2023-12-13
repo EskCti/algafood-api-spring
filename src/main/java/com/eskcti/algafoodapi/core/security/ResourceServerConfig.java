@@ -17,6 +17,7 @@ public class ResourceServerConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/oauth2/**").authenticated()
+                        .requestMatchers("/.well-known/**").authenticated()
                         .requestMatchers("/v1/states/**").authenticated())
                 .csrf().disable()
                 .cors().and()

@@ -24,7 +24,8 @@ public class JpaUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com email informado"));
-        return new AuthUser(user, getAuthorities(user));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getAuthorities(user));
+//        return new AuthUser(user, getAuthorities(user));
     }
 
     private Collection<GrantedAuthority> getAuthorities(User user) {

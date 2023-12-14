@@ -8,9 +8,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
 
+@SecurityRequirement(name = "security_auth")
 @Tag(name = "Produtos por restaurante", description = "Gerencia os produtos de restaurante")
 public interface RestaurantProductControllerOpenApi {
     @Operation(summary = "Lista os produtos de um restaurante", responses = {

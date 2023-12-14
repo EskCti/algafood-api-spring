@@ -5,13 +5,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
+@SecurityRequirement(name = "security_auth")
 @Tag(name = "Restaurantes com responsáveis", description = "Gerencia os restaurantes com responsáveis")
-
 public interface RestaurantResponsibleControllerOpenApi {
 
     @Operation(summary = "Listar os responsáveis de um restaurante")

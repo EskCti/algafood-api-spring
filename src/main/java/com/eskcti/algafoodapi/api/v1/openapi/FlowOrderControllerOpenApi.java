@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
+@SecurityRequirement(name = "security_auth")
 @Tag(name = "Fluxo de Pedidos", description = "Gerencia os fluxos de pedidos")
 public interface FlowOrderControllerOpenApi {
 

@@ -6,8 +6,15 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -16,16 +23,39 @@ public class ResourceServerConfig {
     @Bean
     public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/oauth2/**").permitAll()
-                        .requestMatchers("/.well-known/**").authenticated()
-                        .requestMatchers("/v1/states/**").authenticated()
-                        .anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
                 .csrf().disable()
                 .cors().and()
-                .oauth2ResourceServer().jwt();
+                .oauth2ResourceServer().jwt()
+                .jwtAuthenticationConverter(jwtAuthenticationConverter());
 
-        return http.formLogin(Customizer.withDefaults()).build();
+        return http.build();
+    }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+            //Ler permissões vindas dos scopes
+            Collection<GrantedAuthority> grantedAuthorities  = authoritiesConverter.convert(jwt);
+
+            //"authorities" é um campo costumizado no AuthorizationServerConfig
+            List<String> authorities = jwt.getClaimAsStringList("authorities");
+
+            if (authorities == null) {
+                return grantedAuthorities; //Retorna lista com os scopes, para o fluxo de client credentials
+            }
+
+            grantedAuthorities.addAll(authorities
+                    .stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList()));
+
+            return grantedAuthorities;
+        });
+
+        return converter;
     }
 
 }

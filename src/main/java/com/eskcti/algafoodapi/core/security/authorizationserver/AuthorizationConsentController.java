@@ -1,6 +1,8 @@
 package com.eskcti.algafoodapi.core.security.authorizationserver;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
@@ -58,5 +60,10 @@ public class AuthorizationConsentController {
         model.addAttribute("previouslyApprovedScopes", previouslyApprovedScopes);
 
         return "pages/approval";
+    }
+
+    @Bean
+    public OAuth2AuthorizationQueryService oAuth2AuthorizationQueryService(JdbcOperations jdbcOperations) {
+        return new JdbcOAuth2AuthorizationQueryService(jdbcOperations);
     }
 }

@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# project
+.env
+dbdata
+dbdata-test
+
+application.*
+/.metadata
+
+keystores/

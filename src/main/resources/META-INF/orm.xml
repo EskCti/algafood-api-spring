@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+        xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd"
+        version="2.2">
+
+    <named-query name="Restaurant.queryByName">
+        <query>
+            from Restaurant
+            where name like concat('%', :name, '%')
+            and kitchen.id = :id
+        </query>
+    </named-query>
+
+    <named-query name="Restaurant.existsResponsible">
+        <query>
+            select case when count(*) > 0 then true else false end
+            from Restaurant rest
+            join rest.responsibles resp
+            where rest.id = :restaurantId
+            and resp.id = :userId
+        </query>
+    </named-query>
+
+    <named-query name="Order.isManagerBy">
+        <query>
+            select case when count(*) > 0 then true else false end
+            from Order o
+            join o.restaurant rest
+            join rest.responsibles resp
+            where o.code = :orderCode
+            and resp.id = :userId
+        </query>
+    </named-query>
+</entity-mappings>

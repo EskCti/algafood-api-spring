@@ -1,0 +1,75 @@
+version: '3.8'
+services:
+  # Nginx service
+  nginx:
+    image: nginx:alpine
+    container_name: java-nginx-algafoodapi
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network-algafoodapi
+
+  # MySQL database service
+  db:
+    image: mysql:8.0
+    container_name: mysql-db-algafoodapi
+    ports:
+      - '3361:3306'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - ./.env
+    networks:
+      - app-network-algafoodapi
+    volumes:
+      - ./dbdata:/var/lib/mysql
+
+  db-test:
+    image: mysql:8.0
+    container_name: mysql-db-algafoodapi-test
+    ports:
+      - '3351:3306'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE_TEST}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - ./.env
+    networks:
+      - app-network-algafoodapi
+    volumes:
+      - ./dbdata-test:/var/lib/mysql
+
+  # JAVA service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-app-algafoodapi
+    working_dir: /app
+    restart: always
+    networks:
+      - app-network-algafoodapi
+    ports:
+      - 8080:8080
+    depends_on:
+      - nginx
+      - db
+
+networks:
+  app-network-algafoodapi:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

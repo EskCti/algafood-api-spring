@@ -33,4 +33,6 @@ public interface RestaurantRepository  extends
     boolean existsByName(String name);
 
     int countByKitchenId(Long kitchenId);
+
+    boolean existsResponsible(Long restaurantId, Long userId);
 }

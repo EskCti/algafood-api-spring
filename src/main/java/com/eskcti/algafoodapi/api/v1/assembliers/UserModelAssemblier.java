@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.UserModel;
 import com.eskcti.algafoodapi.api.v1.resources.UserController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,18 @@ public class UserModelAssemblier extends RepresentationModelAssemblerSupport<Use
 
     @Autowired
     private AlgaLinks algaLinks;
+
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public UserModel toModel(User user) {
         UserModel userModel = createModelWithId(user.getId(), user);
         modelMapper.map(user, userModel);
 
-        userModel.add(algaLinks.linkToUsers());
-        userModel.add(algaLinks.linkToGroupsByUser(user.getId()));
+        if (algaSecurity.canConsultUsersGroupsPermissions()) {
+            userModel.add(algaLinks.linkToUsers());
+            userModel.add(algaLinks.linkToGroupsByUser(user.getId()));
+        }
 
         return userModel;
     }

@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.api.v1.model.RestaurantModel;
 import com.eskcti.algafoodapi.api.v1.model.input.RestaurantInput;
 import com.eskcti.algafoodapi.api.v1.model.view.RestaurantView;
 import com.eskcti.algafoodapi.api.v1.openapi.RestaurantControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.core.validation.ValidationException;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
@@ -51,17 +52,20 @@ public class RestaurantController implements RestaurantControllerOpenApi {
     @Autowired
     private SmartValidator validator;
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping
     public CollectionModel<RestaurantModel> list() {
         return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
+    @CheckSecutiry.Restaurants.CanConsult
     @JsonView(RestaurantView.Summary.class)
     @GetMapping(params = "project=summary")
     public CollectionModel<RestaurantModel> listSummary() {
         return modelAssemblier.toCollectionModel(restaurantService.list());
     }
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping(params = "project=wrapper")
     public MappingJacksonValue listMapping() {
         List<Restaurant> restaurants = restaurantService.list();
@@ -74,6 +78,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         return restaurantsWrappers;
     }
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping("/{id}")
     public RestaurantModel find(@PathVariable Long id) {
         Restaurant restaurant = restaurantService.find(id);
@@ -81,6 +86,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         return modelAssemblier.toModel(restaurant);
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestaurantModel insert(@RequestBody @Valid RestaurantInput restaurantInput) {
@@ -93,6 +99,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PutMapping("/{id}")
     public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput) {
         try {
@@ -108,12 +115,14 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {
         restaurantService.remove(id);
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PatchMapping("/{restaurantId}")
     public RestaurantModel updatePartial(
             @PathVariable Long restaurantId,
@@ -128,6 +137,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         return modelAssemblier.toModel(restaurantService.save(restaurant));
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PutMapping("/{restaurantId}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> activate (@PathVariable Long restaurantId){
@@ -135,6 +145,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @DeleteMapping("/{restaurantId}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deactivate (@PathVariable Long restaurantId){
@@ -142,6 +153,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PutMapping("/activate-multiples")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void activateMultiples(@RequestBody List<Long> restaurantsIds) {
@@ -154,6 +166,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
+    @CheckSecutiry.Restaurants.CanEdit
     @PutMapping("/deactivate-multiples")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deactivateMultiples(@RequestBody List<Long> restaurantsIds) {
@@ -166,6 +179,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
+    @CheckSecutiry.Restaurants.CanManager
     @PutMapping("/{restaurantId}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> opening (@PathVariable Long restaurantId) {
@@ -173,6 +187,7 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.Restaurants.CanManager
     @PutMapping("/{restaurantId}/closing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> closing (@PathVariable Long restaurantId) {

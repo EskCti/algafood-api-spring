@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+@SecurityRequirement(name = "security_auth")
 @Tag(name = "Restaurante Product Foto", description = "Gerencia as fotos dos produtos de restaurante")
 public interface RestaurantProductPhotoControllerOpenApi {
     @Operation(summary = "Atualiza a foto do produto de um restaurant")

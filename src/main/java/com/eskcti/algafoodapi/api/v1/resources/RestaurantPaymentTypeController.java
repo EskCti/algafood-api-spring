@@ -4,6 +4,8 @@ import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.assembliers.PaymentTypeModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.PaymentTypeModel;
 import com.eskcti.algafoodapi.api.v1.openapi.RestaurantPaymentTypeControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.Restaurant;
 import com.eskcti.algafoodapi.domain.services.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,26 +26,35 @@ public class RestaurantPaymentTypeController implements RestaurantPaymentTypeCon
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping
     public CollectionModel<PaymentTypeModel> list(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantService.find(restaurantId);
 
         CollectionModel<PaymentTypeModel> paymentTypeModels = modelAssemblier.toCollectionModel(restaurant.getPaymentTypes())
-                .removeLinks()
-                .add(algaLinks.linkToPaymentTypesByRestaurant(restaurantId))
-                .add(
-                        algaLinks.linkToPaymentTypeAssociateByRestaurant(restaurantId, "associate")
-                );
+                .removeLinks();
 
-        paymentTypeModels.getContent().forEach(paymentTypeModel -> {
-            paymentTypeModel.add(
-                    algaLinks.linkToPaymentTypeDisassociateByRestaurant(restaurantId, paymentTypeModel.getId(), "disassociate")
-            );
-        });
+        paymentTypeModels
+                .add(algaLinks.linkToPaymentTypesByRestaurant(restaurantId));
+
+        if (algaSecurity.canManageRestaurantOperations(restaurantId)) {
+            paymentTypeModels
+                    .add(algaLinks.linkToPaymentTypeAssociateByRestaurant(restaurantId, "associate"));
+
+            paymentTypeModels.getContent().forEach(paymentTypeModel -> {
+                paymentTypeModel.add(
+                        algaLinks.linkToPaymentTypeDisassociateByRestaurant(restaurantId, paymentTypeModel.getId(), "disassociate")
+                );
+            });
+        }
 
         return paymentTypeModels;
     }
 
+    @CheckSecutiry.Restaurants.CanManager
     @DeleteMapping("/{paymentTypeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {
@@ -51,6 +62,7 @@ public class RestaurantPaymentTypeController implements RestaurantPaymentTypeCon
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecutiry.Restaurants.CanManager
     @PutMapping("/{paymentTypeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long paymentTypeId) {

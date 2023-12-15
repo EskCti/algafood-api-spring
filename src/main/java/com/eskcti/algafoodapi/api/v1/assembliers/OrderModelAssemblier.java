@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.OrderModel;
 import com.eskcti.algafoodapi.api.v1.resources.OrderController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
 
     public OrderModelAssemblier() {
         super(OrderController.class, OrderModel.class);
@@ -29,28 +33,45 @@ public class OrderModelAssemblier extends RepresentationModelAssemblerSupport<Or
         OrderModel orderModel = createModelWithId(order.getId(), order);
         modelMapper.map(order, orderModel);
 
-        orderModel.add(algaLinks.linkToOrders());
-
-        if (order.canBeConfirmed()) {
-            orderModel.add(algaLinks.linkToOrderConfirm(order.getCode(), "confirm"));
+        if (algaSecurity.canFindOrders()) {
+            orderModel.add(algaLinks.linkToOrders());
         }
 
-        if (order.canBeCanceled()) {
-            orderModel.add(algaLinks.linkToOrderCancel(order.getCode(), "cancel"));
+        if (algaSecurity.canManagerOrders(order.getCode())) {
+            if (order.canBeConfirmed()) {
+                orderModel.add(algaLinks.linkToOrderConfirm(order.getCode(), "confirm"));
+            }
+
+            if (order.canBeCanceled()) {
+                orderModel.add(algaLinks.linkToOrderCancel(order.getCode(), "cancel"));
+            }
+
+            if (order.canBeDelivered()) {
+                orderModel.add(algaLinks.linkToOrderDelivery(order.getCode(), "delivery"));
+            }
         }
 
-        if (order.canBeDelivered()) {
-            orderModel.add(algaLinks.linkToOrderDelivery(order.getCode(), "delivery"));
+        if (algaSecurity.canConsultRestaurants()) {
+            orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
         }
 
-        orderModel.getRestaurant().add(algaLinks.linkToRestaurant(order.getRestaurant().getId()));
-        orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));
-        orderModel.getPaymentType().add(algaLinks.linkToPaymentType(order.getPaymentType().getId()));
-        orderModel.getAddressDelivery().getCity().add(algaLinks.linkToCity(order.getAddressDelivery().getCity().getId()));
+        if (algaSecurity.canConsultUsersGroupsPermissions()) {
+            orderModel.getCustomer().add(algaLinks.linkToCustomer(order.getCustomer().getId()));
+        }
 
-        orderModel.getItems().forEach(item -> {
-            item.add(algaLinks.linkToItemOrder(orderModel.getRestaurant().getId(), item.getProductId()));
-        });
+        if (algaSecurity.canConsultPaymentsType()) {
+            orderModel.getPaymentType().add(algaLinks.linkToPaymentType(order.getPaymentType().getId()));
+        }
+
+        if (algaSecurity.canConsultCities()) {
+            orderModel.getAddressDelivery().getCity().add(algaLinks.linkToCity(order.getAddressDelivery().getCity().getId()));
+        }
+
+        if (algaSecurity.canConsultRestaurants()) {
+            orderModel.getItems().forEach(item -> {
+                item.add(algaLinks.linkToItemOrder(orderModel.getRestaurant().getId(), item.getProductId()));
+            });
+        }
 
         return orderModel;
     }

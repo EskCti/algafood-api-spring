@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.KitchenModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.KitchenModel;
 import com.eskcti.algafoodapi.api.v1.model.input.KitchenInput;
 import com.eskcti.algafoodapi.api.v1.openapi.KitchenControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
@@ -35,6 +36,7 @@ public class KitchenController implements KitchenControllerOpenApi {
     @Autowired
     private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
 
+    @CheckSecutiry.Kitchens.CanConsult
     @GetMapping
     public PagedModel<KitchenModel> list(@PageableDefault(size = 24) Pageable pageable) {
         Page<Kitchen> kitchensPage = kitchenService.list(pageable);
@@ -45,6 +47,7 @@ public class KitchenController implements KitchenControllerOpenApi {
         return kitchenModelPagedModel;
     }
 
+    @CheckSecutiry.Kitchens.CanConsult
     @GetMapping("/{id}")
     public KitchenModel find(@PathVariable Long id) {
 
@@ -53,6 +56,8 @@ public class KitchenController implements KitchenControllerOpenApi {
         return modelAssemblier.toModel(kitchen);
     }
 
+
+    @CheckSecutiry.Kitchens.CanEdit
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public KitchenModel save(@RequestBody @Valid KitchenInput kitchenInput) {
@@ -65,6 +70,7 @@ public class KitchenController implements KitchenControllerOpenApi {
 
     }
 
+    @CheckSecutiry.Kitchens.CanEdit
     @PutMapping("/{id}")
     public KitchenModel update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput) {
 //        Kitchen kitchen = modelAssemblier.toDomainObject(kitchenInput);
@@ -75,6 +81,7 @@ public class KitchenController implements KitchenControllerOpenApi {
         return modelAssemblier.toModel(kitchenService.save(kitchenUpdate));
     }
 
+    @CheckSecutiry.Kitchens.CanEdit
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

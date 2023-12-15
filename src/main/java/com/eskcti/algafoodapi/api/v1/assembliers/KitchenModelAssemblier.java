@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.KitchenModel;
 import com.eskcti.algafoodapi.api.v1.resources.KitchenController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Kitchen;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class KitchenModelAssemblier extends RepresentationModelAssemblerSupport<
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public KitchenModelAssemblier() {
         super(KitchenController.class, KitchenModel.class);
     }
@@ -27,15 +31,22 @@ public class KitchenModelAssemblier extends RepresentationModelAssemblerSupport<
         KitchenModel kitchenModel = createModelWithId(kitchen.getId(), kitchen);
         modelMapper.map(kitchen, kitchenModel);
 
-        kitchenModel.add(algaLinks.linkToKitchens());
+        if (algaSecurity.canConsultKitchens()) {
+            kitchenModel.add(algaLinks.linkToKitchens());
+        }
 
         return kitchenModel;
     }
 
     @Override
     public CollectionModel<KitchenModel> toCollectionModel(Iterable<? extends Kitchen> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(KitchenController.class).withSelfRel());
+        CollectionModel<KitchenModel> collectionModel = super.toCollectionModel(entities);
+
+        if (algaSecurity.canConsultKitchens()) {
+            collectionModel
+                    .add(linkTo(KitchenController.class).withSelfRel());
+        }
+        return collectionModel;
     }
 
 //    public List<KitchenModel> toCollectionModel(List<Kitchen> kitchens) {

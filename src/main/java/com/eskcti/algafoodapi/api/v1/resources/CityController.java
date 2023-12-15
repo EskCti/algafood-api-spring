@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.CityModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.CityModel;
 import com.eskcti.algafoodapi.api.v1.model.input.CityInput;
 import com.eskcti.algafoodapi.api.v1.openapi.CityControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.StateNotFoundException;
 import com.eskcti.algafoodapi.domain.models.City;
@@ -31,12 +32,14 @@ public class CityController implements CityControllerOpenApi {
     @Autowired
     private CityInputDisassembler inputDisassembler;
 
+    @CheckSecutiry.Cities.CanConsult
     @GetMapping
     public CollectionModel<CityModel> list() {
         List<City> cityList = cityService.list();
         return modelAssemblier.toCollectionModel(cityList);
     }
 
+    @CheckSecutiry.Cities.CanConsult
     @GetMapping("/{id}")
     public CityModel find(
             @PathVariable Long id
@@ -44,6 +47,7 @@ public class CityController implements CityControllerOpenApi {
         return modelAssemblier.toModel(cityService.find(id));
     }
 
+    @CheckSecutiry.Cities.CanEdit
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CityModel insert(
@@ -61,6 +65,7 @@ public class CityController implements CityControllerOpenApi {
         }
     }
 
+    @CheckSecutiry.Cities.CanEdit
     @PutMapping("/{id}")
     public CityModel update(
             @PathVariable Long id,
@@ -76,6 +81,7 @@ public class CityController implements CityControllerOpenApi {
         }
     }
 
+    @CheckSecutiry.Cities.CanEdit
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(

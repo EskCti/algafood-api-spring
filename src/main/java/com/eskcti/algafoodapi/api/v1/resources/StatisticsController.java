@@ -2,6 +2,7 @@ package com.eskcti.algafoodapi.api.v1.resources;
 
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.openapi.StatisticsControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.filter.DailySalesFilter;
 import com.eskcti.algafoodapi.domain.models.DailySales;
 import com.eskcti.algafoodapi.domain.services.SaleQueryService;
@@ -24,6 +25,7 @@ public class StatisticsController implements StatisticsControllerOpenApi {
     @Autowired
     private AlgaLinks algaLinks;
 
+    @CheckSecutiry.Statistics.CanConsult
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public StatisticsModel statistics() {
         var statisticsModel = new StatisticsModel();
@@ -33,6 +35,7 @@ public class StatisticsController implements StatisticsControllerOpenApi {
         return statisticsModel;
     }
 
+    @CheckSecutiry.Statistics.CanConsult
     @GetMapping("/daily-sales")
     public List<DailySales> DailySalesQuery(
             DailySalesFilter filter,

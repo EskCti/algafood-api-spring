@@ -5,6 +5,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.StateModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.StateModel;
 import com.eskcti.algafoodapi.api.v1.model.input.StateInput;
 import com.eskcti.algafoodapi.api.v1.openapi.StateControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.models.State;
 import com.eskcti.algafoodapi.domain.services.StateService;
 import jakarta.validation.Valid;
@@ -28,18 +29,21 @@ public class StateController implements StateControllerOpenApi {
     @Autowired
     private StateInputDisassembler inputDisassembler;
 
+    @CheckSecutiry.States.CanConsult
     @GetMapping
     public CollectionModel<StateModel> list() {
         List<State> stateList = stateService.list();
         return modelAssemblier.toCollectionModel(stateList);
     }
 
+    @CheckSecutiry.States.CanConsult
     @GetMapping("/{id}")
     public StateModel find(@PathVariable Long id) {
 
         return modelAssemblier.toModel(stateService.find(id));
     }
 
+    @CheckSecutiry.States.CanEdit
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public StateModel insert(@RequestBody @Valid StateInput stateInput) {
@@ -47,6 +51,7 @@ public class StateController implements StateControllerOpenApi {
         return modelAssemblier.toModel(stateService.save(state));
     }
 
+    @CheckSecutiry.States.CanEdit
     @PutMapping("/{id}")
     public StateModel update(@PathVariable Long id, @RequestBody @Valid StateInput stateInput) {
         State stateUpdate = stateService.find(id);
@@ -55,6 +60,7 @@ public class StateController implements StateControllerOpenApi {
         return modelAssemblier.toModel(stateService.save(stateUpdate));
     }
 
+    @CheckSecutiry.States.CanEdit
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@PathVariable Long id) {

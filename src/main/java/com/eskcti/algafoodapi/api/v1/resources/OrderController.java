@@ -9,6 +9,8 @@ import com.eskcti.algafoodapi.api.v1.model.input.OrderInput;
 import com.eskcti.algafoodapi.api.v1.openapi.OrderControllerOpenApi;
 import com.eskcti.algafoodapi.core.data.PageWrapper;
 import com.eskcti.algafoodapi.core.data.PageableTranslate;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.exceptions.BusinessException;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.filter.OrderFilter;
@@ -48,6 +50,10 @@ public class OrderController implements OrderControllerOpenApi {
     @Autowired
     private PagedResourcesAssembler<Order> pagedResourcesAssembler;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
+    @CheckSecutiry.Orders.CanFind
     @GetMapping("/{orderCode}")
     public OrderModel find(@PathVariable String orderCode) {
         return modelAssemblier.toModel(orderService.find(orderCode));
@@ -72,6 +78,7 @@ public class OrderController implements OrderControllerOpenApi {
 //        return ordersWrapper;
 //    }
 
+    @CheckSecutiry.Orders.CanList
     @GetMapping
     public PagedModel<OrderSummaryModel> list(OrderFilter orderFilter, Pageable pageable) {
         Pageable pageableTranslate = translatePageable(pageable);
@@ -82,13 +89,14 @@ public class OrderController implements OrderControllerOpenApi {
         return pagedResourcesAssembler.toModel(orderPage, modelSummaryAssemblier);
     }
 
+    @CheckSecutiry.Orders.CanCreate
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderModel add(@Valid @RequestBody OrderInput orderInput) {
         try {
             Order newOrder = inputDisassembler.toDomainObject(orderInput);
             newOrder.setCustomer(new User());
-            newOrder.getCustomer().setId(1L);
+            newOrder.getCustomer().setId(algaSecurity.getUserId());
 
             newOrder = issuanceOrderService.issuance(newOrder);
 

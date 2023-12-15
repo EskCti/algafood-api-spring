@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.ProductModel;
 import com.eskcti.algafoodapi.api.v1.resources.RestaurantProductController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Product;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class ProductModelAssemblier extends RepresentationModelAssemblerSupport<
     @Autowired
     private AlgaLinks algaLinks;
 
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public ProductModelAssemblier() {
         super(RestaurantProductController.class, ProductModel.class);
     }
@@ -26,9 +30,11 @@ public class ProductModelAssemblier extends RepresentationModelAssemblerSupport<
         ProductModel productModel = createModelWithId(product.getId(), product, product.getRestaurant().getId());
         modelMapper.map(product, productModel);
 
-        productModel.add(algaLinks.linkToProductsByRestaurant(product.getRestaurant().getId(), "products"));
+        if (algaSecurity.canConsultRestaurants()) {
+            productModel.add(algaLinks.linkToProductsByRestaurant(product.getRestaurant().getId(), "products"));
 
-        productModel.add(algaLinks.linkToPhotoOfProductByRestaurant(product.getRestaurant().getId(), product.getId(), "photo"));
+            productModel.add(algaLinks.linkToPhotoOfProductByRestaurant(product.getRestaurant().getId(), product.getId(), "photo"));
+        }
 
         return productModel;
     }

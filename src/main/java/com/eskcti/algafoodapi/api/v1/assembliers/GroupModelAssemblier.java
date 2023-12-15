@@ -3,6 +3,7 @@ package com.eskcti.algafoodapi.api.v1.assembliers;
 import com.eskcti.algafoodapi.api.v1.AlgaLinks;
 import com.eskcti.algafoodapi.api.v1.model.GroupModel;
 import com.eskcti.algafoodapi.api.v1.resources.GroupController;
+import com.eskcti.algafoodapi.core.security.AlgaSecurity;
 import com.eskcti.algafoodapi.domain.models.Group;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +20,31 @@ public class GroupModelAssemblier extends RepresentationModelAssemblerSupport<Gr
 
     @Autowired
     private AlgaLinks algaLinks;
+
+    @Autowired
+    private AlgaSecurity algaSecurity;
+
     public GroupModel toModel(Group group) {
         GroupModel groupModel = createModelWithId(group.getId(), group);
         modelMapper.map(group, groupModel);
 
-        groupModel.add(algaLinks.linkToGroups("groups"));
-        groupModel.add(algaLinks.linkToPermissionsByGrupo(group.getId(), "permissions"));
+        if (algaSecurity.canConsultUsersGroupsPermissions()) {
+            groupModel.add(algaLinks.linkToGroups("groups"));
+            groupModel.add(algaLinks.linkToPermissionsByGrupo(group.getId(), "permissions"));
+        }
 
         return groupModel;
     }
 
     @Override
     public CollectionModel<GroupModel> toCollectionModel(Iterable<? extends Group> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(GroupController.class).withSelfRel());
+        CollectionModel<GroupModel> collectionModel = super.toCollectionModel(entities);
+
+        if (algaSecurity.canConsultUsersGroupsPermissions()) {
+            collectionModel
+                    .add(linkTo(GroupController.class).withSelfRel());
+        }
+        return collectionModel;
     }
     public GroupModelAssemblier() {
         super(GroupController.class, GroupModel.class);

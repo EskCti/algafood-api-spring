@@ -4,6 +4,7 @@ import com.eskcti.algafoodapi.api.v1.assembliers.ProductPhotoModelAssemblier;
 import com.eskcti.algafoodapi.api.v1.model.ProductPhotoModel;
 import com.eskcti.algafoodapi.api.v1.model.input.ProductPhotoInput;
 import com.eskcti.algafoodapi.api.v1.openapi.RestaurantProductPhotoControllerOpenApi;
+import com.eskcti.algafoodapi.core.security.CheckSecutiry;
 import com.eskcti.algafoodapi.domain.exceptions.EntityNotFoundException;
 import com.eskcti.algafoodapi.domain.models.Product;
 import com.eskcti.algafoodapi.domain.models.ProductPhoto;
@@ -37,6 +38,7 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
     @Autowired
     PhotoStorageService photoStorageService;
 
+    @CheckSecutiry.Restaurants.CanManager
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ProductPhotoModel updatePhoto(
             @PathVariable Long restaurantId,
@@ -60,6 +62,7 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
         return productPhotoModelAssemblier.toModel(photoSave);
     }
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ProductPhotoModel findPhoto(@PathVariable Long restaurantId, @PathVariable Long productId) {
         ProductPhoto productPhoto = productService.findProductPhoto(restaurantId, productId);
@@ -67,6 +70,7 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
         return productPhotoModelAssemblier.toModel(productPhoto);
     }
 
+    @CheckSecutiry.Restaurants.CanConsult
     @GetMapping
     public ResponseEntity<?> servePhoto(
             @PathVariable Long restaurantId,
@@ -99,6 +103,7 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
         }
     }
 
+    @CheckSecutiry.Restaurants.CanManager
     @DeleteMapping
     public ResponseEntity deletePhoto(@PathVariable Long restaurantId, @PathVariable Long productId) {
         ProductPhoto productPhoto = productService.findProductPhoto(restaurantId, productId);

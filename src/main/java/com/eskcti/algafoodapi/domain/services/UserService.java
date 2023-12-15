@@ -6,6 +6,7 @@ import com.eskcti.algafoodapi.domain.models.Group;
 import com.eskcti.algafoodapi.domain.models.User;
 import com.eskcti.algafoodapi.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ public class UserService {
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<User> list() {
         return userRepository.findAll();
     }
@@ -32,6 +36,9 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
+        if (user.isNew()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.detach(user);
         Optional<User> userExisting = userRepository.findByEmail(user.getEmail());
         if (userExisting.isPresent() && !userExisting.get().equals(user)) {
@@ -53,10 +60,12 @@ public class UserService {
         User user = find(id);
         System.out.println(user.getPassword());
         System.out.println(currentPassword);
-        if (user.passwordNotMatchWith(currentPassword)) {
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new BusinessException("Current password entered does not match the user's password");
         }
-        user.setPassword(newPassword);
+
+        user.setPassword(passwordEncoder.encode(newPassword));
         return userRepository.save(user);
     }
 

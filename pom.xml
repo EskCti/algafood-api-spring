@@ -233,6 +233,7 @@
     </dependencies>
 
 	<build>
+		<finalName>esk-alfafood-api</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

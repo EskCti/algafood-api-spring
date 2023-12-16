@@ -1,7 +1,14 @@
-FROM openjdk
+FROM openjdk:17-jdk
 
 WORKDIR /app
 
-COPY target/algafood-api-0.0.1-SNAPSHOT.jar /app/algafood-api.jar
+ARG JAR_FILE
 
-ENTRYPOINT ["java", "-jar", "algafood-api.jar"]
+COPY target/${JAR_FILE} /app/api.jar
+COPY wait-for-it.sh /wait-for-it.sh
+
+RUN chmod +x /wait-for-it.sh
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "api.jar"]

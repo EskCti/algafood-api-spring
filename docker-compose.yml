@@ -6,8 +6,8 @@ services:
     container_name: java-nginx-algafoodapi
     restart: always
     ports:
-      - 80:80
-      - 443:443
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
@@ -23,8 +23,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+#      MYSQL_USER: ${DB_USERNAME}
+#      MYSQL_PASSWORD: ${DB_PASSWORD}
     env_file:
       - ./.env
     networks:
@@ -41,8 +41,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE_TEST}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+#      MYSQL_USER: ${DB_USERNAME}
+#      MYSQL_PASSWORD: ${DB_PASSWORD}
     env_file:
       - ./.env
     networks:
@@ -57,11 +57,14 @@ services:
       dockerfile: Dockerfile
     container_name: java-app-algafoodapi
     working_dir: /app
+    command: ["/wait-for-it.sh", "mysql-db-algafoodapi:3306", "-t", "30", "java", "-jar", "api.jar"]
     restart: always
     networks:
       - app-network-algafoodapi
+    env_file:
+      - ./.env
     ports:
-      - 8080:8080
+      - '8080:8080'
     depends_on:
       - nginx
       - db

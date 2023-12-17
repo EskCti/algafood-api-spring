@@ -195,6 +195,14 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
+		</dependency>
 		<!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.springframework/spring-web &ndash;&gt;-->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework</groupId>-->
@@ -233,7 +241,7 @@
     </dependencies>
 
 	<build>
-		<finalName>esk-alfafood-api</finalName>
+		<finalName>esk-algafood-api</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -241,9 +249,6 @@
 				<configuration>
 					<excludeDevtools>false</excludeDevtools>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

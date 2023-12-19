@@ -2,11 +2,13 @@ package com.eskcti.algafoodapi.core.openapi;
 
 import com.eskcti.algafoodapi.api.exceptionhandler.Problem;
 import io.swagger.v3.core.converter.ModelConverters;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -40,6 +42,16 @@ import java.util.Map;
                         @OAuthScope(name = "WRITE", description = "write scope")
                 }
         )))
+@OpenAPIDefinition(
+        servers = {
+                @Server(url = "http://127.0.0.1"),
+                @Server(url = "http://127.0.0.1:8080"),
+                @Server(url = "http://localhost"),
+                @Server(url = "http://localhost:8080"),
+                @Server(url = "http://algafoodapi-java"),
+                @Server(url = "http://algafoodapi-java:8080"),
+        }
+)
 public class SwaggerConfig {
 
     private static final String badRequestResponse = "BadRequestResponse";

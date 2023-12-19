@@ -34,8 +34,11 @@ build/
 
 # project
 .env
+
+# volume docker
 dbdata
 dbdata-test
+dbmysql80
 
 application.*
 /.metadata

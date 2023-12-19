@@ -1,38 +1,49 @@
 version: '3.8'
 services:
+  algafoodapi-redis:
+    image: redis:6.2.14-alpine
+    container_name: algafoodapi-redis
+    ports:
+      - '6379:6379'
+    networks:
+      - algafoodapi-network
+
   # Nginx service
-  nginx:
+  algafoodapi-nginx:
     build: ./nginx
 #    image: nginx:1.19.6-alpine
-#    container_name: java-nginx-algafoodapi
+    container_name: algafoodapi-nginx
     restart: always
     ports:
       - '80:80'
       - '443:443'
 #    volumes:
 #      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - algafoodapi-java
     networks:
-      - app-network-algafoodapi
+      - algafoodapi-network
 
   # MySQL database service
-  db:
+  algafoodapi-mysql:
     image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
-#    container_name: mysql-db-algafoodapi
+#    command: --default-authentication-plugin=caching_sha2_password
+    container_name: algafoodapi-mysql
     ports:
       - '13306:3306'
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root1234
-      MYSQL_DATABASE: db_algafoodapi
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+#      MYSQL_ROOT_PASSWORD: root1234
+#      MYSQL_DATABASE: db_algafoodapi
 #      MYSQL_USER: ${DB_USERNAME}
 #      MYSQL_PASSWORD: ${DB_PASSWORD}
 #    env_file:
 #      - ./env_example
     networks:
-      - app-network-algafoodapi
+      - algafoodapi-network
     volumes:
-      - ./dbdata:/var/lib/mysql
+      - ./dbmysql80:/var/lib/mysql
 
 #  db-test:
 #    image: mysql:8.0
@@ -53,40 +64,37 @@ services:
 #      - ./dbdata-test:/var/lib/mysql
 
   # JAVA service
-  app:
+  algafoodapi-java:
     build:
       context: .
       dockerfile: Dockerfile
-#    container_name: java-app-algafoodapi
+    container_name: algafoodapi-java
     working_dir: /app
-    command: ["/wait-for-it.sh", "mysql-db-algafoodapi:3306", "-t", "30", "java", "-jar", "esk-algafood-api.jar"]
+    command: ["/wait-for-it.sh", "algafoodapi-mysql:3306", "-t", "30", "java", "-jar", "esk-algafood-api.jar"]
     restart: always
     networks:
-      - app-network-algafoodapi
+      - algafoodapi-network
     environment:
-      DB_HOST: db
-      DB_PORT: 3306
+      DB_HOST: algafoodapi-mysql
+#      DB_PORT: 3306
+#      DB_USERNAME: root
+#      DB_PASSWORD: root1234
       SPRING_SESSION_STORE-TYPE: redis
-      SPRING_REDIS-HOST: redis
+      SPRING_DATA_REDIS_HOST: algafoodapi-redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_PROFILES_ACTIVE: development
 #    env_file:
 #      - ./env_example
 #    ports:
 #      - '0:8080'
     depends_on:
-      - nginx
-      - db
-
-  redis:
-    image: redis:6.2.14-alpine
-    ports:
-      - '6379:6379'
-    networks:
-      - app-network-algafoodapi
+      - algafoodapi-mysql
+      - algafoodapi-redis
 
 networks:
-  app-network-algafoodapi:
+  algafoodapi-network:
     driver: bridge
 
 volumes:
-  dbdata:
+  dbmysql80:
     driver: local
